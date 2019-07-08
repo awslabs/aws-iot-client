@@ -40,7 +40,7 @@ public class DeleteAllLambdaFunctionsCommandHandler implements GreengrassCommand
 
             deleteLambdaFunctionsCommandHandler.innerHandle(String.join(" ", "_", groupName + ".*"));
 
-            log.info("Deleted group [" + groupName + "]");
+            log.info("Deleted functions for group [" + groupName + "]");
         }
     }
 
