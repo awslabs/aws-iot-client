@@ -1,0 +1,8 @@
+/out
+/private.key
+/client.crt
+/certificate.id
+/ca.crt
+/build
+/.gradle
+/.idea
