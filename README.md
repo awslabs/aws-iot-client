@@ -1,5 +1,5 @@
 ## AWS IoT Client
-![TravisCI build status](https://travis-ci.org/awslabs/aws-iot-client.svg?branch=master)
+[![Build Status](https://travis-ci.org/awslabs/aws-iot-client.svg?branch=master)](https://travis-ci.org/awslabs/aws-iot-client)
 
 A command-line tool that automates several common multi-step operations in the IoT and related services.
 
