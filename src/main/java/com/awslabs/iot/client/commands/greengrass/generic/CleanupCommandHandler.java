@@ -68,7 +68,7 @@ public class CleanupCommandHandler implements GreengrassCommandHandler {
 
     @Override
     public String getHelp() {
-        return "Deletes all IoT things, certificates, and Greengrass groups that are not immutable";
+        return "Deletes all IoT things, certificates, Greengrass groups, and associated Lambda functions for groups and IoT things that are not immutable";
     }
 
     @Override

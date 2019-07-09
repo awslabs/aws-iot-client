@@ -23,7 +23,7 @@ public class TestPublishCommandHandler extends RestPublishCommandHandler {
 
     @Override
     public String getHelp() {
-        return "Publishes the message '" + TEST_MESSAGE + "', with a leading epoch milliseconds timestamp, to the topic '" + TEST_TOPIC + "'";
+        return "Publishes the message '" + TEST_MESSAGE + "', with a leading epoch milliseconds timestamp, to the topic '" + TEST_TOPIC + "' using the REST APIs.";
     }
 
     @Override

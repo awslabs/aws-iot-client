@@ -56,7 +56,7 @@ public class DeleteAllThingsCommandHandler implements IotCommandHandler {
 
     @Override
     public String getHelp() {
-        return "Deletes a thing by name.";
+        return "Deletes all things.";
     }
 
     @Override

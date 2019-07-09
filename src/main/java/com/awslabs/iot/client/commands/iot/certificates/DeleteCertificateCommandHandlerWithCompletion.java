@@ -44,7 +44,7 @@ public class DeleteCertificateCommandHandlerWithCompletion implements Certificat
 
     @Override
     public String getHelp() {
-        return "Deletes a certificate by ARN.";
+        return "Deletes a certificate by its ARN.";
     }
 
     @Override

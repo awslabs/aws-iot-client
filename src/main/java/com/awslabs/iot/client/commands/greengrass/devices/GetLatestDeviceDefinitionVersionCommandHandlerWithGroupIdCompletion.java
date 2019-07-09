@@ -56,7 +56,7 @@ public class GetLatestDeviceDefinitionVersionCommandHandlerWithGroupIdCompletion
 
     @Override
     public String getHelp() {
-        return "Gets the latest function definition version for a group.";
+        return "Gets the latest device definition version for a group.";
     }
 
     @Override

@@ -50,7 +50,7 @@ public class GetLatestDeploymentCommandHandlerWithGroupIdCompletion implements G
 
     @Override
     public String getHelp() {
-        return "Gets the deployment for a group.";
+        return "Gets the latest deployment for a group.";
     }
 
     @Override

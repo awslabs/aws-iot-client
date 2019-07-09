@@ -40,7 +40,7 @@ public class DeleteLambdaFunctionsCommandHandler implements CommandHandler {
 
     @Override
     public String getHelp() {
-        return "Deletes Greengrass Lambda functions.  First parameter is the function name.  Wildcards are supported.";
+        return "Deletes Lambda functions.  First parameter is the function name.  Wildcards are supported.";
     }
 
     @Override

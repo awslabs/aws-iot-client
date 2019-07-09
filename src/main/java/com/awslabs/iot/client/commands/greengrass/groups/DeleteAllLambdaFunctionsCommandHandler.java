@@ -51,7 +51,7 @@ public class DeleteAllLambdaFunctionsCommandHandler implements GreengrassCommand
 
     @Override
     public String getHelp() {
-        return "Deletes all Greengrass groups.";
+        return "Deletes all Lambda functions associated with a Greengrass group.";
     }
 
     @Override

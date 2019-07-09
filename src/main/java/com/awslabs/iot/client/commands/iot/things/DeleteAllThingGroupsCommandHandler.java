@@ -40,7 +40,7 @@ public class DeleteAllThingGroupsCommandHandler implements IotCommandHandler {
 
     @Override
     public String getHelp() {
-        return "Deletes a thing group by name.";
+        return "Deletes all thing groups.";
     }
 
     @Override

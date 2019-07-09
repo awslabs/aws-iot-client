@@ -56,7 +56,7 @@ public class GetLatestCoreDefinitionVersionCommandHandlerWithGroupIdCompletion i
 
     @Override
     public String getHelp() {
-        return "Gets the core definition version for a group.";
+        return "Gets the latest core definition version for a group.";
     }
 
     @Override
