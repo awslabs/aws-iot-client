@@ -26,7 +26,7 @@ def jcabiManifestsVersion = '1.1'
 def jcabiLogVersion = '0.18'
 def jlineVersion = '3.12.1'
 def commonsLang3Version = '3.9'
-def vavrVersion = '0.10.1'
+def vavrVersion = '0.10.2'
 def junitVersion = '4.12'
 def resultsIteratorForAwsJavaSdkVersion = '0.1.4'
 
