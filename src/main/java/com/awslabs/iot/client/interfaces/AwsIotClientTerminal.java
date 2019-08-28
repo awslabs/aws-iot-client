@@ -1,5 +1,6 @@
 package com.awslabs.iot.client.interfaces;
 
+import com.amazonaws.services.iot.client.AWSIotException;
 import com.awslabs.iot.client.commands.interfaces.CommandHandler;
 import com.jcabi.manifests.Manifests;
 import io.vavr.control.Try;
@@ -71,38 +72,42 @@ public interface AwsIotClientTerminal {
                 .history(history)
                 .build();
 
-        Try.of(() -> {
-            while (true) {
-                String command = reader.readLine(getPrompt());
+        Try.of(() -> infiniteInputLoop(reader))
+                .recover(UserInterruptException.class, this::handleUserInterruptException)
+                .get();
+    }
 
-                if (BLANK_STRING.equals(command)) {
-                    continue;
-                }
+    default Void infiniteInputLoop(LineReader reader) throws IOException, AWSIotException {
+        while (true) {
+            String command = reader.readLine(getPrompt());
 
-                boolean handled = false;
-                command = command.trim();
+            if (BLANK_STRING.equals(command)) {
+                continue;
+            }
 
-                for (CommandHandler commandHandler : getCommandHandlerSet()) {
-                    if (commandHandler.handle(command)) {
-                        handled = true;
-                        reader.getTerminal().flush();
-                        break;
-                    }
-                }
+            boolean handled = false;
+            command = command.trim();
 
-                if (!handled) {
-                    write("The command [" + command + "] was not understood.");
+            for (CommandHandler commandHandler : getCommandHandlerSet()) {
+                if (commandHandler.handle(command)) {
+                    handled = true;
+                    reader.getTerminal().flush();
+                    break;
                 }
             }
-        })
-                .recover(UserInterruptException.class, throwable -> {
-                    // User probably hit CTRL-C, just bail out
-                    write("User may have hit CTRL-C, exiting");
-                    System.exit(1);
 
-                    return null;
-                })
-                .get();
+            if (!handled) {
+                write("The command [" + command + "] was not understood.");
+            }
+        }
+    }
+
+    default Void handleUserInterruptException(UserInterruptException userInterruptException) {
+        // User probably hit CTRL-C, just bail out
+        write("User may have hit CTRL-C, exiting");
+        System.exit(1);
+
+        return null;
     }
 
     Terminal getTerminal() throws IOException;
