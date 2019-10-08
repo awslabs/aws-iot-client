@@ -28,7 +28,7 @@ def jlineVersion = '3.12.1'
 def commonsLang3Version = '3.9'
 def vavrVersion = '0.10.2'
 def junitVersion = '4.12'
-def resultsIteratorForAwsJavaSdkVersion = '0.1.5'
+def resultsIteratorForAwsJavaSdkVersion = '0.1.6'
 
 distZip.enabled = shadowDistZip.enabled = false
 distTar.enabled = shadowDistTar.enabled = false
