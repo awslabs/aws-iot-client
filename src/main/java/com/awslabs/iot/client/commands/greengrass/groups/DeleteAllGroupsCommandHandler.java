@@ -7,7 +7,6 @@ import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
-import java.util.List;
 
 public class DeleteAllGroupsCommandHandler implements GreengrassCommandHandler {
     private static final String DELETE_ALL_GROUPS = "delete-all-groups";
@@ -25,18 +24,9 @@ public class DeleteAllGroupsCommandHandler implements GreengrassCommandHandler {
 
     @Override
     public void innerHandle(String input) {
-        List<String> groupIds = greengrassHelper.listGroupIds();
-
-        for (String groupId : groupIds) {
-            if (greengrassHelper.isGroupImmutable(groupId)) {
-                log.info("Skipping group [" + groupId + "] because it is an immutable group");
-                continue;
-            }
-
-            greengrassHelper.deleteGroup(groupId);
-
-            log.info("Deleted group [" + groupId + "]");
-        }
+        greengrassHelper.listGroupIds().stream()
+                .sorted()
+                .map(greengrassHelper::deleteGroup);
     }
 
     @Override

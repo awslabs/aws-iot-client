@@ -424,10 +424,11 @@ public class BasicGreengrassHelper implements GreengrassHelper {
     }
 
     @Override
-    public void deleteGroup(String groupId) {
+    public boolean deleteGroup(String groupId) {
         if (isGroupImmutable(groupId)) {
             // Don't delete a definition for an immutable group
-            return;
+            log.info("Skipping group [" + groupId + "] because it is an immutable group");
+            return false;
         }
 
         try {
@@ -442,6 +443,9 @@ public class BasicGreengrassHelper implements GreengrassHelper {
         DeleteGroupRequest deleteGroupRequest = new DeleteGroupRequest()
                 .withGroupId(groupId);
         awsGreengrassClient.deleteGroup(deleteGroupRequest);
+        log.info("Deleted group [" + groupId + "]");
+
+        return true;
     }
 
     private String getDeviceDefinitionVersionArn(String groupId, VersionInformation versionInformation) {

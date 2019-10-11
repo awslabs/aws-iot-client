@@ -64,7 +64,7 @@ public interface GreengrassHelper {
 
     GetSubscriptionDefinitionVersionResult getSubscriptionDefinitionVersion(String groupId, VersionInformation versionInformation);
 
-    void deleteGroup(String groupId);
+    boolean deleteGroup(String groupId);
 
     GetDeviceDefinitionVersionResult getDeviceDefinitionVersion(String groupId, VersionInformation versionInformation);
 
