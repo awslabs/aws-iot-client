@@ -26,7 +26,7 @@ public class DeleteAllGroupsCommandHandler implements GreengrassCommandHandler {
     public void innerHandle(String input) {
         greengrassHelper.listGroupIds().stream()
                 .sorted()
-                .map(greengrassHelper::deleteGroup);
+                .forEach(greengrassHelper::deleteGroup);
     }
 
     @Override
