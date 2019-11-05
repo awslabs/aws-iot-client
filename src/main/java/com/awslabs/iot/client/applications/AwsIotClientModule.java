@@ -62,7 +62,6 @@ class AwsIotClientModule extends AbstractModule {
         // Normal bindings
         bind(CommandHandlerProvider.class).to(BasicCommandHandlerProvider.class);
         bind(AwsIotClientTerminal.class).to(AwsIotClientConsoleTerminal.class);
-        bind(DeviceSdkMessagingHelper.class).to(BasicDeviceSdkMessagingHelper.class);
         bind(VertxMessagingHelper.class).to(BasicVertxMessagingHelper.class);
         bind(MessagingHelper.class).to(BasicMessagingHelper.class);
         bind(RuleHelper.class).to(BasicRuleHelper.class);

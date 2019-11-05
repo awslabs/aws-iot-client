@@ -1,6 +1,5 @@
 package com.awslabs.iot.client.interfaces;
 
-import com.amazonaws.services.iot.client.AWSIotException;
 import com.awslabs.iot.client.commands.interfaces.CommandHandler;
 import com.jcabi.manifests.Manifests;
 import io.vavr.control.Try;
@@ -77,7 +76,7 @@ public interface AwsIotClientTerminal {
                 .get();
     }
 
-    default Void infiniteInputLoop(LineReader reader) throws IOException, AWSIotException {
+    default Void infiniteInputLoop(LineReader reader) {
         while (true) {
             String command = reader.readLine(getPrompt());
 

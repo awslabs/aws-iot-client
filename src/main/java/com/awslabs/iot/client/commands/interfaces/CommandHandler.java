@@ -1,6 +1,5 @@
 package com.awslabs.iot.client.commands.interfaces;
 
-import com.amazonaws.services.iot.client.AWSIotException;
 import com.awslabs.iot.client.helpers.io.interfaces.IOHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import io.vavr.control.Try;
@@ -11,7 +10,6 @@ import org.jline.reader.impl.completer.StringsCompleter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +20,7 @@ public interface CommandHandler {
      * @param input
      * @return
      */
-    default boolean handle(String input) throws IOException, AWSIotException {
+    default boolean handle(String input) {
         if (!isHandled(input)) {
             return false;
         }

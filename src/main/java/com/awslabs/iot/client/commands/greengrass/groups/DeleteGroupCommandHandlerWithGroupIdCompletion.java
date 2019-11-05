@@ -34,8 +34,6 @@ public class DeleteGroupCommandHandlerWithGroupIdCompletion implements Greengras
         String groupId = parameters.get(GROUP_ID_POSITION);
 
         greengrassHelper.deleteGroup(groupId);
-
-        log.info("Deleted group [" + groupId + "]");
     }
 
     @Override

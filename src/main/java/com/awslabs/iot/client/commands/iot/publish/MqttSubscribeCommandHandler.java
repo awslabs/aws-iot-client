@@ -1,27 +1,26 @@
 package com.awslabs.iot.client.commands.iot.publish;
 
-import com.amazonaws.services.iot.client.AWSIotException;
-import com.amazonaws.services.iot.client.AWSIotMessage;
-import com.amazonaws.services.iot.client.AWSIotTopic;
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
 import com.awslabs.iot.client.helpers.io.interfaces.IOHelper;
-import com.awslabs.iot.client.helpers.iot.interfaces.DeviceSdkMessagingHelper;
+import com.awslabs.iot.client.helpers.iot.interfaces.WebsocketsHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
+import io.vavr.control.Try;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
-import java.io.IOException;
 import java.util.List;
 
 public class MqttSubscribeCommandHandler implements IotCommandHandler {
     private static final String MQTTSUBSCRIBE = "mqtt-subscribe";
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(MqttSubscribeCommandHandler.class);
     @Inject
-    DeviceSdkMessagingHelper deviceSdkMessagingHelper;
-    @Inject
     ParameterExtractor parameterExtractor;
     @Inject
     IOHelper ioHelper;
+    @Inject
+    WebsocketsHelper websocketsHelper;
 
     @Inject
     public MqttSubscribeCommandHandler() {
@@ -47,12 +46,14 @@ public class MqttSubscribeCommandHandler implements IotCommandHandler {
         List<String> parameters = getParameterExtractor().getParameters(input);
         String topic = parameters.get(0);
 
-        deviceSdkMessagingHelper.subscribe(new AWSIotTopic(topic) {
-            @Override
-            public void onMessage(AWSIotMessage message) {
-                log.info("[{}] - {}", message.getTopic(), message.getStringPayload());
-            }
-        });
+        MqttClient mqttClient = Try.of(() -> websocketsHelper.connectMqttClientAndSubscribe(topic)).get();
+
+        WebsocketsHelper.Function<String, MqttMessage> messageLoggingCallback = (topic1, mqttMessage) -> {
+            log.info("[{}] - {}", topic1, new String(mqttMessage.getPayload()));
+            return null;
+        };
+
+        mqttClient.setCallback(websocketsHelper.buildMessageCallback(messageLoggingCallback));
     }
 
     public ParameterExtractor getParameterExtractor() {

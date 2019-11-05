@@ -1,5 +1,7 @@
 package com.awslabs.iot.client.applications;
 
+import com.awslabs.aws.iot.websockets.BasicMqttOverWebsocketsProvider;
+import com.awslabs.aws.iot.websockets.MqttOverWebsocketsProvider;
 import com.awslabs.iot.client.commands.interfaces.CommandHandler;
 import com.awslabs.iot.client.commands.iot.certificates.*;
 import com.awslabs.iot.client.commands.iot.mosh.BinaryMoshClientCommandHandler;
@@ -15,6 +17,8 @@ import com.awslabs.iot.client.commands.iot.rules.CreateTopicRuleCommandHandler;
 import com.awslabs.iot.client.commands.iot.rules.DeleteTopicRuleCommandHandlerWithCompletion;
 import com.awslabs.iot.client.commands.iot.rules.ListTopicRulesCommandHandler;
 import com.awslabs.iot.client.commands.iot.things.*;
+import com.awslabs.iot.client.helpers.iot.BasicWebsocketsHelper;
+import com.awslabs.iot.client.helpers.iot.interfaces.WebsocketsHelper;
 import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.Multibinder;
 import io.vertx.core.Vertx;
@@ -24,6 +28,9 @@ class IotModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(MoshTopics.class).toInstance(new MoshTopics());
+
+        bind(WebsocketsHelper.class).to(BasicWebsocketsHelper.class);
+        bind(MqttOverWebsocketsProvider.class).to(BasicMqttOverWebsocketsProvider.class);
 
         // Vert.x
         // To get rid of "Failed to create cache dir" issue
