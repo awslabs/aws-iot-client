@@ -17,7 +17,7 @@ mainClassName = 'com.awslabs.iot.client.applications.AwsIotClientConsole'
 
 def jcommanderVersion = '1.78'
 def guiceVersion = '4.2.2'
-def awsSdkVersion = '1.11.674'
+def awsSdkVersion = '1.11.675'
 def gsonVersion = '2.8.6'
 def slf4jVersion = '1.7.29'
 def vertxVersion = '3.8.3'
