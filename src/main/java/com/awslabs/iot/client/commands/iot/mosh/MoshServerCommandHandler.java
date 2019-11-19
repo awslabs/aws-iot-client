@@ -3,17 +3,18 @@ package com.awslabs.iot.client.commands.iot.mosh;
 import com.awslabs.iot.client.commands.iot.ThingCommandHandlerWithCompletion;
 import com.awslabs.iot.client.commands.iot.completers.ThingCompleter;
 import com.awslabs.iot.client.helpers.io.interfaces.IOHelper;
-import com.awslabs.iot.client.helpers.iot.interfaces.VertxMessagingHelper;
+import com.awslabs.iot.client.helpers.iot.interfaces.WebsocketsHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.gson.Gson;
-import io.netty.handler.codec.mqtt.MqttQoS;
+import io.vavr.control.Try;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.datagram.DatagramSocket;
-import io.vertx.mqtt.MqttClient;
-import io.vertx.mqtt.messages.MqttPublishMessage;
+import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
@@ -25,12 +26,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MoshServerCommandHandler implements ThingCommandHandlerWithCompletion {
+    public static final int CLIENT_THING_NAME_POSITION = 1;
     private static final String MOSH_CONNECT_REGEX = "^MOSH CONNECT ([0-9]{5}) ([^\\s]{22})$";
     private static final Pattern MOSH_CONNECT_REGEX_PATTERN = Pattern.compile(MOSH_CONNECT_REGEX);
-
     private static final String MOSH = "mosh-server";
     private static final int SERVER_THING_NAME_POSITION = 0;
-    public static final int CLIENT_THING_NAME_POSITION = 1;
     private static final String LISTEN_IP = "127.0.0.1";
     private static final int LISTEN_PORT_OFFSET = 4096;
     private static final BiMap<Integer, DatagramSocket> datagramServerPorts = HashBiMap.create();
@@ -42,11 +42,11 @@ public class MoshServerCommandHandler implements ThingCommandHandlerWithCompleti
     @Inject
     ThingCompleter thingCompleter;
     @Inject
-    VertxMessagingHelper vertxMessagingHelper;
-    @Inject
     Vertx vertx;
     @Inject
     MoshTopics moshTopics;
+    @Inject
+    WebsocketsHelper websocketsHelper;
 
     @Inject
     public MoshServerCommandHandler() {
@@ -63,7 +63,7 @@ public class MoshServerCommandHandler implements ThingCommandHandlerWithCompleti
 
         String serverThingName = parameters.get(SERVER_THING_NAME_POSITION);
 
-        MqttClient client = vertxMessagingHelper.getClient();
+        MqttClient client = Try.of(() -> websocketsHelper.connectMqttClient()).get();
 
         try {
             Thread.sleep(5000);
@@ -74,24 +74,26 @@ public class MoshServerCommandHandler implements ThingCommandHandlerWithCompleti
         // Determine the topics that we expect to see new channel requests on
         String newRequestTopic = moshTopics.getNewRequestTopic(serverThingName);
 
-        // Subscribe to the topic that the client will send its new channel requests on
-        client.subscribe(newRequestTopic, 0);
+        // Subscribe to the topic that the client will send its new channel requests on and set up a callback for when we receive a new message
+        try {
+            client.subscribe(newRequestTopic, 0, new IMqttMessageListener() {
+                @Override
+                public void messageArrived(String topic, MqttMessage message) throws Exception {
+                    if (topic.equals(newRequestTopic)) {
+                        createNewServer(serverThingName, client);
+                        client.unsubscribe(newRequestTopic);
+                        return;
+                    }
 
-        // Set up a callback for when we receive a new message
-        client.publishHandler(publishMessage -> {
-            String topic = publishMessage.topicName();
-
-            if (topic.equals(newRequestTopic)) {
-                createNewServer(serverThingName, client);
-                client.unsubscribe(newRequestTopic);
-                return;
-            }
-
-            handleInboundData(serverThingName, publishMessage, topic);
-        });
+                    handleInboundData(serverThingName, message, topic);
+                }
+            });
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private void handleInboundData(String serverThingName, MqttPublishMessage publishMessage, String topic) {
+    private void handleInboundData(String serverThingName, MqttMessage publishMessage, String topic) {
         // Looking for a topic like "SERVER/mosh/from/CLIENT/PORT"
         String[] splitTopic = topic.split("/");
 
@@ -151,7 +153,7 @@ public class MoshServerCommandHandler implements ThingCommandHandlerWithCompleti
         DatagramSocket socket = datagramServerPorts.get(serverPort);
 
         // Send the message on localhost to mosh-server
-        socket.send(publishMessage.payload(), serverPort, LISTEN_IP, datagramSocketAsyncResult -> {
+        socket.send(Buffer.buffer(publishMessage.getPayload()), serverPort, LISTEN_IP, datagramSocketAsyncResult -> {
         });
     }
 
@@ -244,7 +246,7 @@ public class MoshServerCommandHandler implements ThingCommandHandlerWithCompleti
 
                 // Publish a message to the client indicating that the server has started
                 String newResponseTopic = moshTopics.getNewResponseTopic(serverThingName);
-                client.publish(newResponseTopic, Buffer.buffer(new Gson().toJson(KeyAndPort.builder().key(key).port(port).build())), MqttQoS.AT_MOST_ONCE, false, false);
+                client.publish(newResponseTopic, new Gson().toJson(KeyAndPort.builder().key(key).port(port).build()).getBytes(), 0, false);
 
                 int listenPort = port + LISTEN_PORT_OFFSET;
                 String dataClientTopic = moshTopics.getDataClientTopic(serverThingName, port);
@@ -256,7 +258,11 @@ public class MoshServerCommandHandler implements ThingCommandHandlerWithCompleti
 
                 // Take any inbound data and send it via MQTT to the real client
                 datagramSocket.handler(event -> {
-                    client.publish(dataServerTopic, event.data(), MqttQoS.AT_MOST_ONCE, false, false);
+                    try {
+                        client.publish(dataServerTopic, event.data().getBytes(), 0, false);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
                 });
 
                 // Listen on our special listen port

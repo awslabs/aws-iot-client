@@ -1,19 +1,20 @@
 package com.awslabs.iot.client.commands.iot.mosh;
 
 import com.awslabs.iot.client.commands.iot.ThingCommandHandlerWithCompletion;
-import com.awslabs.iot.client.helpers.iot.interfaces.VertxMessagingHelper;
+import com.awslabs.iot.client.helpers.iot.interfaces.WebsocketsHelper;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.gson.Gson;
-import io.netty.handler.codec.mqtt.MqttQoS;
+import io.vavr.control.Try;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.datagram.DatagramSocket;
-import io.vertx.mqtt.MqttClient;
-import io.vertx.mqtt.messages.MqttPublishMessage;
 import org.apache.commons.lang3.SystemUtils;
+import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -43,7 +44,7 @@ public interface MoshClientCommandHandler extends ThingCommandHandlerWithComplet
 
         String serverThingName = parameters.get(SERVER_THING_NAME_POSITION);
 
-        MqttClient client = getVertxMessagingHelper().getClient();
+        MqttClient client = Try.of(() -> getWebsocketsHelper().connectMqttClient()).get();
 
         try {
             Thread.sleep(5000);
@@ -56,32 +57,31 @@ public interface MoshClientCommandHandler extends ThingCommandHandlerWithComplet
         String newResponseTopic = getMoshTopics().getNewResponseTopic(serverThingName);
 
         try {
-            // Subscribe to the topic that the server will send its response to our new channel request on
-            client.subscribe(newResponseTopic, 0);
+            // Subscribe to the topic that the server will send its response to our new channel request on // Set up a callback for when we receive a new message
+            client.subscribe(newResponseTopic, 0, new IMqttMessageListener() {
+                @Override
+                public void messageArrived(String topic, MqttMessage message) throws Exception {
+                    if (topic.equals(newResponseTopic)) {
+                        createNewClient(serverThingName, client, message);
+                        client.unsubscribe(newResponseTopic);
+                        return;
+                    }
+
+                    handleInboundData(serverThingName, message, topic);
+                }
+            });
 
             // Send a message to the server to request a new channel
-            client.publish(newRequestTopic, Buffer.buffer("{}"), MqttQoS.AT_MOST_ONCE, false, false);
+            client.publish(newRequestTopic, "{}".getBytes(), 0, false);
 
-            // Set up a callback for when we receive a new message
-            client.publishHandler(publishMessage -> {
-                String topic = publishMessage.topicName();
-
-                if (topic.equals(newResponseTopic)) {
-                    createNewClient(serverThingName, client, publishMessage);
-                    client.unsubscribe(newResponseTopic);
-                    return;
-                }
-
-                handleInboundData(serverThingName, publishMessage, topic);
-            });
         } catch (Exception e) {
             getLogger().error("Failed to create the proxied mosh connection, please try again [" + e.getMessage() + "]");
         }
     }
 
-    VertxMessagingHelper getVertxMessagingHelper();
+    WebsocketsHelper getWebsocketsHelper();
 
-    default void handleInboundData(String serverThingName, MqttPublishMessage publishMessage, String topic) {
+    default void handleInboundData(String serverThingName, MqttMessage publishMessage, String topic) {
         if (!isValidTopic(serverThingName, topic)) {
             return;
         }
@@ -113,14 +113,10 @@ public interface MoshClientCommandHandler extends ThingCommandHandlerWithComplet
 
         int sourcePort = datagramSourcePorts.get(datagramSocket);
 
-        Buffer translatedPayload = translateInboundPayload(publishMessage.payload());
-
         // Send the message to localhost to the client
-        datagramSocket.send(translatedPayload, sourcePort, LISTEN_IP, datagramSocketAsyncResult -> {
+        datagramSocket.send(Buffer.buffer(publishMessage.getPayload()), sourcePort, LISTEN_IP, datagramSocketAsyncResult -> {
         });
     }
-
-    Buffer translateInboundPayload(Buffer payload);
 
     MoshTopics getMoshTopics();
 
@@ -189,9 +185,9 @@ public interface MoshClientCommandHandler extends ThingCommandHandlerWithComplet
         return true;
     }
 
-    default void createNewClient(String serverThingName, MqttClient client, MqttPublishMessage publishMessage) {
+    default void createNewClient(String serverThingName, MqttClient client, MqttMessage publishMessage) {
         // Get the payload as a string
-        String payloadString = new String(publishMessage.payload().getBytes());
+        String payloadString = new String(publishMessage.getPayload());
 
         // Extract the key and port information
         KeyAndPort keyAndPort = new Gson().fromJson(payloadString, KeyAndPort.class);
@@ -214,10 +210,12 @@ public interface MoshClientCommandHandler extends ThingCommandHandlerWithComplet
                 datagramSourcePorts.put(datagramSocket, sourcePort);
             }
 
-            Buffer translatedBuffer = translateOutboundPayload(datagramPacket.data());
-
-            // Publish the binary data to the server
-            client.publish(dataToGreengrassTopic, translatedBuffer, MqttQoS.AT_MOST_ONCE, false, false);
+            try {
+                // Publish the binary data to the server
+                client.publish(dataToGreengrassTopic, datagramPacket.data().getBytes(), 0, false);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         });
 
         // Store the server port for this datagram socket in the map
@@ -231,7 +229,11 @@ public interface MoshClientCommandHandler extends ThingCommandHandlerWithComplet
         datagramServerPorts.put(port, datagramSocket);
 
         // Subscribe to the topic that the servers uses to send us data
-        client.subscribe(dataFromGreengrassTopic, 0);
+        try {
+            client.subscribe(dataFromGreengrassTopic, 0);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         // Listen on the port they've given us
         datagramSocket.listen(port, LISTEN_IP, getDatagramSocketServerListeningHandler(key, port));
@@ -304,8 +306,6 @@ public interface MoshClientCommandHandler extends ThingCommandHandlerWithComplet
     }
 
     Vertx getVertx();
-
-    Buffer translateOutboundPayload(Buffer data);
 
     default String getCommandString() {
         return MOSH;

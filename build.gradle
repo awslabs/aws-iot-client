@@ -68,7 +68,6 @@ dependencies {
     compile "com.amazonaws:aws-java-sdk-logs:$awsSdkVersion"
     compile "com.amazonaws:aws-java-sdk-lambda:$awsSdkVersion"
     compile "io.vertx:vertx-core:$vertxVersion"
-    compile "io.vertx:vertx-mqtt:$vertxVersion"
     compile "com.jcabi:jcabi-manifests:$jcabiManifestsVersion"
     compile "org.jline:jline:$jlineVersion"
     compile "com.jcabi:jcabi-log:$jcabiLogVersion"
