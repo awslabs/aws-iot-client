@@ -74,6 +74,7 @@ dependencies {
     compile "org.apache.commons:commons-lang3:$commonsLang3Version"
     compile "com.github.awslabs:results-iterator-for-aws-java-sdk:$resultsIteratorForAwsJavaSdkVersion"
     compile "com.github.awslabs:aws-iot-core-websockets:$awsIotCoreWebsocketsVersion"
+    compile "software.amazon.awssdk:iotsecuretunneling:$awsSdk2Version"
 
     compile "io.vavr:vavr:$vavrVersion"
 
