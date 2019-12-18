@@ -3,10 +3,11 @@ plugins {
     id 'com.github.ben-manes.versions' version '0.27.0'
 }
 
-def gradleDependencyVersion = '6.0'
+def gradleDependencyVersion = '6.0.1'
 
 wrapper {
     gradleVersion = gradleDependencyVersion
+    distributionType = Wrapper.DistributionType.ALL
 }
 
 apply plugin: 'java'
