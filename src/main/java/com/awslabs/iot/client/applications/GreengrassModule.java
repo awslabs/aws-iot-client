@@ -1,5 +1,6 @@
 package com.awslabs.iot.client.applications;
 
+import com.awslabs.iot.client.commands.connectors.GetLatestConnectorDefinitionVersionCommandHandlerWithGroupIdCompletion;
 import com.awslabs.iot.client.commands.greengrass.cores.GetLatestCoreDefinitionVersionCommandHandlerWithGroupIdCompletion;
 import com.awslabs.iot.client.commands.greengrass.devices.GetLatestDeviceDefinitionVersionCommandHandlerWithGroupIdCompletion;
 import com.awslabs.iot.client.commands.greengrass.functions.GetLatestFunctionDefinitionVersionCommandHandlerWithGroupIdCompletion;
@@ -33,6 +34,7 @@ class GreengrassModule extends AbstractModule {
         commandHandlerMultibinder.addBinding().to(GetLatestDeviceDefinitionVersionCommandHandlerWithGroupIdCompletion.class);
         commandHandlerMultibinder.addBinding().to(GetLatestLoggerDefinitionVersionCommandHandlerWithGroupIdCompletion.class);
         commandHandlerMultibinder.addBinding().to(GetLatestResourceDefinitionVersionCommandHandlerWithGroupIdCompletion.class);
+        commandHandlerMultibinder.addBinding().to(GetLatestConnectorDefinitionVersionCommandHandlerWithGroupIdCompletion.class);
         commandHandlerMultibinder.addBinding().to(DeleteGroupCommandHandlerWithGroupIdCompletion.class);
         commandHandlerMultibinder.addBinding().to(DeleteAllGroupsCommandHandler.class);
         commandHandlerMultibinder.addBinding().to(CleanupCommandHandler.class);
