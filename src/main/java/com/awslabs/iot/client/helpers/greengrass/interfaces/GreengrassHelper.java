@@ -42,6 +42,8 @@ public interface GreengrassHelper {
 
     String getCoreDefinitionVersionArn(String groupId, VersionInformation versionInformation);
 
+    String getConnectorDefinitionVersionArn(String groupId, VersionInformation versionInformation);
+
     GetCoreDefinitionResult getCoreDefinition(String groupId, VersionInformation versionInformation);
 
     GetGroupVersionResult getGroupVersion(String groupId, VersionInformation versionInformation);
@@ -67,6 +69,8 @@ public interface GreengrassHelper {
     boolean deleteGroup(String groupId);
 
     GetDeviceDefinitionVersionResult getDeviceDefinitionVersion(String groupId, VersionInformation versionInformation);
+
+    GetConnectorDefinitionVersionResult getConnectorDefinitionVersion(String groupId, VersionInformation versionInformation);
 
     List<DefinitionInformation> listCoreDefinitions();
 

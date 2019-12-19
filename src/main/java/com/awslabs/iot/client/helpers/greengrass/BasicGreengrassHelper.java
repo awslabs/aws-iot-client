@@ -252,6 +252,14 @@ public class BasicGreengrassHelper implements GreengrassHelper {
     }
 
     @Override
+    public String getConnectorDefinitionVersionArn(String groupId, VersionInformation versionInformation) {
+        GetGroupVersionResult getGroupVersionResult = getGroupVersion(groupId, versionInformation);
+        GroupVersion groupVersion = getGroupVersionResult.getDefinition();
+
+        return groupVersion.getConnectorDefinitionVersionArn();
+    }
+
+    @Override
     public GetCoreDefinitionResult getCoreDefinition(String groupId, VersionInformation versionInformation) {
         String coreDefinitionVersionArn = getCoreDefinitionVersionArn(groupId, versionInformation);
 
@@ -467,6 +475,20 @@ public class BasicGreengrassHelper implements GreengrassHelper {
                 .withDeviceDefinitionId(idExtractor.extractId(deviceDefinitionVersionArn))
                 .withDeviceDefinitionVersionId(idExtractor.extractVersionId(deviceDefinitionVersionArn));
         return awsGreengrassClient.getDeviceDefinitionVersion(getDeviceDefinitionVersionRequest);
+    }
+
+    @Override
+    public GetConnectorDefinitionVersionResult getConnectorDefinitionVersion(String groupId, VersionInformation versionInformation) {
+        String connectorDefinitionVersionArn = getConnectorDefinitionVersionArn(groupId, versionInformation);
+
+        return getConnectorDefinitionVersionResult(idExtractor.extractId(connectorDefinitionVersionArn), idExtractor.extractVersionId(connectorDefinitionVersionArn));
+    }
+
+    private GetConnectorDefinitionVersionResult getConnectorDefinitionVersionResult(String connectorDefinitionId, String connectorDefinitionVersionId) {
+        GetConnectorDefinitionVersionRequest getConnectorDefinitionVersionRequest = new GetConnectorDefinitionVersionRequest()
+                .withConnectorDefinitionId(connectorDefinitionId)
+                .withConnectorDefinitionVersionId(connectorDefinitionVersionId);
+        return awsGreengrassClient.getConnectorDefinitionVersion(getConnectorDefinitionVersionRequest);
     }
 
     @Override
