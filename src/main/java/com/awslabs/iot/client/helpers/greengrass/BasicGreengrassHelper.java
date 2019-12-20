@@ -481,6 +481,10 @@ public class BasicGreengrassHelper implements GreengrassHelper {
     public GetConnectorDefinitionVersionResult getConnectorDefinitionVersion(String groupId, VersionInformation versionInformation) {
         String connectorDefinitionVersionArn = getConnectorDefinitionVersionArn(groupId, versionInformation);
 
+        if (connectorDefinitionVersionArn == null) {
+            return null;
+        }
+
         return getConnectorDefinitionVersionResult(idExtractor.extractId(connectorDefinitionVersionArn), idExtractor.extractVersionId(connectorDefinitionVersionArn));
     }
 
