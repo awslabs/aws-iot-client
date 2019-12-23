@@ -95,6 +95,11 @@ public class BasicGreengrassHelper implements GreengrassHelper {
     }
 
     @Override
+    public List<DefinitionInformation> listNonImmutableConnectorDefinitionInformation() {
+        return listNonImmutableDefinitionInformation(this::listConnectorDefinitions, this::listLatestImmutableConnectorDefinitionVersionArns);
+    }
+
+    @Override
     public List<DefinitionInformation> listNonImmutableSubscriptionDefinitionInformation() {
         return listNonImmutableDefinitionInformation(this::listSubscriptionDefinitions, this::listLatestImmutableSubscriptionDefinitionVersionArns);
     }
@@ -145,6 +150,14 @@ public class BasicGreengrassHelper implements GreengrassHelper {
     private Set<String> listLatestImmutableResourceDefinitionVersionArns() {
         return listLatestImmutableGroupVersions().entrySet().stream()
                 .map(e -> getResourceDefinitionVersion(e.getKey(), e.getValue()))
+                .filter(Objects::nonNull)
+                .map(v -> v.getArn())
+                .collect(Collectors.toSet());
+    }
+
+    private Set<String> listLatestImmutableConnectorDefinitionVersionArns() {
+        return listLatestImmutableGroupVersions().entrySet().stream()
+                .map(e -> getConnectorDefinitionVersion(e.getKey(), e.getValue()))
                 .filter(Objects::nonNull)
                 .map(v -> v.getArn())
                 .collect(Collectors.toSet());
@@ -385,11 +398,28 @@ public class BasicGreengrassHelper implements GreengrassHelper {
     }
 
     @Override
+    public List<DefinitionInformation> listConnectorDefinitions() {
+        ListConnectorDefinitionsRequest listConnectorDefinitionsRequest = new ListConnectorDefinitionsRequest();
+
+        List<DefinitionInformation> definitionInformationList = new ResultsIterator<DefinitionInformation>(awsGreengrassClient, listConnectorDefinitionsRequest, ListConnectorDefinitionsResult.class).iterateOverResults();
+
+        return definitionInformationList;
+    }
+
+    @Override
     public void deleteResourceDefinition(DefinitionInformation definitionInformation) {
         DeleteResourceDefinitionRequest deleteResourceDefinitionRequest = new DeleteResourceDefinitionRequest()
                 .withResourceDefinitionId(definitionInformation.getId());
 
         awsGreengrassClient.deleteResourceDefinition(deleteResourceDefinitionRequest);
+    }
+
+    @Override
+    public void deleteConnectorDefinition(DefinitionInformation definitionInformation) {
+        DeleteConnectorDefinitionRequest deleteConnectorDefinitionRequest = new DeleteConnectorDefinitionRequest()
+                .withConnectorDefinitionId(definitionInformation.getId());
+
+        awsGreengrassClient.deleteConnectorDefinition(deleteConnectorDefinitionRequest);
     }
 
     @Override

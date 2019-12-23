@@ -37,6 +37,8 @@ public class CleanupCommandHandler implements GreengrassCommandHandler {
     @Inject
     DeleteAllResourceDefinitionsCommandHandler deleteAllResourceDefinitionsCommandHandler;
     @Inject
+    DeleteAllConnectorDefinitionsCommandHandler deleteAllConnectorDefinitionsCommandHandler;
+    @Inject
     DeleteAllThingGroupsCommandHandler deleteAllThingGroupsCommandHandler;
 
     @Inject
@@ -59,6 +61,7 @@ public class CleanupCommandHandler implements GreengrassCommandHandler {
         deleteAllDeviceDefinitionsCommandHandler.innerHandle("");
         deleteAllLoggerDefinitionsCommandHandler.innerHandle("");
         deleteAllResourceDefinitionsCommandHandler.innerHandle("");
+        deleteAllConnectorDefinitionsCommandHandler.innerHandle("");
     }
 
     @Override

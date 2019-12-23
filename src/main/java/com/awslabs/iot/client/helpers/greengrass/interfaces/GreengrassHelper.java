@@ -26,6 +26,8 @@ public interface GreengrassHelper {
 
     List<DefinitionInformation> listNonImmutableResourceDefinitionInformation();
 
+    List<DefinitionInformation> listNonImmutableConnectorDefinitionInformation();
+
     List<DefinitionInformation> listNonImmutableSubscriptionDefinitionInformation();
 
     List<VersionInformation> listGroupVersions(String groupId);
@@ -98,7 +100,11 @@ public interface GreengrassHelper {
 
     List<DefinitionInformation> listResourceDefinitions();
 
+    List<DefinitionInformation> listConnectorDefinitions();
+
     void deleteResourceDefinition(DefinitionInformation definitionInformation);
+
+    void deleteConnectorDefinition(DefinitionInformation definitionInformation);
 
     boolean groupExists(String groupId);
 
