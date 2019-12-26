@@ -43,5 +43,6 @@ class GreengrassModule extends AbstractModule {
         commandHandlerMultibinder.addBinding().to(DeleteAllSubscriptionDefinitionsCommandHandler.class);
         commandHandlerMultibinder.addBinding().to(DeleteAllDeviceDefinitionsCommandHandler.class);
         commandHandlerMultibinder.addBinding().to(DeleteAllLoggerDefinitionsCommandHandler.class);
+        commandHandlerMultibinder.addBinding().to(DeleteAllConnectorDefinitionsCommandHandler.class);
     }
 }
