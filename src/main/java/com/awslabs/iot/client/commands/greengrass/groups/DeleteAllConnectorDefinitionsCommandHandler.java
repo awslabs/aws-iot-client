@@ -11,7 +11,7 @@ import javax.inject.Inject;
 import java.util.List;
 
 public class DeleteAllConnectorDefinitionsCommandHandler implements GreengrassCommandHandler {
-    private static final String DELETE_RESOURCE_DEFINITIONS = "delete-all-connector-definitions";
+    private static final String DELETE_CONNECTOR_DEFINITIONS = "delete-all-connector-definitions";
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(DeleteAllConnectorDefinitionsCommandHandler.class);
     @Inject
     GreengrassHelper greengrassHelper;
@@ -31,18 +31,18 @@ public class DeleteAllConnectorDefinitionsCommandHandler implements GreengrassCo
         for (DefinitionInformation definitionInformation : nonImmutableConnectorDefinitionInformation) {
             greengrassHelper.deleteConnectorDefinition(definitionInformation);
 
-            log.info("Deleted resource definition [" + definitionInformation + "]");
+            log.info("Deleted connector definition [" + definitionInformation + "]");
         }
     }
 
     @Override
     public String getCommandString() {
-        return DELETE_RESOURCE_DEFINITIONS;
+        return DELETE_CONNECTOR_DEFINITIONS;
     }
 
     @Override
     public String getHelp() {
-        return "Deletes all Greengrass resource definitions.";
+        return "Deletes all Greengrass connector definitions.";
     }
 
     @Override
