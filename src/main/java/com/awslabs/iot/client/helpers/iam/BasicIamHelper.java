@@ -19,7 +19,7 @@ public class BasicIamHelper implements IamHelper {
 
     @Override
     public List<Role> listRoles() {
-        List<Role> roles = new ResultsIterator<Role>(amazonIdentityManagementClient, ListRolesRequest.class, ListRolesResult.class).iterateOverResults();
+        List<Role> roles = new ResultsIterator<Role>(amazonIdentityManagementClient, ListRolesRequest.class).iterateOverResults();
 
         return roles;
 

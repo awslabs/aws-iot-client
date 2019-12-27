@@ -61,14 +61,14 @@ public class BasicCertificateHelper implements CertificateHelper {
 
     @Override
     public List<Certificate> listCertificates() {
-        List<Certificate> certificates = new ResultsIterator<Certificate>(awsIotClient, ListCertificatesRequest.class, ListCertificatesResult.class).iterateOverResults();
+        List<Certificate> certificates = new ResultsIterator<Certificate>(awsIotClient, ListCertificatesRequest.class).iterateOverResults();
 
         return certificates;
     }
 
     @Override
     public List<CACertificate> listCaCertificates() {
-        List<CACertificate> certificates = new ResultsIterator<CACertificate>(awsIotClient, ListCACertificatesRequest.class, ListCACertificatesResult.class).iterateOverResults();
+        List<CACertificate> certificates = new ResultsIterator<CACertificate>(awsIotClient, ListCACertificatesRequest.class).iterateOverResults();
 
         return certificates;
     }

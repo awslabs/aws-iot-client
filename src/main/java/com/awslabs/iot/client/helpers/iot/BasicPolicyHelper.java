@@ -49,7 +49,7 @@ public class BasicPolicyHelper implements PolicyHelper {
 
     @Override
     public List<Policy> listPolicies() {
-        List<Policy> policies = new ResultsIterator<Policy>(awsIotClient, ListPoliciesRequest.class, ListPoliciesResult.class).iterateOverResults();
+        List<Policy> policies = new ResultsIterator<Policy>(awsIotClient, ListPoliciesRequest.class).iterateOverResults();
 
         return policies;
     }
@@ -72,7 +72,7 @@ public class BasicPolicyHelper implements PolicyHelper {
         ListPolicyPrincipalsRequest listPolicyPrincipalsRequest = new ListPolicyPrincipalsRequest()
                 .withPolicyName(policyName);
 
-        List<String> principals = new ResultsIterator<String>(awsIotClient, listPolicyPrincipalsRequest, ListPolicyPrincipalsResult.class).iterateOverResults();
+        List<String> principals = new ResultsIterator<String>(awsIotClient, listPolicyPrincipalsRequest).iterateOverResults();
 
         return principals;
     }
@@ -144,7 +144,7 @@ public class BasicPolicyHelper implements PolicyHelper {
         ListPrincipalPoliciesRequest listPrincipalPoliciesRequest = new ListPrincipalPoliciesRequest()
                 .withPrincipal(principal);
 
-        List<Policy> policies = new ResultsIterator<Policy>(awsIotClient, listPrincipalPoliciesRequest, ListPrincipalPoliciesResult.class).iterateOverResults();
+        List<Policy> policies = new ResultsIterator<Policy>(awsIotClient, listPrincipalPoliciesRequest).iterateOverResults();
 
         return policies;
     }

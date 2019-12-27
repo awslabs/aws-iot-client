@@ -23,7 +23,7 @@ public class BasicThingGroupHelper implements ThingGroupHelper {
 
     @Override
     public List<GroupNameAndArn> listThingGroups() {
-        List<GroupNameAndArn> groupNamesAndArns = new ResultsIterator<GroupNameAndArn>(awsIotClient, ListThingGroupsRequest.class, ListThingGroupsResult.class).iterateOverResults();
+        List<GroupNameAndArn> groupNamesAndArns = new ResultsIterator<GroupNameAndArn>(awsIotClient, ListThingGroupsRequest.class).iterateOverResults();
 
         return groupNamesAndArns;
     }

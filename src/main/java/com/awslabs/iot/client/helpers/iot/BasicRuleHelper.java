@@ -21,7 +21,7 @@ public class BasicRuleHelper implements RuleHelper {
 
     @Override
     public List<TopicRuleListItem> listTopicRules() {
-        List<TopicRuleListItem> topicRules = new ResultsIterator<TopicRuleListItem>(awsIotClient, ListTopicRulesRequest.class, ListTopicRulesResult.class).iterateOverResults();
+        List<TopicRuleListItem> topicRules = new ResultsIterator<TopicRuleListItem>(awsIotClient, ListTopicRulesRequest.class).iterateOverResults();
 
         return topicRules;
     }

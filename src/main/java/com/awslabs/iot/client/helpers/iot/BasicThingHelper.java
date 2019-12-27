@@ -41,7 +41,7 @@ public class BasicThingHelper implements ThingHelper {
 
     @Override
     public List<ThingAttribute> listThingAttributes() {
-        List<ThingAttribute> thingAttributes = new ResultsIterator<ThingAttribute>(awsIotClient, ListThingsRequest.class, ListThingsResult.class).iterateOverResults();
+        List<ThingAttribute> thingAttributes = new ResultsIterator<ThingAttribute>(awsIotClient, ListThingsRequest.class).iterateOverResults();
 
         return thingAttributes;
     }
@@ -79,7 +79,7 @@ public class BasicThingHelper implements ThingHelper {
         ListPrincipalThingsRequest listPrincipalThingsRequest = new ListPrincipalThingsRequest()
                 .withPrincipal(principal);
 
-        List<String> principalThings = new ResultsIterator<String>(awsIotClient, listPrincipalThingsRequest, ListPrincipalThingsResult.class).iterateOverResults();
+        List<String> principalThings = new ResultsIterator<String>(awsIotClient, listPrincipalThingsRequest).iterateOverResults();
 
         return principalThings;
     }
