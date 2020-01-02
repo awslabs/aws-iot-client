@@ -28,7 +28,7 @@ def jcabiLogVersion = '0.18.1'
 def jlineVersion = '3.13.2'
 def commonsLang3Version = '3.9'
 def vavrVersion = '0.10.2'
-def junitVersion = '4.12'
+def junitVersion = '4.13'
 def resultsIteratorForAwsJavaSdkVersion = '0.2.0'
 def awsIotCoreWebsocketsVersion = '0.6.3'
 
