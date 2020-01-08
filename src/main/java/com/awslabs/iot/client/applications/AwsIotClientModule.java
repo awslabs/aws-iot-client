@@ -4,8 +4,8 @@ import com.amazonaws.services.greengrass.AWSGreengrassClient;
 import com.amazonaws.services.greengrass.AWSGreengrassClientBuilder;
 import com.amazonaws.services.identitymanagement.AmazonIdentityManagementClient;
 import com.amazonaws.services.identitymanagement.AmazonIdentityManagementClientBuilder;
-import com.amazonaws.services.iot.AWSIotAsyncClientBuilder;
 import com.amazonaws.services.iot.AWSIotClient;
+import com.amazonaws.services.iot.AWSIotClientBuilder;
 import com.amazonaws.services.iotdata.AWSIotDataClient;
 import com.amazonaws.services.iotdata.AWSIotDataClientBuilder;
 import com.awslabs.iot.client.commands.BasicCommandHandlerProvider;
@@ -45,7 +45,7 @@ class AwsIotClientModule extends AbstractModule {
     @Override
     protected void configure() {
         // Client providers
-        bind(AWSIotClient.class).toProvider(() -> (AWSIotClient) AWSIotAsyncClientBuilder.defaultClient());
+        bind(AWSIotClient.class).toProvider(() -> (AWSIotClient) AWSIotClientBuilder.defaultClient());
         bind(AWSIotDataClient.class).toProvider(() -> (AWSIotDataClient) AWSIotDataClientBuilder.defaultClient());
         bind(AmazonIdentityManagementClient.class).toProvider(() -> (AmazonIdentityManagementClient) AmazonIdentityManagementClientBuilder.defaultClient());
         bind(AWSGreengrassClient.class).toProvider(() -> (AWSGreengrassClient) AWSGreengrassClientBuilder.defaultClient());
