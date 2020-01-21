@@ -1,10 +1,10 @@
 package com.awslabs.iot.client.commands.iot.things;
 
 import com.amazonaws.services.iot.model.UnauthorizedException;
+import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
+import com.awslabs.aws.iot.resultsiterator.helpers.v1.interfaces.V1ThingHelper;
 import com.awslabs.iot.client.commands.iot.ThingCommandHandlerWithCompletion;
 import com.awslabs.iot.client.commands.iot.completers.ThingCompleter;
-import com.awslabs.iot.client.helpers.io.interfaces.IOHelper;
-import com.awslabs.iot.client.helpers.iot.interfaces.ThingHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import org.slf4j.Logger;
 
@@ -17,11 +17,11 @@ public class ListThingPrincipalsCommandHandlerWithCompletion implements ThingCom
     private static final int THING_NAME_POSITION = 0;
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(ListThingPrincipalsCommandHandlerWithCompletion.class);
     @Inject
-    Provider<ThingHelper> thingHelperProvider;
+    Provider<V1ThingHelper> thingHelperProvider;
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
-    IOHelper ioHelper;
+    IoHelper ioHelper;
     @Inject
     ThingCompleter thingCompleter;
 
@@ -69,7 +69,7 @@ public class ListThingPrincipalsCommandHandlerWithCompletion implements ThingCom
         return this.parameterExtractor;
     }
 
-    public IOHelper getIoHelper() {
+    public IoHelper getIoHelper() {
         return this.ioHelper;
     }
 

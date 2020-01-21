@@ -1,8 +1,8 @@
 package com.awslabs.iot.client.commands.greengrass.groups;
 
+import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
+import com.awslabs.aws.iot.resultsiterator.helpers.v1.interfaces.V1GreengrassHelper;
 import com.awslabs.iot.client.commands.greengrass.GreengrassCommandHandler;
-import com.awslabs.iot.client.helpers.greengrass.interfaces.GreengrassHelper;
-import com.awslabs.iot.client.helpers.io.interfaces.IOHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import org.slf4j.Logger;
 
@@ -12,11 +12,11 @@ public class DeleteAllGroupsCommandHandler implements GreengrassCommandHandler {
     private static final String DELETE_ALL_GROUPS = "delete-all-groups";
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(DeleteAllGroupsCommandHandler.class);
     @Inject
-    GreengrassHelper greengrassHelper;
+    V1GreengrassHelper greengrassHelper;
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
-    IOHelper ioHelper;
+    IoHelper ioHelper;
 
     @Inject
     public DeleteAllGroupsCommandHandler() {
@@ -48,7 +48,7 @@ public class DeleteAllGroupsCommandHandler implements GreengrassCommandHandler {
         return this.parameterExtractor;
     }
 
-    public IOHelper getIoHelper() {
+    public IoHelper getIoHelper() {
         return this.ioHelper;
     }
 }

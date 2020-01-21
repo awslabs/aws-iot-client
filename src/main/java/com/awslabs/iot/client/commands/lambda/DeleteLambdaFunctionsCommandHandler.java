@@ -4,10 +4,9 @@ import com.amazonaws.services.lambda.AWSLambdaClient;
 import com.amazonaws.services.lambda.model.DeleteFunctionRequest;
 import com.amazonaws.services.lambda.model.FunctionConfiguration;
 import com.amazonaws.services.lambda.model.ListFunctionsRequest;
-import com.amazonaws.services.lambda.model.ListFunctionsResult;
 import com.awslabs.aws.iot.resultsiterator.ResultsIterator;
+import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.interfaces.CommandHandler;
-import com.awslabs.iot.client.helpers.io.interfaces.IOHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import org.slf4j.Logger;
 
@@ -20,7 +19,7 @@ public class DeleteLambdaFunctionsCommandHandler implements CommandHandler {
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
-    IOHelper ioHelper;
+    IoHelper ioHelper;
     @Inject
     AWSLambdaClient awsLambdaClient;
 
@@ -70,7 +69,7 @@ public class DeleteLambdaFunctionsCommandHandler implements CommandHandler {
         return this.parameterExtractor;
     }
 
-    public IOHelper getIoHelper() {
+    public IoHelper getIoHelper() {
         return this.ioHelper;
     }
 }

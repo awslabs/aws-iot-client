@@ -1,8 +1,8 @@
 package com.awslabs.iot.client.commands.iot.certificates;
 
+import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
+import com.awslabs.aws.iot.resultsiterator.helpers.v1.interfaces.V1CertificateHelper;
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
-import com.awslabs.iot.client.helpers.io.interfaces.IOHelper;
-import com.awslabs.iot.client.helpers.iot.interfaces.CertificateHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import org.slf4j.Logger;
 
@@ -14,11 +14,11 @@ public class ListCertificateIdsCommandHandler implements IotCommandHandler {
     private static final String LISTCERTIFICATEIDS = "list-certificate-ids";
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(ListCertificateIdsCommandHandler.class);
     @Inject
-    Provider<CertificateHelper> certificateHelperProvider;
+    Provider<V1CertificateHelper> certificateHelperProvider;
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
-    IOHelper ioHelper;
+    IoHelper ioHelper;
 
     @Inject
     public ListCertificateIdsCommandHandler() {
@@ -52,7 +52,7 @@ public class ListCertificateIdsCommandHandler implements IotCommandHandler {
         return this.parameterExtractor;
     }
 
-    public IOHelper getIoHelper() {
+    public IoHelper getIoHelper() {
         return this.ioHelper;
     }
 }

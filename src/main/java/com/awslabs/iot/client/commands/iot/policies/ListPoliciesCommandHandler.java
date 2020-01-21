@@ -1,8 +1,8 @@
 package com.awslabs.iot.client.commands.iot.policies;
 
+import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
+import com.awslabs.aws.iot.resultsiterator.helpers.v1.interfaces.V1PolicyHelper;
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
-import com.awslabs.iot.client.helpers.io.interfaces.IOHelper;
-import com.awslabs.iot.client.helpers.iot.interfaces.PolicyHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import org.slf4j.Logger;
 
@@ -14,11 +14,11 @@ public class ListPoliciesCommandHandler implements IotCommandHandler {
     private static final String LISTPOLICIES = "list-policies";
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(ListPoliciesCommandHandler.class);
     @Inject
-    Provider<PolicyHelper> policyHelperProvider;
+    Provider<V1PolicyHelper> policyHelperProvider;
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
-    IOHelper ioHelper;
+    IoHelper ioHelper;
 
     @Inject
     public ListPoliciesCommandHandler() {
@@ -52,7 +52,7 @@ public class ListPoliciesCommandHandler implements IotCommandHandler {
         return this.parameterExtractor;
     }
 
-    public IOHelper getIoHelper() {
+    public IoHelper getIoHelper() {
         return this.ioHelper;
     }
 }

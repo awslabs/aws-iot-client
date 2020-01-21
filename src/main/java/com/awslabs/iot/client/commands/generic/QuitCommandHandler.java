@@ -1,7 +1,7 @@
 package com.awslabs.iot.client.commands.generic;
 
+import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.interfaces.CommandHandler;
-import com.awslabs.iot.client.helpers.io.interfaces.IOHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 
 import javax.inject.Inject;
@@ -9,7 +9,7 @@ import javax.inject.Inject;
 public class QuitCommandHandler implements CommandHandler {
     private static final String QUIT = "quit";
     @Inject
-    IOHelper ioHelper;
+    IoHelper ioHelper;
     @Inject
     ParameterExtractor parameterExtractor;
 
@@ -37,7 +37,7 @@ public class QuitCommandHandler implements CommandHandler {
         return 0;
     }
 
-    public IOHelper getIoHelper() {
+    public IoHelper getIoHelper() {
         return this.ioHelper;
     }
 

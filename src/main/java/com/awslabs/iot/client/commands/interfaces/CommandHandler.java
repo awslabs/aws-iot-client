@@ -1,6 +1,6 @@
 package com.awslabs.iot.client.commands.interfaces;
 
-import com.awslabs.iot.client.helpers.io.interfaces.IOHelper;
+import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import io.vavr.control.Try;
 import org.jline.reader.Completer;
@@ -107,7 +107,7 @@ public interface CommandHandler {
         logger.info("No usage information has been provided for this command, but the required number of parameters were not specified.  Expected " + requiredParameters() + " parameter(s).");
     }
 
-    IOHelper getIoHelper();
+    IoHelper getIoHelper();
 
     /**
      * Override this to return true for functions that are too dangerous to let the user use unless they specify a special option

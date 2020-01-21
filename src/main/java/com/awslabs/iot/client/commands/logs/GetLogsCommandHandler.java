@@ -1,8 +1,8 @@
 package com.awslabs.iot.client.commands.logs;
 
 import com.amazonaws.services.logs.model.OutputLogEvent;
+import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.helpers.cloudwatch.LogsHelper;
-import com.awslabs.iot.client.helpers.io.interfaces.IOHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import org.slf4j.Logger;
 
@@ -19,7 +19,7 @@ public class GetLogsCommandHandler implements LogsCommandHandler {
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
-    IOHelper ioHelper;
+    IoHelper ioHelper;
 
     @Inject
     public GetLogsCommandHandler() {
@@ -61,7 +61,7 @@ public class GetLogsCommandHandler implements LogsCommandHandler {
         return this.parameterExtractor;
     }
 
-    public IOHelper getIoHelper() {
+    public IoHelper getIoHelper() {
         return this.ioHelper;
     }
 }

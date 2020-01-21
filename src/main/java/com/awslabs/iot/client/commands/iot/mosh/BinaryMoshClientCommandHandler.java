@@ -1,7 +1,7 @@
 package com.awslabs.iot.client.commands.iot.mosh;
 
+import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.iot.completers.ThingCompleter;
-import com.awslabs.iot.client.helpers.io.interfaces.IOHelper;
 import com.awslabs.iot.client.helpers.iot.interfaces.WebsocketsHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import io.vertx.core.Vertx;
@@ -14,7 +14,7 @@ public class BinaryMoshClientCommandHandler implements MoshClientCommandHandler 
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
-    IOHelper ioHelper;
+    IoHelper ioHelper;
     @Inject
     ThingCompleter thingCompleter;
     @Inject
@@ -42,7 +42,7 @@ public class BinaryMoshClientCommandHandler implements MoshClientCommandHandler 
         return this.parameterExtractor;
     }
 
-    public IOHelper getIoHelper() {
+    public IoHelper getIoHelper() {
         return this.ioHelper;
     }
 

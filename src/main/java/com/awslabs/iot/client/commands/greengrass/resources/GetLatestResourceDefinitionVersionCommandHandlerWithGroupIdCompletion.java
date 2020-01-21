@@ -2,10 +2,10 @@ package com.awslabs.iot.client.commands.greengrass.resources;
 
 import com.amazonaws.services.greengrass.model.GetResourceDefinitionVersionResult;
 import com.amazonaws.services.greengrass.model.VersionInformation;
+import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
+import com.awslabs.aws.iot.resultsiterator.helpers.v1.interfaces.V1GreengrassHelper;
 import com.awslabs.iot.client.commands.greengrass.GreengrassGroupCommandHandlerWithGroupIdCompletion;
 import com.awslabs.iot.client.commands.greengrass.completers.GreengrassGroupIdCompleter;
-import com.awslabs.iot.client.helpers.greengrass.interfaces.GreengrassHelper;
-import com.awslabs.iot.client.helpers.io.interfaces.IOHelper;
 import com.awslabs.iot.client.helpers.json.interfaces.ObjectPrettyPrinter;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import org.slf4j.Logger;
@@ -18,13 +18,13 @@ public class GetLatestResourceDefinitionVersionCommandHandlerWithGroupIdCompleti
     private static final int GROUP_ID_POSITION = 0;
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(GetLatestResourceDefinitionVersionCommandHandlerWithGroupIdCompletion.class);
     @Inject
-    GreengrassHelper greengrassHelper;
+    V1GreengrassHelper greengrassHelper;
     @Inject
     ObjectPrettyPrinter objectPrettyPrinter;
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
-    IOHelper ioHelper;
+    IoHelper ioHelper;
     @Inject
     GreengrassGroupIdCompleter greengrassGroupIdCompleter;
 
@@ -68,7 +68,7 @@ public class GetLatestResourceDefinitionVersionCommandHandlerWithGroupIdCompleti
         return this.parameterExtractor;
     }
 
-    public IOHelper getIoHelper() {
+    public IoHelper getIoHelper() {
         return this.ioHelper;
     }
 

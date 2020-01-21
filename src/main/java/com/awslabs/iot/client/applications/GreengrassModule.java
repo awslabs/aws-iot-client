@@ -10,16 +10,12 @@ import com.awslabs.iot.client.commands.greengrass.loggers.GetLatestLoggerDefinit
 import com.awslabs.iot.client.commands.greengrass.resources.GetLatestResourceDefinitionVersionCommandHandlerWithGroupIdCompletion;
 import com.awslabs.iot.client.commands.greengrass.subscriptions.GetLatestSubscriptionDefinitionVersionCommandHandlerWithGroupIdCompletion;
 import com.awslabs.iot.client.commands.interfaces.CommandHandler;
-import com.awslabs.iot.client.helpers.greengrass.BasicIdExtractor;
-import com.awslabs.iot.client.helpers.greengrass.interfaces.IdExtractor;
 import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.Multibinder;
 
 class GreengrassModule extends AbstractModule {
     @Override
     protected void configure() {
-        bind(IdExtractor.class).to(BasicIdExtractor.class);
-
         Multibinder<CommandHandler> commandHandlerMultibinder = Multibinder.newSetBinder(binder(), CommandHandler.class);
         commandHandlerMultibinder.addBinding().to(ListGroupsCommandHandler.class);
         commandHandlerMultibinder.addBinding().to(ListGroupVersionsCommandHandlerWithGroupIdCompletion.class);

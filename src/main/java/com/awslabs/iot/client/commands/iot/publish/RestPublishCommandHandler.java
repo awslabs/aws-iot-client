@@ -2,7 +2,7 @@ package com.awslabs.iot.client.commands.iot.publish;
 
 import com.amazonaws.services.iotdata.AWSIotDataClient;
 import com.amazonaws.services.iotdata.model.PublishRequest;
-import com.awslabs.iot.client.helpers.io.interfaces.IOHelper;
+import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 
 import javax.inject.Inject;
@@ -15,7 +15,7 @@ public class RestPublishCommandHandler implements PublishCommandHandler {
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
-    IOHelper ioHelper;
+    IoHelper ioHelper;
 
     @Inject
     public RestPublishCommandHandler() {
@@ -48,7 +48,7 @@ public class RestPublishCommandHandler implements PublishCommandHandler {
         return this.parameterExtractor;
     }
 
-    public IOHelper getIoHelper() {
+    public IoHelper getIoHelper() {
         return this.ioHelper;
     }
 }

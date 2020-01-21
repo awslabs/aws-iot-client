@@ -3,9 +3,9 @@ package com.awslabs.iot.client.commands.iot.rules;
 import com.amazonaws.services.iot.AWSIotClient;
 import com.amazonaws.services.iot.model.DeleteTopicRuleRequest;
 import com.amazonaws.services.iot.model.UnauthorizedException;
+import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.iot.RuleCommandHandlerWithCompletion;
 import com.awslabs.iot.client.commands.iot.completers.RuleCompleter;
-import com.awslabs.iot.client.helpers.io.interfaces.IOHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import org.slf4j.Logger;
 
@@ -21,7 +21,7 @@ public class DeleteTopicRuleCommandHandlerWithCompletion implements RuleCommandH
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
-    IOHelper ioHelper;
+    IoHelper ioHelper;
     @Inject
     RuleCompleter ruleCompleter;
 
@@ -69,7 +69,7 @@ public class DeleteTopicRuleCommandHandlerWithCompletion implements RuleCommandH
         return this.parameterExtractor;
     }
 
-    public IOHelper getIoHelper() {
+    public IoHelper getIoHelper() {
         return this.ioHelper;
     }
 

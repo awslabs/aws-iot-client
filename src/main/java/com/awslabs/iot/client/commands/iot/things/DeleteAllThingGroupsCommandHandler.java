@@ -1,8 +1,8 @@
 package com.awslabs.iot.client.commands.iot.things;
 
+import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
+import com.awslabs.aws.iot.resultsiterator.helpers.v1.interfaces.V1ThingGroupHelper;
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
-import com.awslabs.iot.client.helpers.io.interfaces.IOHelper;
-import com.awslabs.iot.client.helpers.iot.interfaces.ThingGroupHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import org.slf4j.Logger;
 
@@ -15,9 +15,9 @@ public class DeleteAllThingGroupsCommandHandler implements IotCommandHandler {
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
-    IOHelper ioHelper;
+    IoHelper ioHelper;
     @Inject
-    Provider<ThingGroupHelper> thingGroupHelperProvider;
+    Provider<V1ThingGroupHelper> thingGroupHelperProvider;
 
     @Inject
     public DeleteAllThingGroupsCommandHandler() {
@@ -25,7 +25,7 @@ public class DeleteAllThingGroupsCommandHandler implements IotCommandHandler {
 
     @Override
     public void innerHandle(String input) {
-        ThingGroupHelper thingGroupHelper = thingGroupHelperProvider.get();
+        V1ThingGroupHelper thingGroupHelper = thingGroupHelperProvider.get();
         thingGroupHelper.listThingGroups().stream()
                 .forEach(groupNameAndArn -> {
                     log.info("Deleting thing group [{}]", groupNameAndArn.getGroupName());
@@ -52,7 +52,7 @@ public class DeleteAllThingGroupsCommandHandler implements IotCommandHandler {
         return this.parameterExtractor;
     }
 
-    public IOHelper getIoHelper() {
+    public IoHelper getIoHelper() {
         return this.ioHelper;
     }
 }

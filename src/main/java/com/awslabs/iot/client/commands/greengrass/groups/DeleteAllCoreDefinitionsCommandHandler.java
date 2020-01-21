@@ -1,9 +1,9 @@
 package com.awslabs.iot.client.commands.greengrass.groups;
 
 import com.amazonaws.services.greengrass.model.DefinitionInformation;
+import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
+import com.awslabs.aws.iot.resultsiterator.helpers.v1.interfaces.V1GreengrassHelper;
 import com.awslabs.iot.client.commands.greengrass.GreengrassCommandHandler;
-import com.awslabs.iot.client.helpers.greengrass.interfaces.GreengrassHelper;
-import com.awslabs.iot.client.helpers.io.interfaces.IOHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import org.slf4j.Logger;
 
@@ -14,11 +14,11 @@ public class DeleteAllCoreDefinitionsCommandHandler implements GreengrassCommand
     private static final String DELETE_CORE_DEFINITIONS = "delete-all-core-definitions";
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(DeleteAllCoreDefinitionsCommandHandler.class);
     @Inject
-    GreengrassHelper greengrassHelper;
+    V1GreengrassHelper greengrassHelper;
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
-    IOHelper ioHelper;
+    IoHelper ioHelper;
 
     @Inject
     public DeleteAllCoreDefinitionsCommandHandler() {
@@ -53,7 +53,7 @@ public class DeleteAllCoreDefinitionsCommandHandler implements GreengrassCommand
         return this.parameterExtractor;
     }
 
-    public IOHelper getIoHelper() {
+    public IoHelper getIoHelper() {
         return this.ioHelper;
     }
 }

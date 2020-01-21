@@ -1,9 +1,9 @@
 package com.awslabs.iot.client.commands.iot.certificates;
 
+import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
+import com.awslabs.aws.iot.resultsiterator.helpers.v1.interfaces.V1ThingHelper;
 import com.awslabs.iot.client.commands.iot.CertificateCommandHandlerWithCompletion;
 import com.awslabs.iot.client.commands.iot.completers.CertificateCompleter;
-import com.awslabs.iot.client.helpers.io.interfaces.IOHelper;
-import com.awslabs.iot.client.helpers.iot.interfaces.ThingHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import org.slf4j.Logger;
 
@@ -18,11 +18,11 @@ public class DeleteCertificateCommandHandlerWithCompletion implements Certificat
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
-    IOHelper ioHelper;
+    IoHelper ioHelper;
     @Inject
     CertificateCompleter certificateCompleter;
     @Inject
-    Provider<ThingHelper> thingHelperProvider;
+    Provider<V1ThingHelper> thingHelperProvider;
 
     @Inject
     public DeleteCertificateCommandHandlerWithCompletion() {
@@ -56,7 +56,7 @@ public class DeleteCertificateCommandHandlerWithCompletion implements Certificat
         return this.parameterExtractor;
     }
 
-    public IOHelper getIoHelper() {
+    public IoHelper getIoHelper() {
         return this.ioHelper;
     }
 

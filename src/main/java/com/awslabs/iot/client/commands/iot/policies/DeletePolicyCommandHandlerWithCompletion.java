@@ -1,9 +1,9 @@
 package com.awslabs.iot.client.commands.iot.policies;
 
+import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
+import com.awslabs.aws.iot.resultsiterator.helpers.v1.interfaces.V1PolicyHelper;
 import com.awslabs.iot.client.commands.iot.PolicyCommandHandlerWithCompletion;
 import com.awslabs.iot.client.commands.iot.completers.PolicyCompleter;
-import com.awslabs.iot.client.helpers.io.interfaces.IOHelper;
-import com.awslabs.iot.client.helpers.iot.interfaces.PolicyHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import org.slf4j.Logger;
 
@@ -16,11 +16,11 @@ public class DeletePolicyCommandHandlerWithCompletion implements PolicyCommandHa
     private static final int POLICY_NAME_POSITION = 0;
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(DeletePolicyCommandHandlerWithCompletion.class);
     @Inject
-    Provider<PolicyHelper> policyHelperProvider;
+    Provider<V1PolicyHelper> policyHelperProvider;
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
-    IOHelper ioHelper;
+    IoHelper ioHelper;
     @Inject
     PolicyCompleter policyCompleter;
 
@@ -56,7 +56,7 @@ public class DeletePolicyCommandHandlerWithCompletion implements PolicyCommandHa
         return this.parameterExtractor;
     }
 
-    public IOHelper getIoHelper() {
+    public IoHelper getIoHelper() {
         return this.ioHelper;
     }
 

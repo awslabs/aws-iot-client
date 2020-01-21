@@ -1,8 +1,8 @@
 package com.awslabs.iot.client.commands.iot.mosh;
 
+import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.iot.ThingCommandHandlerWithCompletion;
 import com.awslabs.iot.client.commands.iot.completers.ThingCompleter;
-import com.awslabs.iot.client.helpers.io.interfaces.IOHelper;
 import com.awslabs.iot.client.helpers.iot.interfaces.WebsocketsHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.google.common.collect.BiMap;
@@ -38,7 +38,7 @@ public class MoshServerCommandHandler implements ThingCommandHandlerWithCompleti
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
-    IOHelper ioHelper;
+    IoHelper ioHelper;
     @Inject
     ThingCompleter thingCompleter;
     @Inject
@@ -308,7 +308,7 @@ public class MoshServerCommandHandler implements ThingCommandHandlerWithCompleti
         return this.parameterExtractor;
     }
 
-    public IOHelper getIoHelper() {
+    public IoHelper getIoHelper() {
         return this.ioHelper;
     }
 

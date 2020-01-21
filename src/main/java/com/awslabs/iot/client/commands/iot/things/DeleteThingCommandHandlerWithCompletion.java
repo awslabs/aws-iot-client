@@ -1,10 +1,10 @@
 package com.awslabs.iot.client.commands.iot.things;
 
+import com.awslabs.aws.iot.resultsiterator.exceptions.ThingAttachedToPrincipalsException;
+import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
+import com.awslabs.aws.iot.resultsiterator.helpers.v1.interfaces.V1ThingHelper;
 import com.awslabs.iot.client.commands.iot.ThingCommandHandlerWithCompletion;
 import com.awslabs.iot.client.commands.iot.completers.ThingCompleter;
-import com.awslabs.iot.client.helpers.io.interfaces.IOHelper;
-import com.awslabs.iot.client.helpers.iot.exceptions.ThingAttachedToPrincipalsException;
-import com.awslabs.iot.client.helpers.iot.interfaces.ThingHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import io.vavr.control.Try;
 import org.slf4j.Logger;
@@ -20,9 +20,9 @@ public class DeleteThingCommandHandlerWithCompletion implements ThingCommandHand
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
-    Provider<ThingHelper> thingHelperProvider;
+    Provider<V1ThingHelper> thingHelperProvider;
     @Inject
-    IOHelper ioHelper;
+    IoHelper ioHelper;
     @Inject
     ThingCompleter thingCompleter;
 
@@ -94,7 +94,7 @@ public class DeleteThingCommandHandlerWithCompletion implements ThingCommandHand
         return this.parameterExtractor;
     }
 
-    public IOHelper getIoHelper() {
+    public IoHelper getIoHelper() {
         return this.ioHelper;
     }
 

@@ -8,6 +8,7 @@ import com.amazonaws.services.iot.AWSIotClient;
 import com.amazonaws.services.iot.AWSIotClientBuilder;
 import com.amazonaws.services.iotdata.AWSIotDataClient;
 import com.amazonaws.services.iotdata.AWSIotDataClientBuilder;
+import com.awslabs.aws.iot.resultsiterator.data.*;
 import com.awslabs.iot.client.commands.BasicCommandHandlerProvider;
 import com.awslabs.iot.client.commands.CommandHandlerProvider;
 import com.awslabs.iot.client.commands.generic.ExitCommandHandler;
@@ -15,15 +16,8 @@ import com.awslabs.iot.client.commands.generic.HelpCommandHandler;
 import com.awslabs.iot.client.commands.generic.QuitCommandHandler;
 import com.awslabs.iot.client.commands.interfaces.CommandHandler;
 import com.awslabs.iot.client.console.AwsIotClientConsoleTerminal;
-import com.awslabs.iot.client.data.*;
 import com.awslabs.iot.client.helpers.BasicCandidateHelper;
 import com.awslabs.iot.client.helpers.CandidateHelper;
-import com.awslabs.iot.client.helpers.greengrass.BasicGreengrassHelper;
-import com.awslabs.iot.client.helpers.greengrass.interfaces.GreengrassHelper;
-import com.awslabs.iot.client.helpers.iam.BasicIamHelper;
-import com.awslabs.iot.client.helpers.iam.interfaces.IamHelper;
-import com.awslabs.iot.client.helpers.iot.*;
-import com.awslabs.iot.client.helpers.iot.interfaces.*;
 import com.awslabs.iot.client.helpers.json.BasicObjectPrettyPrinter;
 import com.awslabs.iot.client.helpers.json.interfaces.ObjectPrettyPrinter;
 import com.awslabs.iot.client.interfaces.AwsIotClientTerminal;
@@ -52,26 +46,19 @@ class AwsIotClientModule extends AbstractModule {
 
         // Constants
         bind(Arguments.class).toInstance(arguments);
-        bind(CaCertFilename.class).toInstance(CaCertFilename.builder().caCertFilename(CA_CERT_FILENAME).build());
-        bind(ClientCertFilename.class).toInstance(ClientCertFilename.builder().clientCertFilename(CLIENT_CERT_FILENAME).build());
-        bind(ClientPrivateKeyFilename.class).toInstance(ClientPrivateKeyFilename.builder().clientPrivateKeyFilename(CLIENT_PRIVATE_KEY_FILENAME).build());
-        bind(CertificateIdFilename.class).toInstance(CertificateIdFilename.builder().certificateIdFilename(CERTIFICATE_ID_FILENAME).build());
-        bind(ClientId.class).toInstance(ClientId.builder().clientId(CLIENT_ID).build());
-        bind(ClientName.class).toInstance(ClientName.builder().clientName(CLIENT_NAME).build());
+        bind(CaCertFilename.class).toInstance(ImmutableCaCertFilename.builder().caCertFilename(CA_CERT_FILENAME).build());
+        bind(ClientCertFilename.class).toInstance(ImmutableClientCertFilename.builder().clientCertFilename(CLIENT_CERT_FILENAME).build());
+        bind(ClientPrivateKeyFilename.class).toInstance(ImmutableClientPrivateKeyFilename.builder().clientPrivateKeyFilename(CLIENT_PRIVATE_KEY_FILENAME).build());
+        bind(CertificateIdFilename.class).toInstance(ImmutableCertificateIdFilename.builder().certificateIdFilename(CERTIFICATE_ID_FILENAME).build());
+        bind(ClientId.class).toInstance(ImmutableClientId.builder().clientId(CLIENT_ID).build());
+        bind(ClientName.class).toInstance(ImmutableClientName.builder().clientName(CLIENT_NAME).build());
 
         // Normal bindings
         bind(CommandHandlerProvider.class).to(BasicCommandHandlerProvider.class);
         bind(AwsIotClientTerminal.class).to(AwsIotClientConsoleTerminal.class);
-        bind(RuleHelper.class).to(BasicRuleHelper.class);
-        bind(IamHelper.class).to(BasicIamHelper.class);
-        bind(GreengrassHelper.class).to(BasicGreengrassHelper.class);
         bind(CandidateHelper.class).to(BasicCandidateHelper.class);
         bind(ObjectPrettyPrinter.class).to(BasicObjectPrettyPrinter.class);
-        bind(CertificateHelper.class).to(BasicCertificateHelper.class);
-        bind(ThingHelper.class).to(BasicThingHelper.class);
-        bind(PolicyHelper.class).to(BasicPolicyHelper.class);
         bind(ParameterExtractor.class).to(BasicParameterExtractor.class);
-        bind(ThingGroupHelper.class).to(BasicThingGroupHelper.class);
 
         // Command handler multibindings
         Multibinder<CommandHandler> commandHandlerMultibinder = Multibinder.newSetBinder(binder(), CommandHandler.class);

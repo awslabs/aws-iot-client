@@ -2,10 +2,10 @@ package com.awslabs.iot.client.commands.iot.rules;
 
 import com.amazonaws.services.iot.AWSIotClient;
 import com.amazonaws.services.iot.model.*;
+import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
+import com.awslabs.aws.iot.resultsiterator.helpers.v1.interfaces.V1IamHelper;
 import com.awslabs.iot.client.commands.iam.completers.RoleCompleter;
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
-import com.awslabs.iot.client.helpers.iam.interfaces.IamHelper;
-import com.awslabs.iot.client.helpers.io.interfaces.IOHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import org.jline.reader.Completer;
 import org.jline.reader.impl.completer.ArgumentCompleter;
@@ -25,13 +25,13 @@ public class CreateTopicRuleCommandHandler implements IotCommandHandler {
     @Inject
     RoleCompleter roleCompleter;
     @Inject
-    IamHelper iamHelper;
+    V1IamHelper iamHelper;
     @Inject
     AWSIotClient awsIotClient;
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
-    IOHelper ioHelper;
+    IoHelper ioHelper;
 
     @Inject
     public CreateTopicRuleCommandHandler() {
@@ -98,7 +98,7 @@ public class CreateTopicRuleCommandHandler implements IotCommandHandler {
         return this.parameterExtractor;
     }
 
-    public IOHelper getIoHelper() {
+    public IoHelper getIoHelper() {
         return this.ioHelper;
     }
 }
