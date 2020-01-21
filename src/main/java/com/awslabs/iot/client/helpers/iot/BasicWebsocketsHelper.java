@@ -62,21 +62,15 @@ public class BasicWebsocketsHelper implements WebsocketsHelper {
         return mqttClient;
     }
 
-    public Void subscribe(MqttClient mqttClient, String topic) throws MqttException {
+    public void subscribe(MqttClient mqttClient, String topic) throws MqttException {
         mqttClient.subscribe(topic);
-
-        return null;
     }
 
-    public Void close(MqttClient mqttClient) throws MqttException {
+    public void close(MqttClient mqttClient) throws MqttException {
         mqttClient.close();
-
-        return null;
     }
 
-    public Void publish(MqttClient mqttClient, String topic, String message) throws MqttException {
+    public void publish(MqttClient mqttClient, String topic, String message) throws MqttException {
         mqttClient.publish(topic, new MqttMessage(message.getBytes()));
-
-        return null;
     }
 }

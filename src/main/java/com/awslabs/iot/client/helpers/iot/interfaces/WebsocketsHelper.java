@@ -18,14 +18,13 @@ public interface WebsocketsHelper {
 
     MqttClient connectMqttClientAndPublish(String topic, String message) throws MqttException, NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException;
 
-    Void subscribe(MqttClient mqttClient, String topic) throws MqttException;
+    void subscribe(MqttClient mqttClient, String topic) throws MqttException;
 
-    Void close(MqttClient mqttClient) throws MqttException;
+    void close(MqttClient mqttClient) throws MqttException;
 
-    Void publish(MqttClient mqttClient, String topic, String message) throws MqttException;
+    void publish(MqttClient mqttClient, String topic, String message) throws MqttException;
 
     @FunctionalInterface
-    public
     interface Function<String, MqttMessage> {
         Void handleMessage(String topic, MqttMessage mqttMessage);
     }

@@ -29,7 +29,7 @@ public class MqttPublishCommandHandler implements PublishCommandHandler {
     @Override
     public void publish(String topic, String message) {
         MqttClient mqttClient = Try.of(() -> websocketsHelper.connectMqttClientAndPublish(topic, message)).get();
-        Try.of(() -> websocketsHelper.close(mqttClient)).get();
+        Try.run(() -> websocketsHelper.close(mqttClient)).get();
     }
 
     @Override
