@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
-import java.util.List;
+import java.util.stream.Stream;
 
 public class CleanUpCertificatesCommandHandler implements IotCommandHandler {
     private static final String CLEANUPCERTIFICATES = "clean-up-certificates";
@@ -34,30 +34,31 @@ public class CleanUpCertificatesCommandHandler implements IotCommandHandler {
 
     @Override
     public void innerHandle(String input) {
-        List<Certificate> certificates = certificateHelperProvider.get().listCertificates();
+        certificateHelperProvider.get().listCertificates().forEach(this::deleteEach);
+    }
 
-        for (Certificate certificate : certificates) {
-            String certificateArn = certificate.getCertificateArn();
-            String certificateId = certificate.getCertificateId();
+    private void deleteEach(Certificate certificate) {
+        String certificateArn = certificate.getCertificateArn();
+        String certificateId = certificate.getCertificateId();
 
-            List<String> principalThings = thingHelperProvider.get().listPrincipalThings(certificateArn);
+        Stream<String> principalThings = thingHelperProvider.get().listPrincipalThings(certificateArn);
 
-            if (principalThings.size() > 0) {
-                log.info("Ignoring [" + certificateId + "], it still has things attached to it");
-                continue;
-            }
-
-            List<Policy> principalPolicies = policyHelperProvider.get().listPrincipalPolicies(certificateArn);
-
-            if (principalPolicies.size() > 0) {
-                log.info("Ignoring [" + certificateId + "], it still has policies attached to it");
-                continue;
-            }
-
-            log.info("Deleting [" + certificateId + "]");
-
-            thingHelperProvider.get().deletePrincipal(certificateArn);
+        if (principalThings.findAny().isPresent()) {
+            log.info("Ignoring [" + certificateId + "], it still has things attached to it");
+            return;
         }
+
+        Stream<Policy> principalPolicies = policyHelperProvider.get().listPrincipalPolicies(certificateArn);
+
+        if (principalPolicies.findAny().isPresent()) {
+            log.info("Ignoring [" + certificateId + "], it still has policies attached to it");
+            return;
+        }
+
+        log.info("Deleting [" + certificateId + "]");
+
+        thingHelperProvider.get().deletePrincipal(certificateArn);
+
     }
 
     @Override

@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
-import java.util.List;
 import java.util.Optional;
 
 public class ListThingsCommandHandler implements IotCommandHandler {
@@ -28,12 +27,13 @@ public class ListThingsCommandHandler implements IotCommandHandler {
 
     @Override
     public void innerHandle(String input) {
-        List<ThingAttribute> thingList = thingHelperProvider.get().listThingAttributes();
+        thingHelperProvider.get().listThingAttributes()
+                .forEach(this::logThingInfo);
+    }
 
-        for (ThingAttribute thingAttribute : thingList) {
-            Optional<String> optionalThingTypeName = Optional.ofNullable(thingAttribute.getThingTypeName());
-            log.info("  [" + thingAttribute.getThingName() + "] [" + optionalThingTypeName.orElse("NO THING TYPE") + "]");
-        }
+    private void logThingInfo(ThingAttribute thingAttribute) {
+        Optional<String> optionalThingTypeName = Optional.ofNullable(thingAttribute.getThingTypeName());
+        log.info("  [" + thingAttribute.getThingName() + "] [" + optionalThingTypeName.orElse("NO THING TYPE") + "]");
     }
 
     @Override

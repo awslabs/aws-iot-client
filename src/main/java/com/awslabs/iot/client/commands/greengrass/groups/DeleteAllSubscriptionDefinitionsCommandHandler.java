@@ -8,7 +8,6 @@ import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
-import java.util.List;
 
 public class DeleteAllSubscriptionDefinitionsCommandHandler implements GreengrassCommandHandler {
     private static final String DELETE_SUBSCRIPTION_DEFINITIONS = "delete-all-subscription-definitions";
@@ -26,13 +25,14 @@ public class DeleteAllSubscriptionDefinitionsCommandHandler implements Greengras
 
     @Override
     public void innerHandle(String input) {
-        List<DefinitionInformation> nonImmutableSubscriptionDefinitionVersion = greengrassHelper.listNonImmutableSubscriptionDefinitionInformation();
+        greengrassHelper.listNonImmutableSubscriptionDefinitionInformation()
+                .forEach(this::deleteAndLog);
+    }
 
-        for (DefinitionInformation definitionInformation : nonImmutableSubscriptionDefinitionVersion) {
-            greengrassHelper.deleteSubscriptionDefinition(definitionInformation);
+    private void deleteAndLog(DefinitionInformation definitionInformation) {
+        greengrassHelper.deleteSubscriptionDefinition(definitionInformation);
 
-            log.info("Deleted subscription definition [" + definitionInformation + "]");
-        }
+        log.info("Deleted subscription definition [" + definitionInformation + "]");
     }
 
     @Override

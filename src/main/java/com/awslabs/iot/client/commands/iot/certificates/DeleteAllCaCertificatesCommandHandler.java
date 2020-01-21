@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
-import java.util.List;
 
 public class DeleteAllCaCertificatesCommandHandler implements IotCommandHandler {
     private static final String DELETEALLCACERTIFICATES = "delete-all-ca-certificates";
@@ -29,11 +28,8 @@ public class DeleteAllCaCertificatesCommandHandler implements IotCommandHandler 
 
     @Override
     public void innerHandle(String input) {
-        List<String> caCertificateArns = certificateHelperProvider.get().listCaCertificateArns();
-
-        for (String caCertificateArn : caCertificateArns) {
-            thingHelperProvider.get().deletePrincipal(caCertificateArn);
-        }
+        certificateHelperProvider.get().listCaCertificateArns()
+                .forEach(caCertificateArn -> thingHelperProvider.get().deletePrincipal(caCertificateArn));
     }
 
     @Override

@@ -8,7 +8,6 @@ import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
-import java.util.List;
 
 public class DeleteAllFunctionDefinitionsCommandHandler implements GreengrassCommandHandler {
     private static final String DELETE_FUNCTION_DEFINITIONS = "delete-all-function-definitions";
@@ -26,13 +25,14 @@ public class DeleteAllFunctionDefinitionsCommandHandler implements GreengrassCom
 
     @Override
     public void innerHandle(String input) {
-        List<DefinitionInformation> nonImmutableFunctionDefinitionInformation = greengrassHelper.listNonImmutableFunctionDefinitionInformation();
+        greengrassHelper.listNonImmutableFunctionDefinitionInformation()
+                .forEach(this::deleteAndLog);
+    }
 
-        for (DefinitionInformation definitionInformation : nonImmutableFunctionDefinitionInformation) {
-            greengrassHelper.deleteFunctionDefinition(definitionInformation);
+    private void deleteAndLog(DefinitionInformation definitionInformation) {
+        greengrassHelper.deleteFunctionDefinition(definitionInformation);
 
-            log.info("Deleted function definition [" + definitionInformation + "]");
-        }
+        log.info("Deleted function definition [" + definitionInformation + "]");
     }
 
     @Override

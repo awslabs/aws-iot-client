@@ -7,7 +7,6 @@ import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
-import java.util.List;
 
 public class ListTopicRulesCommandHandler implements IotCommandHandler {
     private static final String LISTTOPICRULES = "list-topic-rules";
@@ -25,11 +24,8 @@ public class ListTopicRulesCommandHandler implements IotCommandHandler {
 
     @Override
     public void innerHandle(String input) {
-        List<String> topicRuleNames = ruleHelper.listTopicRuleNames();
-
-        for (String topicRuleName : topicRuleNames) {
-            log.info("  [" + topicRuleName + "]");
-        }
+        ruleHelper.listTopicRuleNames()
+                .forEach(topicRuleName -> log.info("  [" + topicRuleName + "]"));
     }
 
     @Override

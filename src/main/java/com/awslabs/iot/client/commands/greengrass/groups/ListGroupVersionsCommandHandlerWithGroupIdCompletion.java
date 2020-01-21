@@ -1,6 +1,5 @@
 package com.awslabs.iot.client.commands.greengrass.groups;
 
-import com.amazonaws.services.greengrass.model.VersionInformation;
 import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
 import com.awslabs.aws.iot.resultsiterator.helpers.v1.interfaces.V1GreengrassHelper;
 import com.awslabs.iot.client.commands.greengrass.GreengrassGroupCommandHandlerWithGroupIdCompletion;
@@ -34,11 +33,8 @@ public class ListGroupVersionsCommandHandlerWithGroupIdCompletion implements Gre
 
         String groupId = parameters.get(GROUP_ID_POSITION);
 
-        List<VersionInformation> versionInformationList = greengrassHelper.listGroupVersions(groupId);
-
-        for (VersionInformation versionInformation : versionInformationList) {
-            log.info("  [" + versionInformation.getVersion() + " - " + versionInformation.getCreationTimestamp() + "]");
-        }
+        greengrassHelper.listGroupVersions(groupId)
+                .forEach(versionInformation -> log.info("  [" + versionInformation.getVersion() + " - " + versionInformation.getCreationTimestamp() + "]"));
     }
 
     @Override

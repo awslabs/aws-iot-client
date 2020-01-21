@@ -8,7 +8,6 @@ import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
-import java.util.List;
 
 public class DeleteAllLoggerDefinitionsCommandHandler implements GreengrassCommandHandler {
     private static final String DELETE_LOGGER_DEFINITIONS = "delete-all-logger-definitions";
@@ -26,13 +25,14 @@ public class DeleteAllLoggerDefinitionsCommandHandler implements GreengrassComma
 
     @Override
     public void innerHandle(String input) {
-        List<DefinitionInformation> nonImmutableLoggerDefinitionInformation = greengrassHelper.listNonImmutableLoggerDefinitionInformation();
+        greengrassHelper.listNonImmutableLoggerDefinitionInformation()
+                .forEach(this::deleteAndLog);
+    }
 
-        for (DefinitionInformation definitionInformation : nonImmutableLoggerDefinitionInformation) {
-            greengrassHelper.deleteLoggerDefinition(definitionInformation);
+    private void deleteAndLog(DefinitionInformation definitionInformation) {
+        greengrassHelper.deleteLoggerDefinition(definitionInformation);
 
-            log.info("Deleted logger definition [" + definitionInformation + "]");
-        }
+        log.info("Deleted logger definition [" + definitionInformation + "]");
     }
 
     @Override

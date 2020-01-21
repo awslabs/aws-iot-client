@@ -1,13 +1,5 @@
 package com.awslabs.iot.client.applications;
 
-import com.amazonaws.services.greengrass.AWSGreengrassClient;
-import com.amazonaws.services.greengrass.AWSGreengrassClientBuilder;
-import com.amazonaws.services.identitymanagement.AmazonIdentityManagementClient;
-import com.amazonaws.services.identitymanagement.AmazonIdentityManagementClientBuilder;
-import com.amazonaws.services.iot.AWSIotClient;
-import com.amazonaws.services.iot.AWSIotClientBuilder;
-import com.amazonaws.services.iotdata.AWSIotDataClient;
-import com.amazonaws.services.iotdata.AWSIotDataClientBuilder;
 import com.awslabs.aws.iot.resultsiterator.data.*;
 import com.awslabs.iot.client.commands.BasicCommandHandlerProvider;
 import com.awslabs.iot.client.commands.CommandHandlerProvider;
@@ -38,12 +30,6 @@ class AwsIotClientModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        // Client providers
-        bind(AWSIotClient.class).toProvider(() -> (AWSIotClient) AWSIotClientBuilder.defaultClient());
-        bind(AWSIotDataClient.class).toProvider(() -> (AWSIotDataClient) AWSIotDataClientBuilder.defaultClient());
-        bind(AmazonIdentityManagementClient.class).toProvider(() -> (AmazonIdentityManagementClient) AmazonIdentityManagementClientBuilder.defaultClient());
-        bind(AWSGreengrassClient.class).toProvider(() -> (AWSGreengrassClient) AWSGreengrassClientBuilder.defaultClient());
-
         // Constants
         bind(Arguments.class).toInstance(arguments);
         bind(CaCertFilename.class).toInstance(ImmutableCaCertFilename.builder().caCertFilename(CA_CERT_FILENAME).build());

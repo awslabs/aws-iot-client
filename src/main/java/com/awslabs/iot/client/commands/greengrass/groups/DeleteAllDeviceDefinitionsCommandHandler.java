@@ -8,7 +8,6 @@ import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
-import java.util.List;
 
 public class DeleteAllDeviceDefinitionsCommandHandler implements GreengrassCommandHandler {
     private static final String DELETE_DEVICE_DEFINITIONS = "delete-all-device-definitions";
@@ -26,13 +25,14 @@ public class DeleteAllDeviceDefinitionsCommandHandler implements GreengrassComma
 
     @Override
     public void innerHandle(String input) {
-        List<DefinitionInformation> nonImmutableDeviceDefinitionInformation = greengrassHelper.listNonImmutableDeviceDefinitionInformation();
+        greengrassHelper.listNonImmutableDeviceDefinitionInformation()
+                .forEach(this::deleteAndLog);
+    }
 
-        for (DefinitionInformation definitionInformation : nonImmutableDeviceDefinitionInformation) {
-            greengrassHelper.deleteDeviceDefinition(definitionInformation);
+    private void deleteAndLog(DefinitionInformation definitionInformation) {
+        greengrassHelper.deleteDeviceDefinition(definitionInformation);
 
-            log.info("Deleted device definition [" + definitionInformation + "]");
-        }
+        log.info("Deleted device definition [" + definitionInformation + "]");
     }
 
     @Override

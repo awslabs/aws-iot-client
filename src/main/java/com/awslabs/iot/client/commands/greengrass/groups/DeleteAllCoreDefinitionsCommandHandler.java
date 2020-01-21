@@ -8,7 +8,6 @@ import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
-import java.util.List;
 
 public class DeleteAllCoreDefinitionsCommandHandler implements GreengrassCommandHandler {
     private static final String DELETE_CORE_DEFINITIONS = "delete-all-core-definitions";
@@ -26,12 +25,14 @@ public class DeleteAllCoreDefinitionsCommandHandler implements GreengrassCommand
 
     @Override
     public void innerHandle(String input) {
-        List<DefinitionInformation> nonImmutableCoreDefinitionInformation = greengrassHelper.listNonImmutableCoreDefinitionInformation();
+        greengrassHelper.listNonImmutableCoreDefinitionInformation()
+                .forEach(this::deleteAndLog);
+    }
 
-        for (DefinitionInformation definitionInformation : nonImmutableCoreDefinitionInformation) {
-            greengrassHelper.deleteCoreDefinition(definitionInformation);
-            log.info("Deleted core definition [" + definitionInformation + "]");
-        }
+    private void deleteAndLog(DefinitionInformation definitionInformation) {
+        greengrassHelper.deleteCoreDefinition(definitionInformation);
+
+        log.info("Deleted core definition [" + definitionInformation + "]");
     }
 
     @Override

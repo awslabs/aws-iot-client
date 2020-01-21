@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
-import java.util.List;
 
 public class ListPoliciesCommandHandler implements IotCommandHandler {
     private static final String LISTPOLICIES = "list-policies";
@@ -26,11 +25,8 @@ public class ListPoliciesCommandHandler implements IotCommandHandler {
 
     @Override
     public void innerHandle(String input) {
-        List<String> policyNames = policyHelperProvider.get().listPolicyNames();
-
-        for (String policyName : policyNames) {
-            log.info("  [" + policyName + "]");
-        }
+        policyHelperProvider.get().listPolicyNames()
+                .forEach(policyName -> log.info("  [" + policyName + "]"));
     }
 
     @Override

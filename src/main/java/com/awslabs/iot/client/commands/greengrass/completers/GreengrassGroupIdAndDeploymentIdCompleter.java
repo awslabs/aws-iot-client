@@ -9,6 +9,8 @@ import org.jline.reader.ParsedLine;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GreengrassGroupIdAndDeploymentIdCompleter implements Completer {
     @Inject
@@ -22,7 +24,7 @@ public class GreengrassGroupIdAndDeploymentIdCompleter implements Completer {
 
     @Override
     public void complete(LineReader reader, ParsedLine line, List<Candidate> candidates) {
-        List<String> groupIds = greengrassHelper.listGroupIds();
+        List<String> groupIds = greengrassHelper.listGroupIds().collect(Collectors.toList());
 
         // Flow:
         //   If there is only one argument we want the list of group IDs.  This is the argument completer validating that the group ID exists.
@@ -30,7 +32,7 @@ public class GreengrassGroupIdAndDeploymentIdCompleter implements Completer {
         //   If there are three arguments we want the list of deployment IDs for the given group ID.  This is the argument completer asking for the deployment ID list.
 
         if ((line.wordIndex() == 0) || (line.wordIndex() == 1)) {
-            addValuesAsCandidates(candidates, groupIds);
+            addValuesAsCandidates(candidates, groupIds.stream());
             return;
         }
 
@@ -43,7 +45,7 @@ public class GreengrassGroupIdAndDeploymentIdCompleter implements Completer {
         }
     }
 
-    private void addValuesAsCandidates(List<Candidate> candidates, List<String> valueList) {
+    private void addValuesAsCandidates(List<Candidate> candidates, Stream<String> valueList) {
         candidates.addAll(candidateHelper.getCandidates(valueList));
     }
 }

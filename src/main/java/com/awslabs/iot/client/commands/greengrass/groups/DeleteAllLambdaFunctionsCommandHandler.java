@@ -9,8 +9,6 @@ import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class DeleteAllLambdaFunctionsCommandHandler implements GreengrassCommandHandler {
     private static final String DELETE_ALL_LAMBDA_FUNCTIONS = "delete-all-lambda-functions";
@@ -30,18 +28,19 @@ public class DeleteAllLambdaFunctionsCommandHandler implements GreengrassCommand
 
     @Override
     public void innerHandle(String input) {
-        List<String> groupNames = greengrassHelper.listGroups().stream().map(GroupInformation::getName).collect(Collectors.toList());
+        greengrassHelper.listGroups().map(GroupInformation::getName)
+                .forEach(this::deleteGroupLambdas);
+    }
 
-        for (String groupName : groupNames) {
-            if (greengrassHelper.isGroupImmutable(groupName)) {
-                log.info("Skipping group [" + groupName + "] because it is an immutable group");
-                continue;
-            }
-
-            deleteLambdaFunctionsCommandHandler.innerHandle(String.join(" ", "_", groupName + ".*"));
-
-            log.info("Deleted functions for group [" + groupName + "]");
+    private void deleteGroupLambdas(String groupName) {
+        if (greengrassHelper.isGroupImmutable(groupName)) {
+            log.info("Skipping group [" + groupName + "] because it is an immutable group");
+            return;
         }
+
+        deleteLambdaFunctionsCommandHandler.innerHandle(String.join(" ", "_", groupName + ".*"));
+
+        log.info("Deleted functions for group [" + groupName + "]");
     }
 
     @Override

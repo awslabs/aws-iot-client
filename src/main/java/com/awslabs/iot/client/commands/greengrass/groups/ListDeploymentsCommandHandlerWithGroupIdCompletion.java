@@ -1,6 +1,5 @@
 package com.awslabs.iot.client.commands.greengrass.groups;
 
-import com.amazonaws.services.greengrass.model.Deployment;
 import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
 import com.awslabs.aws.iot.resultsiterator.helpers.v1.interfaces.V1GreengrassHelper;
 import com.awslabs.iot.client.commands.greengrass.GreengrassGroupCommandHandlerWithGroupIdCompletion;
@@ -34,11 +33,8 @@ public class ListDeploymentsCommandHandlerWithGroupIdCompletion implements Green
 
         String groupId = parameters.get(GROUP_ID_POSITION);
 
-        List<Deployment> deploymentList = greengrassHelper.listDeployments(groupId);
-
-        for (Deployment deployment : deploymentList) {
-            log.info("  [" + deployment.getDeploymentId() + " - " + deployment.getCreatedAt() + "]");
-        }
+        greengrassHelper.listDeployments(groupId)
+                .forEach(deployment -> log.info("  [" + deployment.getDeploymentId() + " - " + deployment.getCreatedAt() + "]"));
     }
 
     @Override

@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
-import java.util.List;
 
 public class DeleteUnattachedCertificatesCommandHandlerWithCompletion implements IotCommandHandler {
     private static final String DELETEUNATTACHEDCERTIFICATES = "delete-unattached-certificates";
@@ -32,11 +31,8 @@ public class DeleteUnattachedCertificatesCommandHandlerWithCompletion implements
 
     @Override
     public void innerHandle(String input) {
-        List<String> unattachedCertificateArns = certificateHelperProvider.get().getUnattachedCertificateArns();
-
-        for (String unattachedCertificateArn : unattachedCertificateArns) {
-            thingHelperProvider.get().deletePrincipal(unattachedCertificateArn);
-        }
+        certificateHelperProvider.get().getUnattachedCertificateArns()
+                .forEach(unattachedCertificateArn -> thingHelperProvider.get().deletePrincipal(unattachedCertificateArn));
     }
 
     @Override

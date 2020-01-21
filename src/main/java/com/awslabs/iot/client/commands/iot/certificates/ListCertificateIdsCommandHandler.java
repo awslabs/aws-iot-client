@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
-import java.util.List;
 
 public class ListCertificateIdsCommandHandler implements IotCommandHandler {
     private static final String LISTCERTIFICATEIDS = "list-certificate-ids";
@@ -26,11 +25,8 @@ public class ListCertificateIdsCommandHandler implements IotCommandHandler {
 
     @Override
     public void innerHandle(String input) {
-        List<String> certificateIds = certificateHelperProvider.get().listCertificateIds();
-
-        for (String certificateId : certificateIds) {
-            log.info("  [" + certificateId + "]");
-        }
+        certificateHelperProvider.get().listCertificateIds()
+                .forEach(certificateId -> log.info("  [" + certificateId + "]"));
     }
 
     @Override

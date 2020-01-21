@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
-import java.util.List;
 
 public class DeleteAllThingsCommandHandler implements IotCommandHandler {
     private static final String DELETEALLTHINGS = "delete-all-things";
@@ -29,23 +28,26 @@ public class DeleteAllThingsCommandHandler implements IotCommandHandler {
     @Override
     public void innerHandle(String input) {
         V1ThingHelper thingHelper = thingHelperProvider.get();
-        List<ThingAttribute> thingList = thingHelper.listThingAttributes();
 
-        for (ThingAttribute thingAttribute : thingList) {
-            String thingName = thingAttribute.getThingName();
+        thingHelper.listThingAttributes()
+                .forEach(thingAttributes -> attemptDeleteThing(thingHelper, thingAttributes));
+    }
 
-            if (thingHelper.isThingImmutable(thingName)) {
-                log.info("Skipping thing [" + thingName + "] because it is an immutable thing");
-                continue;
-            }
+    private void attemptDeleteThing(V1ThingHelper thingHelper, ThingAttribute thingAttribute) {
+        String thingName = thingAttribute.getThingName();
 
-            log.info("Deleting thing [" + thingName + "]");
-            try {
-                thingHelper.delete(thingName);
-            } catch (ThingAttachedToPrincipalsException e) {
-                log.info("Thing is still attached to principals, skipping");
-                e.printStackTrace();
-            }
+        if (thingHelper.isThingImmutable(thingName)) {
+            log.info("Skipping thing [" + thingName + "] because it is an immutable thing");
+            return;
+        }
+
+        log.info("Deleting thing [" + thingName + "]");
+
+        try {
+            thingHelper.delete(thingName);
+        } catch (ThingAttachedToPrincipalsException e) {
+            log.info("Thing is still attached to principals, skipping");
+            e.printStackTrace();
         }
     }
 

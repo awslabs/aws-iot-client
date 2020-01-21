@@ -8,7 +8,6 @@ import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
-import java.util.List;
 
 public class DeleteAllResourceDefinitionsCommandHandler implements GreengrassCommandHandler {
     private static final String DELETE_RESOURCE_DEFINITIONS = "delete-all-resource-definitions";
@@ -26,13 +25,14 @@ public class DeleteAllResourceDefinitionsCommandHandler implements GreengrassCom
 
     @Override
     public void innerHandle(String input) {
-        List<DefinitionInformation> nonImmutableResourceDefinitionInformation = greengrassHelper.listNonImmutableResourceDefinitionInformation();
+        greengrassHelper.listNonImmutableResourceDefinitionInformation()
+                .forEach(this::deleteAndLog);
+    }
 
-        for (DefinitionInformation definitionInformation : nonImmutableResourceDefinitionInformation) {
-            greengrassHelper.deleteResourceDefinition(definitionInformation);
+    private void deleteAndLog(DefinitionInformation definitionInformation) {
+        greengrassHelper.deleteResourceDefinition(definitionInformation);
 
-            log.info("Deleted resource definition [" + definitionInformation + "]");
-        }
+        log.info("Deleted resource definition [" + definitionInformation + "]");
     }
 
     @Override
