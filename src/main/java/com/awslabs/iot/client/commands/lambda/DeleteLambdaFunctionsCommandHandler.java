@@ -48,7 +48,7 @@ public class DeleteLambdaFunctionsCommandHandler implements CommandHandler {
 
         ListFunctionsRequest listFunctionsRequest = new ListFunctionsRequest();
 
-        Stream<FunctionConfiguration> functionConfigurations = new V1ResultsIterator<FunctionConfiguration>(awsLambdaClient, listFunctionsRequest).resultStream();
+        Stream<FunctionConfiguration> functionConfigurations = new V1ResultsIterator<FunctionConfiguration>(awsLambdaClient, listFunctionsRequest).stream();
 
         functionConfigurations
                 .filter(functionConfiguration -> functionConfiguration.getFunctionName().matches(name))
