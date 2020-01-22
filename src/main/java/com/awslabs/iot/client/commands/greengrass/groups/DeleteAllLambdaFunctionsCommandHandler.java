@@ -83,7 +83,7 @@ public class DeleteAllLambdaFunctionsCommandHandler implements GreengrassCommand
         if (functionsToDelete.isEmpty()) {
             return;
         }
-       
+
         functionsToDelete
                 .forEach(this::deleteFunction);
 
