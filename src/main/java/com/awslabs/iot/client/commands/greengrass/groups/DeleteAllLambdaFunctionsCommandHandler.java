@@ -34,24 +34,41 @@ public class DeleteAllLambdaFunctionsCommandHandler implements GreengrassCommand
 
     @Override
     public void innerHandle(String input) {
-        ListFunctionsRequest listFunctionsRequest = new ListFunctionsRequest();
-
-        List<FunctionConfiguration> functionConfigurations = new V1ResultsIterator<FunctionConfiguration>(awsLambdaClient, listFunctionsRequest)
-                .stream().collect(Collectors.toList());
+        log.info("Listing all Greengrass groups...");
 
         List<String> groupNames = greengrassHelper.listGroups()
-        .map(GroupInformation::getName)
+                .map(GroupInformation::getName)
                 .collect(Collectors.toList());
+
+        if (groupNames.isEmpty()) {
+            log.info("No Greengrass groups found");
+            return;
+        }
+
+        log.info("Filtering out all immutable Greengrass groups...");
 
         List<String> immutableGroupList = groupNames.stream()
                 .filter(groupName -> greengrassHelper.isGroupImmutable(groupName))
                 .collect(Collectors.toList());
 
-        immutableGroupList.forEach(groupName -> log.info("Skipping group [" + groupName + "] because it is an immutable group"));
-
-        groupNames.stream()
+        List<String> groupsToDelete = groupNames.stream()
                 // Remove the immutable groups
                 .filter(groupName -> !immutableGroupList.contains(groupName))
+                .collect(Collectors.toList());
+
+        if (groupsToDelete.isEmpty()) {
+            log.info("No non-immutable Greengrass groups found");
+            return;
+        }
+
+        immutableGroupList.forEach(groupName -> log.info("Skipping group [" + groupName + "] because it is an immutable group"));
+
+        log.info("Listing all Lambda functions...");
+
+        List<FunctionConfiguration> functionConfigurations = new V1ResultsIterator<FunctionConfiguration>(awsLambdaClient, ListFunctionsRequest.class)
+                .stream().collect(Collectors.toList());
+
+        groupsToDelete
                 // Delete each group's Lambda functions
                 .forEach(groupName -> deleteGroupLambdas(functionConfigurations, groupName));
     }

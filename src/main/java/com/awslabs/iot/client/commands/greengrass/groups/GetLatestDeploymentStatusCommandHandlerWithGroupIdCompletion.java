@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Optional;
 
 public class GetLatestDeploymentStatusCommandHandlerWithGroupIdCompletion implements GreengrassGroupCommandHandlerWithGroupIdCompletion {
     private static final String GET_LATEST_DEPLOYMENT_STATUS = "get-latest-deployment-status";
@@ -34,12 +35,14 @@ public class GetLatestDeploymentStatusCommandHandlerWithGroupIdCompletion implem
 
         String groupId = parameters.get(GROUP_ID_POSITION);
 
-        Deployment deploymentId = greengrassHelper.getLatestDeployment(groupId);
+        Optional<Deployment> optionalDeploymentId = greengrassHelper.getLatestDeployment(groupId);
 
-        if (deploymentId == null) {
+        if (!optionalDeploymentId.isPresent()) {
             log.info("No deployments for [" + groupId + "]");
             return;
         }
+
+        Deployment deploymentId = optionalDeploymentId.get();
 
         String status = greengrassHelper.getDeploymentStatus(groupId, deploymentId.getDeploymentId());
 

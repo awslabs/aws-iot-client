@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Optional;
 
 public class GetLatestDeploymentCommandHandlerWithGroupIdCompletion implements GreengrassGroupCommandHandlerWithGroupIdCompletion {
     private static final String GET_LATEST_DEPLOYMENT = "get-latest-deployment";
@@ -34,11 +35,13 @@ public class GetLatestDeploymentCommandHandlerWithGroupIdCompletion implements G
 
         String groupId = parameters.get(GROUP_ID_POSITION);
 
-        Deployment deployment = greengrassHelper.getLatestDeployment(groupId);
+        Optional<Deployment> optionalDeployment = greengrassHelper.getLatestDeployment(groupId);
 
-        if (deployment == null) {
+        if (!optionalDeployment.isPresent()) {
             return;
         }
+
+        Deployment deployment = optionalDeployment.get();
 
         log.info("  [" + deployment.getDeploymentId() + " - " + deployment.getCreatedAt() + "]");
     }

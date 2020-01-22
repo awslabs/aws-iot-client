@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Optional;
 
 public class GetLatestDeviceDefinitionVersionCommandHandlerWithGroupIdCompletion implements GreengrassGroupCommandHandlerWithGroupIdCompletion {
     private static final String GET_LATEST_DEVICE_DEFINITION = "get-latest-device-definition";
@@ -38,11 +39,13 @@ public class GetLatestDeviceDefinitionVersionCommandHandlerWithGroupIdCompletion
 
         String groupId = parameters.get(GROUP_ID_POSITION);
 
-        VersionInformation versionInformation = greengrassHelper.getLatestGroupVersion(groupId);
+        Optional<VersionInformation> optionalVersionInformation = greengrassHelper.getLatestGroupVersion(groupId);
 
-        if (versionInformation == null) {
+        if (!optionalVersionInformation.isPresent()) {
             return;
         }
+
+        VersionInformation versionInformation = optionalVersionInformation.get();
 
         GetDeviceDefinitionVersionResult deviceDefinitionVersion = greengrassHelper.getDeviceDefinitionVersion(groupId, versionInformation);
 

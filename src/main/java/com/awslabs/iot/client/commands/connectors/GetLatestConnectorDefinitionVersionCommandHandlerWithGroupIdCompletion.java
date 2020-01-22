@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Optional;
 
 public class GetLatestConnectorDefinitionVersionCommandHandlerWithGroupIdCompletion implements GreengrassGroupCommandHandlerWithGroupIdCompletion {
     private static final String GET_LATEST_CONNECTOR_DEFINITION = "get-latest-connector-definition";
@@ -38,11 +39,13 @@ public class GetLatestConnectorDefinitionVersionCommandHandlerWithGroupIdComplet
 
         String groupId = parameters.get(GROUP_ID_POSITION);
 
-        VersionInformation versionInformation = greengrassHelper.getLatestGroupVersion(groupId);
+        Optional<VersionInformation> optionalVersionInformation = greengrassHelper.getLatestGroupVersion(groupId);
 
-        if (versionInformation == null) {
+        if (!optionalVersionInformation.isPresent()) {
             return;
         }
+
+        VersionInformation versionInformation = optionalVersionInformation.get();
 
         GetConnectorDefinitionVersionResult getConnectorDefinitionVersionResult = greengrassHelper.getConnectorDefinitionVersion(groupId, versionInformation);
 
