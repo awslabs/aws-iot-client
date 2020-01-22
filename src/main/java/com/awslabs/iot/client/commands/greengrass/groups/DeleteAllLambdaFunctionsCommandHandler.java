@@ -76,8 +76,15 @@ public class DeleteAllLambdaFunctionsCommandHandler implements GreengrassCommand
     private void deleteGroupLambdas(List<FunctionConfiguration> functionConfigurations, String groupName) {
         String pattern = String.join(" ", "_", groupName + ".*");
 
-        functionConfigurations.stream()
+        List<FunctionConfiguration> functionsToDelete = functionConfigurations.stream()
                 .filter(functionConfiguration -> functionConfiguration.getFunctionName().matches(pattern))
+                .collect(Collectors.toList());
+
+        if (functionsToDelete.isEmpty()) {
+            return;
+        }
+       
+        functionsToDelete
                 .forEach(this::deleteFunction);
 
         log.info("Deleted functions for group [" + groupName + "]");
