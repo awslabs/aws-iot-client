@@ -61,12 +61,16 @@ public class DeleteAllLambdaFunctionsCommandHandler implements GreengrassCommand
             return;
         }
 
+        log.info("Found " + groupsToDelete.size() + " group(s) to delete");
+
         immutableGroupList.forEach(groupName -> log.info("Skipping group [" + groupName + "] because it is an immutable group"));
 
         log.info("Listing all Lambda functions...");
 
         List<FunctionConfiguration> functionConfigurations = new V1ResultsIterator<FunctionConfiguration>(awsLambdaClient, ListFunctionsRequest.class)
                 .stream().collect(Collectors.toList());
+
+        log.info("Found " + functionConfigurations.size() + " Lambda function(s)");
 
         groupsToDelete
                 // Delete each group's Lambda functions
@@ -81,6 +85,7 @@ public class DeleteAllLambdaFunctionsCommandHandler implements GreengrassCommand
                 .collect(Collectors.toList());
 
         if (functionsToDelete.isEmpty()) {
+            log.info("No functions to delete for [" + groupName + "]");
             return;
         }
 
