@@ -5,10 +5,13 @@ import com.awslabs.iot.client.helpers.iot.interfaces.WebsocketsHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import io.vavr.control.Try;
 import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
 public class MqttPublishCommandHandler implements PublishCommandHandler {
+    private final Logger log = LoggerFactory.getLogger(MqttPublishCommandHandler.class);
     private static final String MQTTPUBLISH = "mqtt-publish";
     @Inject
     ParameterExtractor parameterExtractor;
@@ -29,7 +32,10 @@ public class MqttPublishCommandHandler implements PublishCommandHandler {
     @Override
     public void publish(String topic, String message) {
         MqttClient mqttClient = Try.of(() -> websocketsHelper.connectMqttClientAndPublish(topic, message)).get();
-        Try.run(() -> websocketsHelper.close(mqttClient)).get();
+        Try.run(() -> mqttClient.disconnect())
+                .onFailure(throwable -> log.info("Exception: [" + throwable.getMessage() + "]"));
+        Try.run(() -> websocketsHelper.close(mqttClient))
+                .onFailure(throwable -> log.info("Exception: [" + throwable.getMessage() + "]"));
     }
 
     @Override
