@@ -45,7 +45,7 @@ description = """"""
 
 shadowJar {
     // Create a shadow JAR with all of the necessary dependencies
-    archiveName = 'aws-iot-client.jar'
+    archiveFileName = 'aws-iot-client.jar'
 }
 
 sourceCompatibility = 1.8
