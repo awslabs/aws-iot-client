@@ -1,15 +1,16 @@
 package com.awslabs.iot.client.commands.connectors;
 
-import com.amazonaws.services.greengrass.model.GetConnectorDefinitionVersionResult;
-import com.amazonaws.services.greengrass.model.VersionInformation;
 import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.greengrass.GreengrassGroupCommandHandlerWithGroupIdCompletion;
 import com.awslabs.iot.client.commands.greengrass.completers.GreengrassGroupIdCompleter;
 import com.awslabs.iot.client.helpers.json.interfaces.ObjectPrettyPrinter;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
-import com.awslabs.iot.helpers.interfaces.V1GreengrassHelper;
+import com.awslabs.iot.data.ImmutableGreengrassGroupId;
+import com.awslabs.iot.helpers.interfaces.V2GreengrassHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.services.greengrass.model.ConnectorDefinitionVersion;
+import software.amazon.awssdk.services.greengrass.model.GroupInformation;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -20,7 +21,7 @@ public class GetLatestConnectorDefinitionVersionCommandHandlerWithGroupIdComplet
     private static final int GROUP_ID_POSITION = 0;
     private static final Logger log = LoggerFactory.getLogger(GetLatestConnectorDefinitionVersionCommandHandlerWithGroupIdCompletion.class);
     @Inject
-    V1GreengrassHelper greengrassHelper;
+    V2GreengrassHelper v2GreengrassHelper;
     @Inject
     ObjectPrettyPrinter objectPrettyPrinter;
     @Inject
@@ -40,17 +41,22 @@ public class GetLatestConnectorDefinitionVersionCommandHandlerWithGroupIdComplet
 
         String groupId = parameters.get(GROUP_ID_POSITION);
 
-        Optional<VersionInformation> optionalVersionInformation = greengrassHelper.getLatestGroupVersion(groupId);
+        Optional<GroupInformation> optionalGroupInformation = v2GreengrassHelper.getGroupInformation(ImmutableGreengrassGroupId.builder().groupId(groupId).build());
 
-        if (!optionalVersionInformation.isPresent()) {
+        if (!optionalGroupInformation.isPresent()) {
             return;
         }
 
-        VersionInformation versionInformation = optionalVersionInformation.get();
+        GroupInformation groupInformation = optionalGroupInformation.get();
 
-        GetConnectorDefinitionVersionResult getConnectorDefinitionVersionResult = greengrassHelper.getConnectorDefinitionVersion(groupId, versionInformation);
+        Optional<ConnectorDefinitionVersion> optionalConnectorDefinitionVersion = v2GreengrassHelper.getConnectorDefinitionVersion(groupInformation);
 
-        log.info(objectPrettyPrinter.prettyPrint(getConnectorDefinitionVersionResult));
+        if (!optionalConnectorDefinitionVersion.isPresent()) {
+            log.info("No connectors found");
+            return;
+        }
+
+        log.info(objectPrettyPrinter.prettyPrint(optionalConnectorDefinitionVersion.get()));
     }
 
     @Override

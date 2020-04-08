@@ -7,10 +7,13 @@ import com.awslabs.iot.client.commands.iot.certificates.DeleteAllCertificatesCom
 import com.awslabs.iot.client.commands.iot.things.DeleteAllThingGroupsCommandHandler;
 import com.awslabs.iot.client.commands.iot.things.DeleteAllThingsCommandHandler;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
 public class CleanupCommandHandler implements GreengrassCommandHandler {
+    private final Logger log = LoggerFactory.getLogger(CleanupCommandHandler.class);
     private static final String CLEANUP = "cleanup";
     @Inject
     ParameterExtractor parameterExtractor;

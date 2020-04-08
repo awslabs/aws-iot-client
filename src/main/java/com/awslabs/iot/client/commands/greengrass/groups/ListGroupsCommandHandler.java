@@ -3,7 +3,7 @@ package com.awslabs.iot.client.commands.greengrass.groups;
 import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.greengrass.GreengrassCommandHandler;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
-import com.awslabs.iot.helpers.interfaces.V1GreengrassHelper;
+import com.awslabs.iot.helpers.interfaces.V2GreengrassHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +13,7 @@ public class ListGroupsCommandHandler implements GreengrassCommandHandler {
     private static final String LIST_GROUPS = "list-groups";
     private static final Logger log = LoggerFactory.getLogger(ListGroupsCommandHandler.class);
     @Inject
-    V1GreengrassHelper greengrassHelper;
+    V2GreengrassHelper v2GreengrassHelper;
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
@@ -25,8 +25,8 @@ public class ListGroupsCommandHandler implements GreengrassCommandHandler {
 
     @Override
     public void innerHandle(String input) {
-        greengrassHelper.listGroups()
-                .forEach(groupInformation -> log.info("  [" + groupInformation.getName() + " - " + groupInformation.getId() + "]"));
+        v2GreengrassHelper.getGroups()
+                .forEach(groupInformation -> log.info(String.join("", "  [", groupInformation.name(), " - ", groupInformation.id(), "]")));
     }
 
     @Override

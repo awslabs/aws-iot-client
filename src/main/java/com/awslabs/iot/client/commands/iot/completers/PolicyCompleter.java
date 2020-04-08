@@ -2,16 +2,16 @@ package com.awslabs.iot.client.commands.iot.completers;
 
 import com.awslabs.iot.client.completers.DynamicStringsCompleter;
 import com.awslabs.iot.client.helpers.CandidateHelper;
-import com.awslabs.iot.helpers.interfaces.V1PolicyHelper;
+import com.awslabs.iot.helpers.interfaces.V2IotHelper;
 import org.jline.reader.Candidate;
+import software.amazon.awssdk.services.iot.model.Policy;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 import java.util.List;
 
 public class PolicyCompleter extends DynamicStringsCompleter {
     @Inject
-    Provider<V1PolicyHelper> policyHelperProvider;
+    V2IotHelper v2IotHelper;
     @Inject
     CandidateHelper candidateHelper;
 
@@ -21,6 +21,6 @@ public class PolicyCompleter extends DynamicStringsCompleter {
 
     @Override
     public List<Candidate> getStrings() {
-        return candidateHelper.getCandidates(policyHelperProvider.get().listPolicyNames());
+        return candidateHelper.getCandidates(v2IotHelper.getPolicies().map(Policy::policyName));
     }
 }

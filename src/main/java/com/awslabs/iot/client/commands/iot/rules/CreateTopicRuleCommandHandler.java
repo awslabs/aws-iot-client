@@ -1,17 +1,24 @@
 package com.awslabs.iot.client.commands.iot.rules;
 
-import com.amazonaws.services.iot.AWSIotClient;
-import com.amazonaws.services.iot.model.*;
 import com.awslabs.general.helpers.interfaces.IoHelper;
+import com.awslabs.iam.data.ImmutableRoleName;
+import com.awslabs.iam.data.RoleName;
+import com.awslabs.iam.helpers.interfaces.V2IamHelper;
 import com.awslabs.iot.client.commands.iam.completers.RoleCompleter;
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
-import com.awslabs.iot.helpers.interfaces.V1IamHelper;
+import com.awslabs.iot.data.ImmutableRuleName;
+import com.awslabs.iot.data.RuleName;
+import com.awslabs.iot.helpers.interfaces.V2IotHelper;
 import org.jline.reader.Completer;
 import org.jline.reader.impl.completer.ArgumentCompleter;
 import org.jline.reader.impl.completer.NullCompleter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.services.iam.model.Role;
+import software.amazon.awssdk.services.iot.model.Action;
+import software.amazon.awssdk.services.iot.model.RepublishAction;
+import software.amazon.awssdk.services.iot.model.TopicRulePayload;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -26,9 +33,9 @@ public class CreateTopicRuleCommandHandler implements IotCommandHandler {
     @Inject
     RoleCompleter roleCompleter;
     @Inject
-    V1IamHelper iamHelper;
+    V2IamHelper v2IamHelper;
     @Inject
-    AWSIotClient awsIotClient;
+    V2IotHelper v2IotHelper;
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
@@ -52,32 +59,30 @@ public class CreateTopicRuleCommandHandler implements IotCommandHandler {
     public void innerHandle(String input) {
         List<String> parameters = parameterExtractor.getParameters(input);
 
-        String roleName = parameters.get(ROLE_NAME_POSITION);
+        RoleName roleName = ImmutableRoleName.builder().name(parameters.get(ROLE_NAME_POSITION)).build();
         String topicName = parameters.get(TOPIC_NAME_POSITION);
-        String ruleName = parameters.get(RULE_NAME_POSITION);
+        RuleName ruleName = ImmutableRuleName.builder().name(parameters.get(RULE_NAME_POSITION)).build();
         String sql = parameters.get(SQL_POSITION);
 
-        RepublishAction republishAction = new RepublishAction()
-                .withRoleArn(iamHelper.getRoleArn(roleName))
-                .withTopic(topicName);
+        // Throw an exception if the role isn't present
+        Role role = v2IamHelper.getRole(roleName).get();
 
-        Action action = new Action()
-                .withRepublish(republishAction);
+        RepublishAction republishAction = RepublishAction.builder()
+                .roleArn(role.arn())
+                .topic(topicName)
+                .build();
 
-        TopicRulePayload topicRulePayload = new TopicRulePayload()
-                .withRuleDisabled(false)
-                .withActions(action)
-                .withSql(sql);
+        Action action = Action.builder()
+                .republish(republishAction)
+                .build();
 
-        CreateTopicRuleRequest createTopicRuleRequest = new CreateTopicRuleRequest()
-                .withRuleName(ruleName)
-                .withTopicRulePayload(topicRulePayload);
+        TopicRulePayload topicRulePayload = TopicRulePayload.builder()
+                .ruleDisabled(false)
+                .actions(action)
+                .sql(sql)
+                .build();
 
-        try {
-            awsIotClient.createTopicRule(createTopicRuleRequest);
-        } catch (ResourceAlreadyExistsException e) {
-            log.info("It appears that rule already exists, please create a topic rule with another name");
-        }
+        v2IotHelper.createTopicRule(ruleName, topicRulePayload);
     }
 
     @Override

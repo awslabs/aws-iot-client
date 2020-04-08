@@ -3,18 +3,18 @@ package com.awslabs.iot.client.commands.iot.certificates;
 import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
-import com.awslabs.iot.helpers.interfaces.V1CertificateHelper;
+import com.awslabs.iot.helpers.interfaces.V2IotHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.services.iot.model.Certificate;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 public class ListCertificateIdsCommandHandler implements IotCommandHandler {
     private static final String LISTCERTIFICATEIDS = "list-certificate-ids";
     private static final Logger log = LoggerFactory.getLogger(ListCertificateIdsCommandHandler.class);
     @Inject
-    Provider<V1CertificateHelper> certificateHelperProvider;
+    V2IotHelper v2IotHelper;
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
@@ -26,8 +26,9 @@ public class ListCertificateIdsCommandHandler implements IotCommandHandler {
 
     @Override
     public void innerHandle(String input) {
-        certificateHelperProvider.get().listCertificateIds()
-                .forEach(certificateId -> log.info("  [" + certificateId + "]"));
+        v2IotHelper.getCertificates()
+                .map(Certificate::certificateId)
+                .forEach(certificateId -> log.info(String.join("", "  [", certificateId, "]")));
     }
 
     @Override

@@ -4,12 +4,13 @@ import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.iot.PolicyCommandHandlerWithCompletion;
 import com.awslabs.iot.client.commands.iot.completers.PolicyCompleter;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
-import com.awslabs.iot.helpers.interfaces.V1PolicyHelper;
+import com.awslabs.iot.data.ImmutablePolicyName;
+import com.awslabs.iot.data.PolicyName;
+import com.awslabs.iot.helpers.interfaces.V2IotHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 import java.util.List;
 
 public class DeletePolicyCommandHandlerWithCompletion implements PolicyCommandHandlerWithCompletion {
@@ -17,7 +18,7 @@ public class DeletePolicyCommandHandlerWithCompletion implements PolicyCommandHa
     private static final int POLICY_NAME_POSITION = 0;
     private static final Logger log = LoggerFactory.getLogger(DeletePolicyCommandHandlerWithCompletion.class);
     @Inject
-    Provider<V1PolicyHelper> policyHelperProvider;
+    V2IotHelper v2IotHelper;
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
@@ -33,9 +34,9 @@ public class DeletePolicyCommandHandlerWithCompletion implements PolicyCommandHa
     public void innerHandle(String input) {
         List<String> parameters = parameterExtractor.getParameters(input);
 
-        String policyName = parameters.get(POLICY_NAME_POSITION);
+        PolicyName policyName = ImmutablePolicyName.builder().name(parameters.get(POLICY_NAME_POSITION)).build();
 
-        policyHelperProvider.get().deletePolicy(policyName);
+        v2IotHelper.delete(policyName);
     }
 
     @Override

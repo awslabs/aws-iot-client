@@ -45,7 +45,7 @@ public interface CommandHandler {
 
         if (serviceName != null) {
             // Prefix service specific commands with their service name
-            return serviceName + "-" + getCommandString();
+            return String.join("", serviceName, "-", getCommandString());
         }
 
         return getCommandString();
@@ -104,7 +104,7 @@ public interface CommandHandler {
             logger = LoggerFactory.getLogger(CommandHandler.class);
         }
 
-        logger.info("No usage information has been provided for this command, but the required number of parameters were not specified.  Expected " + requiredParameters() + " parameter(s).");
+        logger.info(String.join("", "No usage information has been provided for this command, but the required number of parameters were not specified.  Expected ", String.valueOf(requiredParameters()), " parameter(s)."));
     }
 
     IoHelper getIoHelper();

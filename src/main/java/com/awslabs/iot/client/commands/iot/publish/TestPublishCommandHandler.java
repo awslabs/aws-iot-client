@@ -13,7 +13,7 @@ public class TestPublishCommandHandler extends RestPublishCommandHandler {
 
     @Override
     public void innerHandle(String input) {
-        publish(TEST_TOPIC, "[" + System.currentTimeMillis() + "] " + TEST_MESSAGE);
+        publish(TEST_TOPIC, String.join("", "[", String.valueOf(System.currentTimeMillis()), "] ", TEST_MESSAGE));
     }
 
     @Override
@@ -23,7 +23,7 @@ public class TestPublishCommandHandler extends RestPublishCommandHandler {
 
     @Override
     public String getHelp() {
-        return "Publishes the message '" + TEST_MESSAGE + "', with a leading epoch milliseconds timestamp, to the topic '" + TEST_TOPIC + "' using the REST APIs.";
+        return String.join("", "Publishes the message '", TEST_MESSAGE, "', with a leading epoch milliseconds timestamp, to the topic '", TEST_TOPIC, "' using the REST APIs.");
     }
 
     @Override

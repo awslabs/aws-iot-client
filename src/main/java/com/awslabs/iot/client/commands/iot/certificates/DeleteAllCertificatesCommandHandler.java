@@ -3,13 +3,14 @@ package com.awslabs.iot.client.commands.iot.certificates;
 import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
-import com.awslabs.iot.helpers.interfaces.V1CertificateHelper;
-import com.awslabs.iot.helpers.interfaces.V1ThingHelper;
+import com.awslabs.iot.helpers.interfaces.V2IotHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.services.greengrass.model.GroupInformation;
+import software.amazon.awssdk.services.iot.model.Certificate;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
+import java.util.Comparator;
 
 public class DeleteAllCertificatesCommandHandler implements IotCommandHandler {
     private static final String DELETEALLCERTIFICATES = "delete-all-certificates";
@@ -19,9 +20,7 @@ public class DeleteAllCertificatesCommandHandler implements IotCommandHandler {
     @Inject
     IoHelper ioHelper;
     @Inject
-    Provider<V1CertificateHelper> certificateHelperProvider;
-    @Inject
-    Provider<V1ThingHelper> thingHelperProvider;
+    V2IotHelper v2IotHelper;
 
     @Inject
     public DeleteAllCertificatesCommandHandler() {
@@ -29,8 +28,10 @@ public class DeleteAllCertificatesCommandHandler implements IotCommandHandler {
 
     @Override
     public void innerHandle(String input) {
-        certificateHelperProvider.get().listCertificateArns()
-                .forEach(certificateArn -> thingHelperProvider.get().deletePrincipal(certificateArn));
+        v2IotHelper.getCertificates()
+                // Sort the certificates by ID so we can get a general sense of how far along we are in the process of deleting them
+                .sorted(Comparator.comparing(Certificate::certificateId))
+                .forEach(certificate -> v2IotHelper.recursiveDelete(certificate));
     }
 
     @Override

@@ -1,33 +1,39 @@
 package com.awslabs.iot.client.commands.greengrass.groups;
 
-import com.amazonaws.services.greengrass.model.GroupInformation;
-import com.amazonaws.services.lambda.AWSLambdaClient;
-import com.amazonaws.services.lambda.model.DeleteFunctionRequest;
-import com.amazonaws.services.lambda.model.FunctionConfiguration;
-import com.amazonaws.services.lambda.model.ListFunctionsRequest;
 import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.greengrass.GreengrassCommandHandler;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
-import com.awslabs.iot.helpers.interfaces.V1GreengrassHelper;
-import com.awslabs.resultsiterator.v1.implementations.V1ResultsIterator;
+import com.awslabs.iot.data.GreengrassGroupId;
+import com.awslabs.iot.helpers.interfaces.V2GreengrassHelper;
+import com.awslabs.iot.helpers.interfaces.V2IotHelper;
+import com.awslabs.resultsiterator.v2.implementations.V2ResultsIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.services.greengrass.model.GroupInformation;
+import software.amazon.awssdk.services.lambda.LambdaClient;
+import software.amazon.awssdk.services.lambda.model.DeleteFunctionRequest;
+import software.amazon.awssdk.services.lambda.model.FunctionConfiguration;
+import software.amazon.awssdk.services.lambda.model.ListFunctionsRequest;
 
 import javax.inject.Inject;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class DeleteAllLambdaFunctionsCommandHandler implements GreengrassCommandHandler {
     private static final String DELETE_ALL_LAMBDA_FUNCTIONS = "delete-all-lambda-functions";
     private static final Logger log = LoggerFactory.getLogger(DeleteAllLambdaFunctionsCommandHandler.class);
     @Inject
-    V1GreengrassHelper greengrassHelper;
+    V2GreengrassHelper v2GreengrassHelper;
+    @Inject
+    V2IotHelper v2IotHelper;
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
     IoHelper ioHelper;
     @Inject
-    AWSLambdaClient awsLambdaClient;
+    LambdaClient lambdaClient;
 
     @Inject
     public DeleteAllLambdaFunctionsCommandHandler() {
@@ -35,76 +41,60 @@ public class DeleteAllLambdaFunctionsCommandHandler implements GreengrassCommand
 
     @Override
     public void innerHandle(String input) {
-        log.info("Listing all Greengrass groups...");
-
-        List<String> groupNames = greengrassHelper.listGroups()
-                .map(GroupInformation::getName)
+        List<String> nonImmutableGroupNames = v2GreengrassHelper.getGroups()
+                // Sort the groups by ID so we can get a general sense of how far along we are in the process of deleting them
+                .sorted(Comparator.comparing(GroupInformation::id))
+                // Don't include immutable groups
+                .filter(groupInformation -> !v2GreengrassHelper.isGroupImmutable(groupInformation))
+                .map(GroupInformation::name)
                 .collect(Collectors.toList());
-
-        if (groupNames.isEmpty()) {
-            log.info("No Greengrass groups found");
-            return;
-        }
-
-        log.info("Filtering out all immutable Greengrass groups...");
-
-        List<String> immutableGroupList = groupNames.stream()
-                .filter(groupName -> greengrassHelper.isGroupImmutable(groupName))
-                .collect(Collectors.toList());
-
-        List<String> groupsToDelete = groupNames.stream()
-                // Remove the immutable groups
-                .filter(groupName -> !immutableGroupList.contains(groupName))
-                .collect(Collectors.toList());
-
-        if (groupsToDelete.isEmpty()) {
-            log.info("No non-immutable Greengrass groups found");
-            return;
-        }
-
-        log.info("Found " + groupsToDelete.size() + " group(s) to delete");
-
-        immutableGroupList.forEach(groupName -> log.info("Skipping group [" + groupName + "] because it is an immutable group"));
 
         log.info("Listing all Lambda functions...");
 
-        List<FunctionConfiguration> functionConfigurations = new V1ResultsIterator<FunctionConfiguration>(awsLambdaClient, ListFunctionsRequest.class)
+        List<FunctionConfiguration> functionConfigurations = new V2ResultsIterator<FunctionConfiguration>(lambdaClient, ListFunctionsRequest.class)
                 .stream().collect(Collectors.toList());
 
-        log.info("Found " + functionConfigurations.size() + " Lambda function(s)");
+        log.info(String.join(" ", "Found", String.valueOf(functionConfigurations.size()), "Lambda function(s)"));
 
-        groupsToDelete
+        nonImmutableGroupNames
                 // Delete each group's Lambda functions
                 .forEach(groupName -> deleteGroupLambdas(functionConfigurations, groupName));
     }
 
+    private Optional<GroupInformation> getGroupInformationFromId(List<GroupInformation> groupInformationList, GreengrassGroupId greengrassGroupId) {
+        return groupInformationList.stream()
+                .filter(groupInformation -> greengrassGroupId.getGroupId().equals(groupInformation.id()))
+                .findFirst();
+    }
+
     private void deleteGroupLambdas(List<FunctionConfiguration> functionConfigurations, String groupName) {
-        String pattern = groupName + ".*";
+        String pattern = String.join("", groupName, ".*");
 
         List<FunctionConfiguration> functionsToDelete = functionConfigurations.stream()
-                .filter(functionConfiguration -> functionConfiguration.getFunctionName().matches(pattern))
+                .filter(functionConfiguration -> functionConfiguration.functionName().matches(pattern))
                 .collect(Collectors.toList());
 
         if (functionsToDelete.isEmpty()) {
-            log.info("No functions to delete for [" + groupName + "]");
+            log.info(String.join("", "No functions to delete for [", groupName, "]"));
             return;
         }
 
         functionsToDelete
                 .forEach(this::deleteFunction);
 
-        log.info("Deleted functions for group [" + groupName + "]");
+        log.info(String.join("", "Deleted functions for group [", groupName, "]"));
     }
 
     private void deleteFunction(FunctionConfiguration functionConfiguration) {
-        String name = functionConfiguration.getFunctionName();
+        String name = functionConfiguration.functionName();
 
-        log.info("Deleting function: " + name);
+        log.info(String.join(" ", "Deleting function:", name));
 
-        DeleteFunctionRequest deleteFunctionRequest = new DeleteFunctionRequest()
-                .withFunctionName(name);
+        DeleteFunctionRequest deleteFunctionRequest = DeleteFunctionRequest.builder()
+                .functionName(name)
+                .build();
 
-        awsLambdaClient.deleteFunction(deleteFunctionRequest);
+        lambdaClient.deleteFunction(deleteFunctionRequest);
     }
 
     @Override

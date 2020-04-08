@@ -15,7 +15,7 @@ import com.awslabs.iot.client.interfaces.AwsIotClientTerminal;
 import com.awslabs.iot.client.parameters.BasicParameterExtractor;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.data.*;
-import com.awslabs.resultsiterator.v1.V1HelperModule;
+import com.awslabs.resultsiterator.v2.V2HelperModule;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.ElementsIntoSet;
@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-@Module(includes = {GreengrassModule.class, IotModule.class, LogsModule.class, LambdaModule.class, V1HelperModule.class})
+@Module(includes = {GreengrassModule.class, IotModule.class, LogsModule.class, LambdaModule.class, V2HelperModule.class})
 public class AwsIotClientModule {
     private static final String CA_CERT_FILENAME = "ca.crt";
     private static final String CLIENT_CERT_FILENAME = "client.crt";

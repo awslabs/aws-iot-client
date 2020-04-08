@@ -2,15 +2,16 @@ package com.awslabs.iot.client.commands.greengrass.completers;
 
 import com.awslabs.iot.client.completers.DynamicStringsCompleter;
 import com.awslabs.iot.client.helpers.CandidateHelper;
-import com.awslabs.iot.helpers.interfaces.V1GreengrassHelper;
+import com.awslabs.iot.helpers.interfaces.V2GreengrassHelper;
 import org.jline.reader.Candidate;
+import software.amazon.awssdk.services.greengrass.model.GroupInformation;
 
 import javax.inject.Inject;
 import java.util.List;
 
 public class GreengrassGroupIdCompleter extends DynamicStringsCompleter {
     @Inject
-    V1GreengrassHelper greengrassHelper;
+    V2GreengrassHelper v2GreengrassHelper;
     @Inject
     CandidateHelper candidateHelper;
 
@@ -20,6 +21,6 @@ public class GreengrassGroupIdCompleter extends DynamicStringsCompleter {
 
     @Override
     public List<Candidate> getStrings() {
-        return candidateHelper.getCandidates(greengrassHelper.listGroupIds());
+        return candidateHelper.getCandidates(v2GreengrassHelper.getGroups().map(GroupInformation::id));
     }
 }

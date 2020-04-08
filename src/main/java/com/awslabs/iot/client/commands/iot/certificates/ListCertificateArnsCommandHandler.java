@@ -3,12 +3,12 @@ package com.awslabs.iot.client.commands.iot.certificates;
 import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
-import com.awslabs.iot.helpers.interfaces.V1CertificateHelper;
+import com.awslabs.iot.helpers.interfaces.V2IotHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.services.iot.model.Certificate;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 public class ListCertificateArnsCommandHandler implements IotCommandHandler {
     private static final String LISTCERTIFICATEARNS = "list-certificate-arns";
@@ -18,7 +18,7 @@ public class ListCertificateArnsCommandHandler implements IotCommandHandler {
     @Inject
     IoHelper ioHelper;
     @Inject
-    Provider<V1CertificateHelper> certificateHelperProvider;
+    V2IotHelper v2IotHelper;
 
     @Inject
     public ListCertificateArnsCommandHandler() {
@@ -26,8 +26,8 @@ public class ListCertificateArnsCommandHandler implements IotCommandHandler {
 
     @Override
     public void innerHandle(String input) {
-        certificateHelperProvider.get().listCertificateArns()
-                .forEach(certificateArn -> log.info("  [" + certificateArn + "]"));
+        v2IotHelper.getCertificates().map(Certificate::certificateArn)
+                .forEach(certificateArn -> log.info(String.join("", "  [", certificateArn, "]")));
     }
 
     @Override

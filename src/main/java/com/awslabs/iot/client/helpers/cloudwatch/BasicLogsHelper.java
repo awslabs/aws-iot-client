@@ -1,9 +1,9 @@
 package com.awslabs.iot.client.helpers.cloudwatch;
 
-import com.amazonaws.services.logs.AWSLogsClient;
-import com.amazonaws.services.logs.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.services.cloudwatchlogs.CloudWatchLogsClient;
+import software.amazon.awssdk.services.cloudwatchlogs.model.*;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class BasicLogsHelper implements LogsHelper {
     private static final Logger log = LoggerFactory.getLogger(BasicLogsHelper.class);
     @Inject
-    AWSLogsClient awsLogsClient;
+    CloudWatchLogsClient cloudWatchLogsClient;
 
     @Inject
     public BasicLogsHelper() {
@@ -22,13 +22,14 @@ public class BasicLogsHelper implements LogsHelper {
 
     @Override
     public List<OutputLogEvent> getLogs(String logGroupName, List<String> searchStrings) {
-        DescribeLogStreamsRequest describeLogStreamsRequest = new DescribeLogStreamsRequest()
-                .withLogGroupName(logGroupName);
+        DescribeLogStreamsRequest describeLogStreamsRequest = DescribeLogStreamsRequest.builder()
+                .logGroupName(logGroupName)
+                .build();
 
-        DescribeLogStreamsResult describeLogStreamsResult = awsLogsClient.describeLogStreams(describeLogStreamsRequest);
+        DescribeLogStreamsResponse describeLogStreamsResult = cloudWatchLogsClient.describeLogStreams(describeLogStreamsRequest);
 
-        List<String> logStreamNames = describeLogStreamsResult.getLogStreams().stream()
-                .map(LogStream::getLogStreamName)
+        List<String> logStreamNames = describeLogStreamsResult.logStreams().stream()
+                .map(LogStream::logStreamName)
                 .collect(Collectors.toList());
 
         final List<OutputLogEvent> tempOutputLogEventList = new ArrayList<>();
@@ -36,25 +37,26 @@ public class BasicLogsHelper implements LogsHelper {
         logStreamNames.stream()
                 .forEach(logStreamName -> {
 
-                    GetLogEventsRequest getLogEventsRequest = new GetLogEventsRequest()
-                            .withLogGroupName(logGroupName)
-                            .withLogStreamName(logStreamName);
+                    GetLogEventsRequest getLogEventsRequest = GetLogEventsRequest.builder()
+                            .logGroupName(logGroupName)
+                            .logStreamName(logStreamName)
+                            .build();
 
-                    GetLogEventsResult getLogEventsResult = awsLogsClient.getLogEvents(getLogEventsRequest);
+                    GetLogEventsResponse getLogEventsResult = cloudWatchLogsClient.getLogEvents(getLogEventsRequest);
 
                     String currentToken = null;
                     String nextToken = null;
 
                     do {
                         currentToken = nextToken;
-                        tempOutputLogEventList.addAll(getLogEventsResult.getEvents());
-                        nextToken = getLogEventsResult.getNextForwardToken();
+                        tempOutputLogEventList.addAll(getLogEventsResult.events());
+                        nextToken = getLogEventsResult.nextForwardToken();
                     } while (currentToken != nextToken);
                 });
 
         List<OutputLogEvent> outputLogEventList = tempOutputLogEventList.stream()
-                .filter(outputLogEvent -> searchStrings.parallelStream().allMatch(outputLogEvent.getMessage()::contains))
-                .sorted(Comparator.comparing(OutputLogEvent::getIngestionTime))
+                .filter(outputLogEvent -> searchStrings.parallelStream().allMatch(outputLogEvent.message()::contains))
+                .sorted(Comparator.comparing(OutputLogEvent::ingestionTime))
                 .collect(Collectors.toList());
 
         return outputLogEventList;

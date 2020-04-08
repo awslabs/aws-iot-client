@@ -1,11 +1,14 @@
 package com.awslabs.iot.client.commands.greengrass.completers;
 
 import com.awslabs.iot.client.helpers.CandidateHelper;
-import com.awslabs.iot.helpers.interfaces.V1GreengrassHelper;
+import com.awslabs.iot.data.ImmutableGreengrassGroupId;
+import com.awslabs.iot.helpers.interfaces.V2GreengrassHelper;
 import org.jline.reader.Candidate;
 import org.jline.reader.Completer;
 import org.jline.reader.LineReader;
 import org.jline.reader.ParsedLine;
+import software.amazon.awssdk.services.greengrass.model.Deployment;
+import software.amazon.awssdk.services.greengrass.model.GroupInformation;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -14,7 +17,7 @@ import java.util.stream.Stream;
 
 public class GreengrassGroupIdAndDeploymentIdCompleter implements Completer {
     @Inject
-    V1GreengrassHelper greengrassHelper;
+    V2GreengrassHelper v2GreengrassHelper;
     @Inject
     CandidateHelper candidateHelper;
 
@@ -24,7 +27,7 @@ public class GreengrassGroupIdAndDeploymentIdCompleter implements Completer {
 
     @Override
     public void complete(LineReader reader, ParsedLine line, List<Candidate> candidates) {
-        List<String> groupIds = greengrassHelper.listGroupIds().collect(Collectors.toList());
+        List<String> groupIds = v2GreengrassHelper.getGroups().map(GroupInformation::id).collect(Collectors.toList());
 
         // Flow:
         //   If there is only one argument we want the list of group IDs.  This is the argument completer validating that the group ID exists.
@@ -40,7 +43,8 @@ public class GreengrassGroupIdAndDeploymentIdCompleter implements Completer {
 
         // This happens when we are entering the deployment ID
         if (groupIds.contains(previousWord)) {
-            addValuesAsCandidates(candidates, greengrassHelper.listDeploymentIds(previousWord));
+            ImmutableGreengrassGroupId greengrassGroupId = ImmutableGreengrassGroupId.builder().groupId(previousWord).build();
+            addValuesAsCandidates(candidates, v2GreengrassHelper.getDeployments(greengrassGroupId).map(Deployment::deploymentId));
             return;
         }
     }

@@ -1,11 +1,11 @@
 package com.awslabs.iot.client.commands.logs;
 
-import com.amazonaws.services.logs.model.OutputLogEvent;
 import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.helpers.cloudwatch.LogsHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.services.cloudwatchlogs.model.OutputLogEvent;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -33,8 +33,7 @@ public class IotGetLogsCommandHandler implements LogsCommandHandler {
 
         List<OutputLogEvent> logs = logsHelperProvider.get().getLogs(logGroupName, parameters);
 
-        logs.stream()
-                .forEach(outputLogEvent -> log.info(outputLogEvent.getMessage()));
+        logs.forEach(outputLogEvent -> log.info(outputLogEvent.message()));
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.awslabs.iot.client.helpers.cloudwatch;
 
-import com.amazonaws.services.logs.model.OutputLogEvent;
+import software.amazon.awssdk.services.cloudwatchlogs.model.OutputLogEvent;
 
 import java.util.List;
 

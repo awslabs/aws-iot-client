@@ -17,7 +17,7 @@ public interface AwsIotClientTerminal {
     String BLANK_STRING = "";
 
     default String getPrompt() {
-        return getPromptColor() + "> " + getTextColor();
+        return String.join("", getPromptColor(), "> ", getTextColor());
     }
 
     String getTextColor();
@@ -35,7 +35,7 @@ public interface AwsIotClientTerminal {
             fullCommands.add(fullCommandString);
 
             if (fullCommands.size() == previousSize) {
-                String message = "Duplicate command string found [" + fullCommandString + "]";
+                String message = String.join("", "Duplicate command string found [", fullCommandString, "]");
                 write(message);
                 throw new UnsupportedOperationException(message);
             }
@@ -76,7 +76,7 @@ public interface AwsIotClientTerminal {
             }
 
             if (!handled) {
-                write("The command [" + command + "] was not understood.");
+                write(String.join("", "The command [", command, "] was not understood."));
             }
         }
     }

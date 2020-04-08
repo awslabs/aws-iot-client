@@ -1,15 +1,14 @@
 package com.awslabs.iot.client.commands.iot.things;
 
-import com.amazonaws.services.iot.model.GroupNameAndArn;
 import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
-import com.awslabs.iot.helpers.interfaces.V1ThingGroupHelper;
+import com.awslabs.iot.helpers.interfaces.V2IotHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.services.iot.model.GroupNameAndArn;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 public class DeleteAllThingGroupsCommandHandler implements IotCommandHandler {
     private static final String DELETEALLTHINGGROUPS = "delete-all-thing-groups";
@@ -19,7 +18,7 @@ public class DeleteAllThingGroupsCommandHandler implements IotCommandHandler {
     @Inject
     IoHelper ioHelper;
     @Inject
-    Provider<V1ThingGroupHelper> thingGroupHelperProvider;
+    V2IotHelper v2IotHelper;
 
     @Inject
     public DeleteAllThingGroupsCommandHandler() {
@@ -27,15 +26,14 @@ public class DeleteAllThingGroupsCommandHandler implements IotCommandHandler {
 
     @Override
     public void innerHandle(String input) {
-        V1ThingGroupHelper thingGroupHelper = thingGroupHelperProvider.get();
-        thingGroupHelper.listThingGroups()
-                .forEach(groupNameAndArn -> deleteAndLog(thingGroupHelper, groupNameAndArn));
+        v2IotHelper.getThingGroups()
+                .forEach(groupNameAndArn -> deleteAndLog(groupNameAndArn));
     }
 
-    private void deleteAndLog(V1ThingGroupHelper thingGroupHelper, GroupNameAndArn groupNameAndArn) {
-        thingGroupHelper.deleteThingGroup(groupNameAndArn.getGroupName());
+    private void deleteAndLog(GroupNameAndArn groupNameAndArn) {
+        v2IotHelper.delete(groupNameAndArn);
 
-        log.info("Deleted thing group [{}]", groupNameAndArn.getGroupName());
+        log.info("Deleted thing group [{}]", groupNameAndArn.groupName());
     }
 
     @Override

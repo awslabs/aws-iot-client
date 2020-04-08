@@ -1,17 +1,17 @@
 package com.awslabs.iot.client.commands.iot.things;
 
-import com.amazonaws.services.iot.model.ThingAttribute;
 import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
-import com.awslabs.iot.exceptions.ThingAttachedToPrincipalsException;
-import com.awslabs.iot.helpers.interfaces.V1ThingHelper;
-import io.vavr.control.Try;
+import com.awslabs.iot.data.ImmutableThingName;
+import com.awslabs.iot.data.ThingName;
+import com.awslabs.iot.helpers.interfaces.V2IotHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.services.iot.model.ThingAttribute;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
+import java.util.Comparator;
 
 public class DeleteAllThingsCommandHandler implements IotCommandHandler {
     private static final String DELETEALLTHINGS = "delete-all-things";
@@ -21,7 +21,7 @@ public class DeleteAllThingsCommandHandler implements IotCommandHandler {
     @Inject
     IoHelper ioHelper;
     @Inject
-    Provider<V1ThingHelper> thingHelperProvider;
+    V2IotHelper v2IotHelper;
 
     @Inject
     public DeleteAllThingsCommandHandler() {
@@ -29,32 +29,24 @@ public class DeleteAllThingsCommandHandler implements IotCommandHandler {
 
     @Override
     public void innerHandle(String input) {
-        V1ThingHelper thingHelper = thingHelperProvider.get();
-
-        thingHelper.listThingAttributes()
-                .forEach(thingAttributes -> attemptDeleteThing(thingHelper, thingAttributes));
+        v2IotHelper.getThings()
+                // Sort the things by ID so we can get a general sense of how far along we are in the process of deleting them
+                .sorted(Comparator.comparing(ThingAttribute::thingName))
+                .forEach(this::attemptDeleteThing);
     }
 
-    private void attemptDeleteThing(V1ThingHelper thingHelper, ThingAttribute thingAttribute) {
-        String thingName = thingAttribute.getThingName();
+    private void attemptDeleteThing(ThingAttribute thingAttribute) {
+        ThingName thingName = ImmutableThingName.builder().name(thingAttribute.thingName()).build();
 
-        if (thingHelper.isThingImmutable(thingName)) {
-            log.info("Skipping thing [" + thingName + "] because it is an immutable thing");
+        if (v2IotHelper.isThingImmutable(thingName)) {
+            log.info(String.join("", "Skipping thing [", thingName.getName(), "] because it is an immutable thing"));
             return;
         }
 
-        log.info("Deleting thing [" + thingName + "]");
+        log.info(String.join("", "Deleting thing [", thingName.getName(), "]"));
 
-        Try.run(() -> thingHelper.delete(thingName))
-                .recover(ThingAttachedToPrincipalsException.class, this::logAndSkipDelete)
-                // Rethrow all other exceptions
-                .get();
-    }
-
-    private Void logAndSkipDelete(ThingAttachedToPrincipalsException thingAttachedToPrincipalsException) {
-        log.info("Thing is still attached to principals, skipping");
-
-        return null;
+        // Rethrow all other exceptions
+        v2IotHelper.delete(thingName);
     }
 
     @Override
