@@ -2,7 +2,7 @@ package com.awslabs.iot.client.commands.iot.publish;
 
 import com.amazonaws.services.iotdata.AWSIotDataClient;
 import com.amazonaws.services.iotdata.model.PublishRequest;
-import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
+import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 
 import javax.inject.Inject;

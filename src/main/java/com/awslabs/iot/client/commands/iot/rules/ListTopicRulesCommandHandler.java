@@ -1,16 +1,17 @@
 package com.awslabs.iot.client.commands.iot.rules;
 
-import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
-import com.awslabs.aws.iot.resultsiterator.helpers.v1.interfaces.V1RuleHelper;
+import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
+import com.awslabs.iot.helpers.interfaces.V1RuleHelper;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
 public class ListTopicRulesCommandHandler implements IotCommandHandler {
     private static final String LISTTOPICRULES = "list-topic-rules";
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(ListTopicRulesCommandHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(ListTopicRulesCommandHandler.class);
     @Inject
     V1RuleHelper ruleHelper;
     @Inject

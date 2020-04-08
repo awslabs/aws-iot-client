@@ -2,13 +2,14 @@ package com.awslabs.iot.client.commands.iot.certificates;
 
 import com.amazonaws.services.iot.model.Certificate;
 import com.amazonaws.services.iot.model.Policy;
-import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
-import com.awslabs.aws.iot.resultsiterator.helpers.v1.interfaces.V1CertificateHelper;
-import com.awslabs.aws.iot.resultsiterator.helpers.v1.interfaces.V1PolicyHelper;
-import com.awslabs.aws.iot.resultsiterator.helpers.v1.interfaces.V1ThingHelper;
+import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
+import com.awslabs.iot.helpers.interfaces.V1CertificateHelper;
+import com.awslabs.iot.helpers.interfaces.V1PolicyHelper;
+import com.awslabs.iot.helpers.interfaces.V1ThingHelper;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -16,7 +17,7 @@ import java.util.stream.Stream;
 
 public class CleanUpCertificatesCommandHandler implements IotCommandHandler {
     private static final String CLEANUPCERTIFICATES = "clean-up-certificates";
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(CleanUpCertificatesCommandHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(CleanUpCertificatesCommandHandler.class);
     @Inject
     Provider<V1CertificateHelper> certificateHelperProvider;
     @Inject

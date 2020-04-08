@@ -10,13 +10,14 @@ import org.jline.reader.Completer;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Set;
 
 public class AwsIotClientConsoleTerminal implements AwsIotClientTerminal {
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(AwsIotClientConsoleTerminal.class);
+    private static final Logger log = LoggerFactory.getLogger(AwsIotClientConsoleTerminal.class);
     @Inject
     CommandHandlerProvider commandHandlerProvider;
     @Inject
@@ -64,9 +65,6 @@ public class AwsIotClientConsoleTerminal implements AwsIotClientTerminal {
 
     @Override
     public void start() throws Exception {
-        // Show the version and git info
-        showVersionInformation();
-
         // Show the dangerous mode banner if necessary
         showDangerousModeBannerIfNecessary();
 

@@ -1,16 +1,8 @@
 package com.awslabs.iot.client.commands.iot.mosh;
 
-import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
-import com.awslabs.iot.client.commands.iot.completers.ThingCompleter;
-import com.awslabs.iot.client.helpers.iot.interfaces.WebsocketsHelper;
-import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
-import io.vertx.core.Vertx;
-import org.slf4j.Logger;
-
-import javax.inject.Inject;
-
-public class BinaryMoshClientCommandHandler implements MoshClientCommandHandler {
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(BinaryMoshClientCommandHandler.class);
+public class BinaryMoshClientCommandHandler {// implements MoshClientCommandHandler {
+    /*
+    private static final Logger log = LoggerFactory.getLogger(BinaryMoshClientCommandHandler.class);
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
@@ -57,4 +49,5 @@ public class BinaryMoshClientCommandHandler implements MoshClientCommandHandler 
     public MoshTopics getMoshTopics() {
         return this.moshTopics;
     }
+     */
 }

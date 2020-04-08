@@ -1,31 +1,13 @@
 package com.awslabs.iot.client.commands.iot.mosh;
 
-import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
-import com.awslabs.iot.client.commands.iot.ThingCommandHandlerWithCompletion;
-import com.awslabs.iot.client.commands.iot.completers.ThingCompleter;
-import com.awslabs.iot.client.helpers.iot.interfaces.WebsocketsHelper;
-import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import com.google.gson.Gson;
-import io.vavr.control.Try;
-import io.vertx.core.Vertx;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.datagram.DatagramSocket;
-import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.slf4j.Logger;
-
 import javax.inject.Inject;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class MoshServerCommandHandler implements ThingCommandHandlerWithCompletion {
+public class MoshServerCommandHandler { // implements ThingCommandHandlerWithCompletion {
+    @Inject
+    public MoshServerCommandHandler() {
+    }
+
+    /*
     public static final int CLIENT_THING_NAME_POSITION = 1;
     private static final String MOSH_CONNECT_REGEX = "^MOSH CONNECT ([0-9]{5}) ([^\\s]{22})$";
     private static final Pattern MOSH_CONNECT_REGEX_PATTERN = Pattern.compile(MOSH_CONNECT_REGEX);
@@ -34,7 +16,7 @@ public class MoshServerCommandHandler implements ThingCommandHandlerWithCompleti
     private static final String LISTEN_IP = "127.0.0.1";
     private static final int LISTEN_PORT_OFFSET = 4096;
     private static final BiMap<Integer, DatagramSocket> datagramServerPorts = HashBiMap.create();
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(MoshServerCommandHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(MoshServerCommandHandler.class);
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
@@ -156,16 +138,24 @@ public class MoshServerCommandHandler implements ThingCommandHandlerWithCompleti
         socket.send(Buffer.buffer(publishMessage.getPayload()), serverPort, LISTEN_IP, datagramSocketAsyncResult -> {
         });
     }
-
-    /**
-     * Runs a program and waits until it exits
-     *
-     * @param program
-     * @param arguments
-     * @param environmentVariables
-     * @param stdoutConsumer
-     * @param stderrConsumer
      */
+
+/**
+ * Runs a program and waits until it exits
+ *
+ * @param program
+ * @param arguments
+ * @param environmentVariables
+ * @param stdoutConsumer
+ * @param stderrConsumer
+ * <p>
+ * Gets the output from a process and feeds it to two optional consumers (stdout and stderr)
+ * @param pb
+ * @param waitForExit
+ * @param stdoutConsumer
+ * @param stderrConsumer
+ */
+    /*
     private void runProgramAndBlock(String program, Optional<List<String>> arguments, Optional<Map<String, String>> environmentVariables, Optional<Consumer<String>> stdoutConsumer, Optional<Consumer<String>> stderrConsumer) {
         List<String> programAndArguments = new ArrayList();
         programAndArguments.add(program);
@@ -178,15 +168,17 @@ public class MoshServerCommandHandler implements ThingCommandHandlerWithCompleti
         });
         getOutputFromProcess(pb, true, stdoutConsumer, stderrConsumer);
     }
-
-    /**
-     * Gets the output from a process and feeds it to two optional consumers (stdout and stderr)
-     *
-     * @param pb
-     * @param waitForExit
-     * @param stdoutConsumer
-     * @param stderrConsumer
      */
+
+/**
+ * Gets the output from a process and feeds it to two optional consumers (stdout and stderr)
+ *
+ * @param pb
+ * @param waitForExit
+ * @param stdoutConsumer
+ * @param stderrConsumer
+ */
+    /*
     private void getOutputFromProcess(ProcessBuilder pb, boolean waitForExit, Optional<Consumer<String>> stdoutConsumer, Optional<Consumer<String>> stderrConsumer) {
         try {
             Process p = pb.start();
@@ -214,9 +206,7 @@ public class MoshServerCommandHandler implements ThingCommandHandlerWithCompleti
 
     private void createNewServer(String serverThingName, MqttClient client) {
         try {
-            /**
-             * Run mosh-server and attempt to extract the port and key information from stdout
-             */
+             // Run mosh-server and attempt to extract the port and key information from stdout
 
             List<String> stdoutLines = new ArrayList<>();
             List<String> stderrLines = new ArrayList<>();
@@ -315,4 +305,5 @@ public class MoshServerCommandHandler implements ThingCommandHandlerWithCompleti
     public ThingCompleter getThingCompleter() {
         return this.thingCompleter;
     }
+    */
 }

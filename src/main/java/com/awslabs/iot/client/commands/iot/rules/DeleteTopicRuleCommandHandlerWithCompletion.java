@@ -3,11 +3,12 @@ package com.awslabs.iot.client.commands.iot.rules;
 import com.amazonaws.services.iot.AWSIotClient;
 import com.amazonaws.services.iot.model.DeleteTopicRuleRequest;
 import com.amazonaws.services.iot.model.UnauthorizedException;
-import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
+import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.iot.RuleCommandHandlerWithCompletion;
 import com.awslabs.iot.client.commands.iot.completers.RuleCompleter;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 public class DeleteTopicRuleCommandHandlerWithCompletion implements RuleCommandHandlerWithCompletion {
     private static final String DELETETOPICRULE = "delete-topic-rule";
     private static final int TOPIC_RULE_NAME_POSITION = 0;
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(DeleteTopicRuleCommandHandlerWithCompletion.class);
+    private static final Logger log = LoggerFactory.getLogger(DeleteTopicRuleCommandHandlerWithCompletion.class);
     @Inject
     AWSIotClient awsIotClient;
     @Inject

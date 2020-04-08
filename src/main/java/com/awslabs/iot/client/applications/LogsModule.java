@@ -7,17 +7,31 @@ import com.awslabs.iot.client.commands.logs.GetLogsCommandHandler;
 import com.awslabs.iot.client.commands.logs.IotGetLogsCommandHandler;
 import com.awslabs.iot.client.helpers.cloudwatch.BasicLogsHelper;
 import com.awslabs.iot.client.helpers.cloudwatch.LogsHelper;
-import com.google.inject.AbstractModule;
-import com.google.inject.multibindings.Multibinder;
+import dagger.Module;
+import dagger.Provides;
+import dagger.multibindings.ElementsIntoSet;
 
-class LogsModule extends AbstractModule {
-    @Override
-    protected void configure() {
-        bind(AWSLogsClient.class).toProvider(() -> (AWSLogsClient) AWSLogsClientBuilder.defaultClient());
-        bind(LogsHelper.class).to(BasicLogsHelper.class);
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
-        Multibinder<CommandHandler> commandHandlerMultibinder = Multibinder.newSetBinder(binder(), CommandHandler.class);
-        commandHandlerMultibinder.addBinding().to(GetLogsCommandHandler.class);
-        commandHandlerMultibinder.addBinding().to(IotGetLogsCommandHandler.class);
+@Module
+public class LogsModule {
+    @Provides
+    public AWSLogsClient awsLogsClient() {
+        return (AWSLogsClient) AWSLogsClientBuilder.defaultClient();
+    }
+
+    @Provides
+    public LogsHelper logsHelper(BasicLogsHelper basicLogsHelper) {
+        return basicLogsHelper;
+    }
+
+    @Provides
+    @ElementsIntoSet
+    public Set<CommandHandler> commandHandlerSet(GetLogsCommandHandler getLogsCommandHandler,
+                                                 IotGetLogsCommandHandler iotGetLogsCommandHandler) {
+        return new HashSet<>(Arrays.asList(getLogsCommandHandler,
+                iotGetLogsCommandHandler));
     }
 }

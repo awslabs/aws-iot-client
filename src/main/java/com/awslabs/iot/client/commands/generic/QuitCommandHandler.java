@@ -1,6 +1,6 @@
 package com.awslabs.iot.client.commands.generic;
 
-import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
+import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.interfaces.CommandHandler;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 

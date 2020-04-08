@@ -1,12 +1,13 @@
 package com.awslabs.iot.client.commands.greengrass.groups;
 
 import com.amazonaws.services.greengrass.model.Deployment;
-import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
-import com.awslabs.aws.iot.resultsiterator.helpers.v1.interfaces.V1GreengrassHelper;
+import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.greengrass.GreengrassGroupCommandHandlerWithGroupIdCompletion;
 import com.awslabs.iot.client.commands.greengrass.completers.GreengrassGroupIdCompleter;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
+import com.awslabs.iot.helpers.interfaces.V1GreengrassHelper;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.Optional;
 public class GetLatestDeploymentStatusCommandHandlerWithGroupIdCompletion implements GreengrassGroupCommandHandlerWithGroupIdCompletion {
     private static final String GET_LATEST_DEPLOYMENT_STATUS = "get-latest-deployment-status";
     private static final int GROUP_ID_POSITION = 0;
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(GetLatestDeploymentStatusCommandHandlerWithGroupIdCompletion.class);
+    private static final Logger log = LoggerFactory.getLogger(GetLatestDeploymentStatusCommandHandlerWithGroupIdCompletion.class);
     @Inject
     V1GreengrassHelper greengrassHelper;
     @Inject

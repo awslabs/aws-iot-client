@@ -1,23 +1,20 @@
-import com.awslabs.iot.client.applications.AwsIotClientConsole;
-import com.awslabs.iot.client.commands.iot.mosh.BinaryMoshClientCommandHandler;
 import com.awslabs.iot.client.commands.iot.mosh.MoshClientCommandHandler;
-import com.google.inject.Injector;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 public class MoshClientTest {
-    private Injector injector;
     private MoshClientCommandHandler moshClientCommandHandler;
 
     @Before
     public void setup() {
-        injector = AwsIotClientConsole.getInjector();
+        TestInjector testInjector = DaggerTestInjector.create();
 
         // Prevents DefaultAwsRegionProviderChain failures in environments with no AWS configuration
         System.setProperty("aws.region", "us-east-1");
 
-        moshClientCommandHandler = injector.getInstance(BinaryMoshClientCommandHandler.class);
+        throw new RuntimeException("Not implemented yet");
+//        moshClientCommandHandler = testInjector.moshClientCommandHandler();
     }
 
     @Test
