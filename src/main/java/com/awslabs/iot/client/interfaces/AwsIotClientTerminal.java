@@ -1,7 +1,6 @@
 package com.awslabs.iot.client.interfaces;
 
 import com.awslabs.iot.client.commands.interfaces.CommandHandler;
-import com.jcabi.manifests.Manifests;
 import io.vavr.control.Try;
 import org.jline.reader.Completer;
 import org.jline.reader.LineReader;
@@ -15,8 +14,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public interface AwsIotClientTerminal {
-    String X_GIT_BRANCH = "X-Git-Branch";
-    String UNKNOWN_BRANCH = "UNKNOWN BRANCH";
     String BLANK_STRING = "";
 
     default String getPrompt() {
@@ -26,23 +23,6 @@ public interface AwsIotClientTerminal {
     String getTextColor();
 
     String getPromptColor();
-
-    default void showVersionInformation() {
-        String versionInformation = "Running in standalone debug mode";
-
-        String gitCommit = AwsIotClientTerminal.class.getPackage().getImplementationVersion();
-        String gitBranch = UNKNOWN_BRANCH;
-
-        if (Manifests.exists(X_GIT_BRANCH)) {
-            gitBranch = Manifests.read(X_GIT_BRANCH);
-        }
-
-        if (gitCommit != null) {
-            versionInformation = "Running " + gitCommit + ", " + gitBranch;
-        }
-
-        write(versionInformation);
-    }
 
     default void mainLoop() throws IOException {
         Set<String> fullCommands = new HashSet<>();

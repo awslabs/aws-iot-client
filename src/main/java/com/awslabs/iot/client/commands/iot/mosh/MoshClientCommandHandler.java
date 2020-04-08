@@ -1,34 +1,9 @@
 package com.awslabs.iot.client.commands.iot.mosh;
 
 import com.awslabs.iot.client.commands.iot.ThingCommandHandlerWithCompletion;
-import com.awslabs.iot.client.helpers.iot.interfaces.WebsocketsHelper;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import com.google.gson.Gson;
-import io.vavr.control.Try;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
-import io.vertx.core.Vertx;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.datagram.DatagramSocket;
-import org.apache.commons.lang3.SystemUtils;
-import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.slf4j.Logger;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Optional;
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 public interface MoshClientCommandHandler extends ThingCommandHandlerWithCompletion {
+    /*
     String MOSH = "mosh-client";
     int SERVER_THING_NAME_POSITION = 0;
     String LISTEN_IP = "127.0.0.1";
@@ -318,4 +293,5 @@ public interface MoshClientCommandHandler extends ThingCommandHandlerWithComplet
     default int requiredParameters() {
         return 1;
     }
+     */
 }

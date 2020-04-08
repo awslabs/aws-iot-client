@@ -2,13 +2,14 @@ package com.awslabs.iot.client.commands.greengrass.subscriptions;
 
 import com.amazonaws.services.greengrass.model.GetSubscriptionDefinitionVersionResult;
 import com.amazonaws.services.greengrass.model.VersionInformation;
-import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
-import com.awslabs.aws.iot.resultsiterator.helpers.v1.interfaces.V1GreengrassHelper;
+import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.greengrass.GreengrassGroupCommandHandlerWithGroupIdCompletion;
 import com.awslabs.iot.client.commands.greengrass.completers.GreengrassGroupIdCompleter;
 import com.awslabs.iot.client.helpers.json.interfaces.ObjectPrettyPrinter;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
+import com.awslabs.iot.helpers.interfaces.V1GreengrassHelper;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.Optional;
 public class GetLatestSubscriptionDefinitionVersionCommandHandlerWithGroupIdCompletion implements GreengrassGroupCommandHandlerWithGroupIdCompletion {
     private static final String GET_LATEST_SUBSCRIPTION_DEFINITION = "get-latest-subscription-definition";
     private static final int GROUP_ID_POSITION = 0;
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(GetLatestSubscriptionDefinitionVersionCommandHandlerWithGroupIdCompletion.class);
+    private static final Logger log = LoggerFactory.getLogger(GetLatestSubscriptionDefinitionVersionCommandHandlerWithGroupIdCompletion.class);
     @Inject
     V1GreengrassHelper greengrassHelper;
     @Inject

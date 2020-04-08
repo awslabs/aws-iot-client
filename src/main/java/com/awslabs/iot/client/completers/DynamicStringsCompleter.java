@@ -15,7 +15,7 @@ import org.jline.reader.impl.completer.StringsCompleter;
 
 import java.util.List;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static dagger.internal.Preconditions.checkNotNull;
 
 public abstract class DynamicStringsCompleter extends StringsCompleter {
     @Override

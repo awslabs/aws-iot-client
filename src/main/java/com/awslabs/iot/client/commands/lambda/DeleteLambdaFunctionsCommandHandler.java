@@ -4,18 +4,19 @@ import com.amazonaws.services.lambda.AWSLambdaClient;
 import com.amazonaws.services.lambda.model.DeleteFunctionRequest;
 import com.amazonaws.services.lambda.model.FunctionConfiguration;
 import com.amazonaws.services.lambda.model.ListFunctionsRequest;
-import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
-import com.awslabs.aws.iot.resultsiterator.helpers.v1.V1ResultsIterator;
+import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.interfaces.CommandHandler;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
+import com.awslabs.resultsiterator.v1.implementations.V1ResultsIterator;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.stream.Stream;
 
 public class DeleteLambdaFunctionsCommandHandler implements CommandHandler {
     private static final String LAMBDADELETE = "lambda-delete";
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(DeleteLambdaFunctionsCommandHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(DeleteLambdaFunctionsCommandHandler.class);
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject

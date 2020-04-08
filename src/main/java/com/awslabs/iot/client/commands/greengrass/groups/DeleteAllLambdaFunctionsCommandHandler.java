@@ -5,12 +5,13 @@ import com.amazonaws.services.lambda.AWSLambdaClient;
 import com.amazonaws.services.lambda.model.DeleteFunctionRequest;
 import com.amazonaws.services.lambda.model.FunctionConfiguration;
 import com.amazonaws.services.lambda.model.ListFunctionsRequest;
-import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
-import com.awslabs.aws.iot.resultsiterator.helpers.v1.V1ResultsIterator;
-import com.awslabs.aws.iot.resultsiterator.helpers.v1.interfaces.V1GreengrassHelper;
+import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.greengrass.GreengrassCommandHandler;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
+import com.awslabs.iot.helpers.interfaces.V1GreengrassHelper;
+import com.awslabs.resultsiterator.v1.implementations.V1ResultsIterator;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 
 public class DeleteAllLambdaFunctionsCommandHandler implements GreengrassCommandHandler {
     private static final String DELETE_ALL_LAMBDA_FUNCTIONS = "delete-all-lambda-functions";
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(DeleteAllLambdaFunctionsCommandHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(DeleteAllLambdaFunctionsCommandHandler.class);
     @Inject
     V1GreengrassHelper greengrassHelper;
     @Inject

@@ -2,15 +2,16 @@ package com.awslabs.iot.client.commands.iot.rules;
 
 import com.amazonaws.services.iot.AWSIotClient;
 import com.amazonaws.services.iot.model.*;
-import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
-import com.awslabs.aws.iot.resultsiterator.helpers.v1.interfaces.V1IamHelper;
+import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.iam.completers.RoleCompleter;
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
+import com.awslabs.iot.helpers.interfaces.V1IamHelper;
 import org.jline.reader.Completer;
 import org.jline.reader.impl.completer.ArgumentCompleter;
 import org.jline.reader.impl.completer.NullCompleter;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -21,7 +22,7 @@ public class CreateTopicRuleCommandHandler implements IotCommandHandler {
     private static final int TOPIC_NAME_POSITION = 1;
     private static final int RULE_NAME_POSITION = 2;
     private static final int SQL_POSITION = 3;
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(CreateTopicRuleCommandHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(CreateTopicRuleCommandHandler.class);
     @Inject
     RoleCompleter roleCompleter;
     @Inject

@@ -1,6 +1,6 @@
 package com.awslabs.iot.client.commands.greengrass.generic;
 
-import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
+import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.greengrass.GreengrassCommandHandler;
 import com.awslabs.iot.client.commands.greengrass.groups.*;
 import com.awslabs.iot.client.commands.iot.certificates.DeleteAllCertificatesCommandHandler;

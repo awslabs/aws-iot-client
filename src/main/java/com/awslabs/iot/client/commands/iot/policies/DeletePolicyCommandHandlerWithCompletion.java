@@ -1,11 +1,12 @@
 package com.awslabs.iot.client.commands.iot.policies;
 
-import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
-import com.awslabs.aws.iot.resultsiterator.helpers.v1.interfaces.V1PolicyHelper;
+import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.iot.PolicyCommandHandlerWithCompletion;
 import com.awslabs.iot.client.commands.iot.completers.PolicyCompleter;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
+import com.awslabs.iot.helpers.interfaces.V1PolicyHelper;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -14,7 +15,7 @@ import java.util.List;
 public class DeletePolicyCommandHandlerWithCompletion implements PolicyCommandHandlerWithCompletion {
     private static final String DELETEPOLICY = "delete-policy";
     private static final int POLICY_NAME_POSITION = 0;
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(DeletePolicyCommandHandlerWithCompletion.class);
+    private static final Logger log = LoggerFactory.getLogger(DeletePolicyCommandHandlerWithCompletion.class);
     @Inject
     Provider<V1PolicyHelper> policyHelperProvider;
     @Inject

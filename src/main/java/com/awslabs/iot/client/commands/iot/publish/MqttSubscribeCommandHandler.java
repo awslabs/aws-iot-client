@@ -1,6 +1,6 @@
 package com.awslabs.iot.client.commands.iot.publish;
 
-import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
+import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
 import com.awslabs.iot.client.helpers.iot.interfaces.WebsocketsHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
@@ -8,13 +8,14 @@ import io.vavr.control.Try;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.List;
 
 public class MqttSubscribeCommandHandler implements IotCommandHandler {
     private static final String MQTTSUBSCRIBE = "mqtt-subscribe";
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(MqttSubscribeCommandHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(MqttSubscribeCommandHandler.class);
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject

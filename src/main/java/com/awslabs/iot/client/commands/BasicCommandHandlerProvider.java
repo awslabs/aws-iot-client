@@ -14,6 +14,10 @@ public class BasicCommandHandlerProvider implements CommandHandlerProvider {
     @Inject
     Set<CommandHandler> commandHandlerSet;
 
+    @Inject
+    public BasicCommandHandlerProvider() {
+    }
+
     @Override
     public Set<CommandHandler> getCommandHandlerSet() {
         if (arguments.dangerousMode) {

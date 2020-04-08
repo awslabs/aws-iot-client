@@ -1,13 +1,14 @@
 package com.awslabs.iot.client.commands.iot.things;
 
-import com.awslabs.aws.iot.resultsiterator.exceptions.ThingAttachedToPrincipalsException;
-import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
-import com.awslabs.aws.iot.resultsiterator.helpers.v1.interfaces.V1ThingHelper;
+import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.iot.ThingCommandHandlerWithCompletion;
 import com.awslabs.iot.client.commands.iot.completers.ThingCompleter;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
+import com.awslabs.iot.exceptions.ThingAttachedToPrincipalsException;
+import com.awslabs.iot.helpers.interfaces.V1ThingHelper;
 import io.vavr.control.Try;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -16,7 +17,7 @@ import java.util.List;
 public class DeleteThingCommandHandlerWithCompletion implements ThingCommandHandlerWithCompletion {
     private static final String DELETETHING = "delete-thing";
     private static final int THING_NAME_POSITION = 0;
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(DeleteThingCommandHandlerWithCompletion.class);
+    private static final Logger log = LoggerFactory.getLogger(DeleteThingCommandHandlerWithCompletion.class);
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
@@ -36,12 +37,14 @@ public class DeleteThingCommandHandlerWithCompletion implements ThingCommandHand
 
         String thingName = parameters.get(THING_NAME_POSITION);
 
-        Try.of(() -> {
-            thingHelperProvider.get().delete(thingName);
-            return null;
-        })
-                .recover(ThingAttachedToPrincipalsException.class, throwable -> {
-                    log.info("DELAY DISABLED!  GOOD LUCK WITH THAT!");
+        Try.run(() -> thingHelperProvider.get().delete(thingName))
+                .recover(ThingAttachedToPrincipalsException.class, exception -> forceDelete(exception, thingName))
+                // Rethrow all other exceptions
+                .get();
+    }
+
+    private Void forceDelete(ThingAttachedToPrincipalsException thingAttachedToPrincipalsException, String thingName) {
+        log.info("DELAY DISABLED!  GOOD LUCK WITH THAT!");
 
             /*
             write("Thing is attached to principals, cleaning up those principals in 5 seconds.  Press CTRL-C now to abort!");
@@ -53,26 +56,25 @@ public class DeleteThingCommandHandlerWithCompletion implements ThingCommandHand
             }
             */
 
-                    List<String> principalsDetached = thingHelperProvider.get().detachPrincipals(thingName);
+        List<String> principalsDetached = thingHelperProvider.get().detachPrincipals(thingName);
 
-                    for (String principal : principalsDetached) {
-                        thingHelperProvider.get().deletePrincipal(principal);
-                    }
+        for (String principal : principalsDetached) {
+            thingHelperProvider.get().deletePrincipal(principal);
+        }
 
-                    // Try to delete it one last time
-                    Try.of(() -> {
-                        thingHelperProvider.get().delete(thingName);
-                        return null;
-                    })
-                            .recover(ThingAttachedToPrincipalsException.class, secondThrowable -> {
-                                log.info("Thing is still attached to principals, giving up");
-                                return null;
-                            })
-                            .get();
-
-                    return null;
-                })
+        // Try to delete it one last time
+        Try.run(() -> thingHelperProvider.get().delete(thingName))
+                .recover(ThingAttachedToPrincipalsException.class, this::logAndSkipDelete)
+                // Rethrow all other exceptions
                 .get();
+
+        return null;
+    }
+
+    private Void logAndSkipDelete(ThingAttachedToPrincipalsException thingAttachedToPrincipalsException) {
+        log.info("Thing is still attached to principals, skipping");
+
+        return null;
     }
 
     @Override

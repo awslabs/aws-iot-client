@@ -3,6 +3,7 @@ package com.awslabs.iot.client.helpers.cloudwatch;
 import com.amazonaws.services.logs.AWSLogsClient;
 import com.amazonaws.services.logs.model.*;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class BasicLogsHelper implements LogsHelper {
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(BasicLogsHelper.class);
+    private static final Logger log = LoggerFactory.getLogger(BasicLogsHelper.class);
     @Inject
     AWSLogsClient awsLogsClient;
 

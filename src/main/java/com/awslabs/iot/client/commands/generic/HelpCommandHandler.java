@@ -1,22 +1,24 @@
 package com.awslabs.iot.client.commands.generic;
 
-import com.awslabs.aws.iot.resultsiterator.helpers.interfaces.IoHelper;
+import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.CommandHandlerProvider;
 import com.awslabs.iot.client.commands.interfaces.CommandHandler;
 import com.awslabs.iot.client.helpers.ANSIHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class HelpCommandHandler implements CommandHandler {
     private static final String HELP = "help";
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(HelpCommandHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(HelpCommandHandler.class);
     @Inject
-    CommandHandlerProvider commandHandlerProvider;
+    Provider<CommandHandlerProvider> commandHandlerProviderProvider;
     @Inject
     IoHelper ioHelper;
     @Inject
@@ -32,7 +34,8 @@ public class HelpCommandHandler implements CommandHandler {
 
         stringBuilder.append(ANSIHelper.CRLF);
 
-        List<CommandHandler> sortedCommandHandlers = commandHandlerProvider.getCommandHandlerSet().stream()
+        List<CommandHandler> sortedCommandHandlers = commandHandlerProviderProvider.get()
+                .getCommandHandlerSet().stream()
                 .sorted(Comparator.comparing(CommandHandler::getFullCommandString))
                 .collect(Collectors.toList());
 
