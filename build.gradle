@@ -19,7 +19,6 @@ mainClassName = 'com.awslabs.iot.client.applications.AwsIotClientConsole'
 
 def daggerVersion = '2.27'
 def jcommanderVersion = '1.78'
-def awsSdkVersion = '1.11.762'
 def awsSdk2Version = '2.11.12'
 def gsonVersion = '2.8.6'
 def slf4jVersion = '1.7.30'
@@ -29,7 +28,7 @@ def jlineVersion = '3.14.1'
 def commonsLang3Version = '3.10'
 def vavrVersion = '0.10.2'
 def junitVersion = '4.13'
-def resultsIteratorForAwsJavaSdkVersion = '0.9.8'
+def resultsIteratorForAwsJavaSdkVersion = '0.10.47'
 def awsIotCoreWebsocketsVersion = '0.6.3'
 
 distZip.enabled = shadowDistZip.enabled = false
@@ -69,11 +68,14 @@ dependencies {
 
     implementation "com.google.code.gson:gson:$gsonVersion"
     implementation "com.beust:jcommander:$jcommanderVersion"
-    implementation "com.amazonaws:aws-java-sdk-greengrass:$awsSdkVersion"
-    implementation "com.amazonaws:aws-java-sdk-iam:$awsSdkVersion"
-    implementation "com.amazonaws:aws-java-sdk-iot:$awsSdkVersion"
-    implementation "com.amazonaws:aws-java-sdk-logs:$awsSdkVersion"
-    implementation "com.amazonaws:aws-java-sdk-lambda:$awsSdkVersion"
+
+    implementation "software.amazon.awssdk:greengrass:$awsSdk2Version"
+    implementation "software.amazon.awssdk:iam:$awsSdk2Version"
+    implementation "software.amazon.awssdk:iot:$awsSdk2Version"
+    implementation "software.amazon.awssdk:iotdataplane:$awsSdk2Version"
+    implementation "software.amazon.awssdk:cloudwatchlogs:$awsSdk2Version"
+    implementation "software.amazon.awssdk:lambda:$awsSdk2Version"
+
     implementation "io.vertx:vertx-core:$vertxVersion"
     implementation "org.jline:jline:$jlineVersion"
     implementation "org.slf4j:slf4j-log4j12:$slf4jVersion"

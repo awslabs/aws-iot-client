@@ -55,7 +55,7 @@ public class KeyAndPort {
     }
 
     public String toString() {
-        return "KeyAndPort(key=" + this.getKey() + ", port=" + this.getPort() + ")";
+        return String.join("", "KeyAndPort(key=", this.getKey(), ", port=", String.valueOf(this.getPort()), ")");
     }
 
     public static class KeyAndPortBuilder {
@@ -80,7 +80,7 @@ public class KeyAndPort {
         }
 
         public String toString() {
-            return "KeyAndPort.KeyAndPortBuilder(key=" + this.key + ", port=" + this.port + ")";
+            return String.join("", "KeyAndPort.KeyAndPortBuilder(key=", this.key, ", port=", String.valueOf(this.port), ")");
         }
     }
 }

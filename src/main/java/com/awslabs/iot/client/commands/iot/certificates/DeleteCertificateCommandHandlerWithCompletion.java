@@ -4,12 +4,13 @@ import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.iot.CertificateCommandHandlerWithCompletion;
 import com.awslabs.iot.client.commands.iot.completers.CertificateCompleter;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
-import com.awslabs.iot.helpers.interfaces.V1ThingHelper;
+import com.awslabs.iot.data.CertificateArn;
+import com.awslabs.iot.data.ImmutableCertificateArn;
+import com.awslabs.iot.helpers.interfaces.V2IotHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 import java.util.List;
 
 public class DeleteCertificateCommandHandlerWithCompletion implements CertificateCommandHandlerWithCompletion {
@@ -23,7 +24,7 @@ public class DeleteCertificateCommandHandlerWithCompletion implements Certificat
     @Inject
     CertificateCompleter certificateCompleter;
     @Inject
-    Provider<V1ThingHelper> thingHelperProvider;
+    V2IotHelper v2IotHelper;
 
     @Inject
     public DeleteCertificateCommandHandlerWithCompletion() {
@@ -33,9 +34,9 @@ public class DeleteCertificateCommandHandlerWithCompletion implements Certificat
     public void innerHandle(String input) {
         List<String> parameters = parameterExtractor.getParameters(input);
 
-        String certificateArn = parameters.get(CERTIFICATE_ARN_POSITION);
+        CertificateArn certificateArn = ImmutableCertificateArn.builder().arn(parameters.get(CERTIFICATE_ARN_POSITION)).build();
 
-        thingHelperProvider.get().deletePrincipal(certificateArn);
+        v2IotHelper.delete(certificateArn);
     }
 
     @Override

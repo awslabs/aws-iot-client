@@ -1,15 +1,17 @@
 package com.awslabs.iot.client.commands.greengrass.resources;
 
-import com.amazonaws.services.greengrass.model.GetResourceDefinitionVersionResult;
-import com.amazonaws.services.greengrass.model.VersionInformation;
 import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.greengrass.GreengrassGroupCommandHandlerWithGroupIdCompletion;
 import com.awslabs.iot.client.commands.greengrass.completers.GreengrassGroupIdCompleter;
 import com.awslabs.iot.client.helpers.json.interfaces.ObjectPrettyPrinter;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
-import com.awslabs.iot.helpers.interfaces.V1GreengrassHelper;
+import com.awslabs.iot.data.GreengrassGroupId;
+import com.awslabs.iot.data.ImmutableGreengrassGroupId;
+import com.awslabs.iot.helpers.interfaces.V2GreengrassHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.services.greengrass.model.GroupVersion;
+import software.amazon.awssdk.services.greengrass.model.ResourceDefinitionVersion;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -20,7 +22,7 @@ public class GetLatestResourceDefinitionVersionCommandHandlerWithGroupIdCompleti
     private static final int GROUP_ID_POSITION = 0;
     private static final Logger log = LoggerFactory.getLogger(GetLatestResourceDefinitionVersionCommandHandlerWithGroupIdCompletion.class);
     @Inject
-    V1GreengrassHelper greengrassHelper;
+    V2GreengrassHelper v2GreengrassHelper;
     @Inject
     ObjectPrettyPrinter objectPrettyPrinter;
     @Inject
@@ -38,19 +40,19 @@ public class GetLatestResourceDefinitionVersionCommandHandlerWithGroupIdCompleti
     public void innerHandle(String input) {
         List<String> parameters = parameterExtractor.getParameters(input);
 
-        String groupId = parameters.get(GROUP_ID_POSITION);
+        GreengrassGroupId groupId = ImmutableGreengrassGroupId.builder().groupId(parameters.get(GROUP_ID_POSITION)).build();
 
-        Optional<VersionInformation> optionalVersionInformation = greengrassHelper.getLatestGroupVersion(groupId);
+        Optional<GroupVersion> optionalGroupVersion = v2GreengrassHelper.getLatestGroupVersion(groupId);
 
-        if (!optionalVersionInformation.isPresent()) {
+        if (!optionalGroupVersion.isPresent()) {
             return;
         }
 
-        VersionInformation versionInformation = optionalVersionInformation.get();
+        GroupVersion groupVersion = optionalGroupVersion.get();
 
-        GetResourceDefinitionVersionResult resourceDefinitionVersionResult = greengrassHelper.getResourceDefinitionVersion(groupId, versionInformation);
+        Optional<ResourceDefinitionVersion> resourceDefinitionVersion = v2GreengrassHelper.getResourceDefinitionVersion(groupVersion);
 
-        log.info(objectPrettyPrinter.prettyPrint(resourceDefinitionVersionResult));
+        log.info(objectPrettyPrinter.prettyPrint(resourceDefinitionVersion));
     }
 
     @Override

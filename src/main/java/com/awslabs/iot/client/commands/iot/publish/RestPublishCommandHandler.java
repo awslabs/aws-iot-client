@@ -1,17 +1,18 @@
 package com.awslabs.iot.client.commands.iot.publish;
 
-import com.amazonaws.services.iotdata.AWSIotDataClient;
-import com.amazonaws.services.iotdata.model.PublishRequest;
 import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
+import com.awslabs.iot.data.ImmutableTopicName;
+import com.awslabs.iot.data.Qos;
+import com.awslabs.iot.data.TopicName;
+import com.awslabs.iot.helpers.interfaces.V2IotHelper;
 
 import javax.inject.Inject;
-import java.nio.ByteBuffer;
 
 public class RestPublishCommandHandler implements PublishCommandHandler {
     private static final String RESTPUBLISH = "rest-publish";
     @Inject
-    AWSIotDataClient awsIotDataClient;
+    V2IotHelper v2IotHelper;
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
@@ -28,10 +29,9 @@ public class RestPublishCommandHandler implements PublishCommandHandler {
 
     @Override
     public void publish(String topic, String message) {
-        PublishRequest publishRequest = new PublishRequest()
-                .withTopic(topic)
-                .withPayload(ByteBuffer.wrap(message.getBytes()));
-        awsIotDataClient.publish(publishRequest);
+        TopicName topicName = ImmutableTopicName.builder().name(topic).build();
+
+        v2IotHelper.publish(topicName, Qos.ZERO, message);
     }
 
     @Override

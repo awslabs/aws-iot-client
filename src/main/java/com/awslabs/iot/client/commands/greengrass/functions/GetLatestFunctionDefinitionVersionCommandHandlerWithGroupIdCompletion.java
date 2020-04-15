@@ -1,15 +1,16 @@
 package com.awslabs.iot.client.commands.greengrass.functions;
 
-import com.amazonaws.services.greengrass.model.GetFunctionDefinitionVersionResult;
-import com.amazonaws.services.greengrass.model.VersionInformation;
 import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.greengrass.GreengrassGroupCommandHandlerWithGroupIdCompletion;
 import com.awslabs.iot.client.commands.greengrass.completers.GreengrassGroupIdCompleter;
 import com.awslabs.iot.client.helpers.json.interfaces.ObjectPrettyPrinter;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
-import com.awslabs.iot.helpers.interfaces.V1GreengrassHelper;
+import com.awslabs.iot.data.GreengrassGroupId;
+import com.awslabs.iot.data.ImmutableGreengrassGroupId;
+import com.awslabs.iot.helpers.interfaces.V2GreengrassHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.services.greengrass.model.FunctionDefinitionVersion;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -20,7 +21,7 @@ public class GetLatestFunctionDefinitionVersionCommandHandlerWithGroupIdCompleti
     private static final int GROUP_ID_POSITION = 0;
     private static final Logger log = LoggerFactory.getLogger(GetLatestFunctionDefinitionVersionCommandHandlerWithGroupIdCompletion.class);
     @Inject
-    V1GreengrassHelper greengrassHelper;
+    V2GreengrassHelper v2GreengrassHelper;
     @Inject
     ObjectPrettyPrinter objectPrettyPrinter;
     @Inject
@@ -38,19 +39,17 @@ public class GetLatestFunctionDefinitionVersionCommandHandlerWithGroupIdCompleti
     public void innerHandle(String input) {
         List<String> parameters = parameterExtractor.getParameters(input);
 
-        String groupId = parameters.get(GROUP_ID_POSITION);
+        GreengrassGroupId groupId = ImmutableGreengrassGroupId.builder().groupId(parameters.get(GROUP_ID_POSITION)).build();
 
-        Optional<VersionInformation> optionalVersionInformation = greengrassHelper.getLatestGroupVersion(groupId);
+        Optional<FunctionDefinitionVersion> optionalFunctionDefinitionVersion = v2GreengrassHelper.getGroupInformation(groupId)
+                .flatMap(v2GreengrassHelper::getFunctionDefinitionVersion);
 
-        if (!optionalVersionInformation.isPresent()) {
+        if (!optionalFunctionDefinitionVersion.isPresent()) {
+            log.info("No function definition found");
             return;
         }
 
-        VersionInformation versionInformation = optionalVersionInformation.get();
-
-        GetFunctionDefinitionVersionResult functionDefinitionVersionResult = greengrassHelper.getFunctionDefinitionVersion(groupId, versionInformation);
-
-        log.info(objectPrettyPrinter.prettyPrint(functionDefinitionVersionResult));
+        log.info(objectPrettyPrinter.prettyPrint(optionalFunctionDefinitionVersion.get()));
     }
 
     @Override

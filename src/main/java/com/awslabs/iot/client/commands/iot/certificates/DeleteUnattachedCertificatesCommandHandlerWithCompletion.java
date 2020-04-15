@@ -4,13 +4,11 @@ import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
 import com.awslabs.iot.client.commands.iot.completers.CertificateCompleter;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
-import com.awslabs.iot.helpers.interfaces.V1CertificateHelper;
-import com.awslabs.iot.helpers.interfaces.V1ThingHelper;
+import com.awslabs.iot.helpers.interfaces.V2IotHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 public class DeleteUnattachedCertificatesCommandHandlerWithCompletion implements IotCommandHandler {
     private static final String DELETEUNATTACHEDCERTIFICATES = "delete-unattached-certificates";
@@ -22,9 +20,7 @@ public class DeleteUnattachedCertificatesCommandHandlerWithCompletion implements
     @Inject
     CertificateCompleter certificateCompleter;
     @Inject
-    Provider<V1CertificateHelper> certificateHelperProvider;
-    @Inject
-    Provider<V1ThingHelper> thingHelperProvider;
+    V2IotHelper v2IotHelper;
 
     @Inject
     public DeleteUnattachedCertificatesCommandHandlerWithCompletion() {
@@ -32,8 +28,8 @@ public class DeleteUnattachedCertificatesCommandHandlerWithCompletion implements
 
     @Override
     public void innerHandle(String input) {
-        certificateHelperProvider.get().getUnattachedCertificateArns()
-                .forEach(unattachedCertificateArn -> thingHelperProvider.get().deletePrincipal(unattachedCertificateArn));
+        v2IotHelper.getUnattachedCertificates()
+                .forEach(certificate -> v2IotHelper.delete(certificate));
     }
 
     @Override

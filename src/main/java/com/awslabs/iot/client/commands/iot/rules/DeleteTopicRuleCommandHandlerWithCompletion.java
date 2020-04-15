@@ -1,12 +1,12 @@
 package com.awslabs.iot.client.commands.iot.rules;
 
-import com.amazonaws.services.iot.AWSIotClient;
-import com.amazonaws.services.iot.model.DeleteTopicRuleRequest;
-import com.amazonaws.services.iot.model.UnauthorizedException;
 import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.iot.RuleCommandHandlerWithCompletion;
 import com.awslabs.iot.client.commands.iot.completers.RuleCompleter;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
+import com.awslabs.iot.data.ImmutableRuleName;
+import com.awslabs.iot.data.RuleName;
+import com.awslabs.iot.helpers.interfaces.V2IotHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,13 +18,13 @@ public class DeleteTopicRuleCommandHandlerWithCompletion implements RuleCommandH
     private static final int TOPIC_RULE_NAME_POSITION = 0;
     private static final Logger log = LoggerFactory.getLogger(DeleteTopicRuleCommandHandlerWithCompletion.class);
     @Inject
-    AWSIotClient awsIotClient;
-    @Inject
     ParameterExtractor parameterExtractor;
     @Inject
     IoHelper ioHelper;
     @Inject
     RuleCompleter ruleCompleter;
+    @Inject
+    V2IotHelper v2IotHelper;
 
     @Inject
     public DeleteTopicRuleCommandHandlerWithCompletion() {
@@ -34,16 +34,9 @@ public class DeleteTopicRuleCommandHandlerWithCompletion implements RuleCommandH
     public void innerHandle(String input) {
         List<String> parameters = parameterExtractor.getParameters(input);
 
-        String topicRuleName = parameters.get(TOPIC_RULE_NAME_POSITION);
+        RuleName topicRuleName = ImmutableRuleName.builder().name(parameters.get(TOPIC_RULE_NAME_POSITION)).build();
 
-        DeleteTopicRuleRequest deleteTopicRuleRequest = new DeleteTopicRuleRequest()
-                .withRuleName(topicRuleName);
-
-        try {
-            awsIotClient.deleteTopicRule(deleteTopicRuleRequest);
-        } catch (UnauthorizedException e) {
-            log.info("Couldn't delete this rule.  Either it doesn't exist or you do not have permissions to delete it.");
-        }
+        v2IotHelper.deleteTopicRule(topicRuleName);
     }
 
     @Override

@@ -33,9 +33,9 @@ public class MqttPublishCommandHandler implements PublishCommandHandler {
     public void publish(String topic, String message) {
         MqttClient mqttClient = Try.of(() -> websocketsHelper.connectMqttClientAndPublish(topic, message)).get();
         Try.run(() -> mqttClient.disconnect())
-                .onFailure(throwable -> log.info("Exception: [" + throwable.getMessage() + "]"));
+                .onFailure(throwable -> log.info(String.join("", "Exception: [", throwable.getMessage(), "]")));
         Try.run(() -> websocketsHelper.close(mqttClient))
-                .onFailure(throwable -> log.info("Exception: [" + throwable.getMessage() + "]"));
+                .onFailure(throwable -> log.info(String.join("", "Exception: [", throwable.getMessage(), "]")));
     }
 
     @Override

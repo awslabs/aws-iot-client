@@ -1,15 +1,15 @@
 package com.awslabs.iot.client.commands.lambda;
 
-import com.amazonaws.services.lambda.AWSLambdaClient;
-import com.amazonaws.services.lambda.model.DeleteFunctionRequest;
-import com.amazonaws.services.lambda.model.FunctionConfiguration;
-import com.amazonaws.services.lambda.model.ListFunctionsRequest;
 import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.interfaces.CommandHandler;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
-import com.awslabs.resultsiterator.v1.implementations.V1ResultsIterator;
+import com.awslabs.resultsiterator.v2.implementations.V2ResultsIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.services.lambda.LambdaClient;
+import software.amazon.awssdk.services.lambda.model.DeleteFunctionRequest;
+import software.amazon.awssdk.services.lambda.model.FunctionConfiguration;
+import software.amazon.awssdk.services.lambda.model.ListFunctionsRequest;
 
 import javax.inject.Inject;
 import java.util.stream.Stream;
@@ -22,7 +22,7 @@ public class DeleteLambdaFunctionsCommandHandler implements CommandHandler {
     @Inject
     IoHelper ioHelper;
     @Inject
-    AWSLambdaClient awsLambdaClient;
+    LambdaClient lambdaClient;
 
     @Inject
     public DeleteLambdaFunctionsCommandHandler() {
@@ -47,23 +47,24 @@ public class DeleteLambdaFunctionsCommandHandler implements CommandHandler {
     public void innerHandle(String input) {
         String name = getParameterExtractor().getParameters(input).get(0);
 
-        ListFunctionsRequest listFunctionsRequest = new ListFunctionsRequest();
+        ListFunctionsRequest listFunctionsRequest = ListFunctionsRequest.builder().build();
 
-        Stream<FunctionConfiguration> functionConfigurations = new V1ResultsIterator<FunctionConfiguration>(awsLambdaClient, listFunctionsRequest).stream();
+        Stream<FunctionConfiguration> functionConfigurations = new V2ResultsIterator<FunctionConfiguration>(lambdaClient, listFunctionsRequest).stream();
 
         functionConfigurations
-                .filter(functionConfiguration -> functionConfiguration.getFunctionName().matches(name))
+                .filter(functionConfiguration -> functionConfiguration.functionName().matches(name))
                 .forEach(this::deleteFunction);
     }
 
     private void deleteFunction(FunctionConfiguration functionConfiguration) {
-        String name = functionConfiguration.getFunctionName();
-        log.info("Deleting function: " + name);
+        String name = functionConfiguration.functionName();
+        log.info(String.join(" ", "Deleting function:", name));
 
-        DeleteFunctionRequest deleteFunctionRequest = new DeleteFunctionRequest()
-                .withFunctionName(name);
+        DeleteFunctionRequest deleteFunctionRequest = DeleteFunctionRequest.builder()
+                .functionName(name)
+                .build();
 
-        awsLambdaClient.deleteFunction(deleteFunctionRequest);
+        lambdaClient.deleteFunction(deleteFunctionRequest);
     }
 
     public ParameterExtractor getParameterExtractor() {

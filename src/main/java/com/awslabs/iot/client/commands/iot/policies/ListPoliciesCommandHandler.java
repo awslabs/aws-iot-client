@@ -3,18 +3,18 @@ package com.awslabs.iot.client.commands.iot.policies;
 import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
-import com.awslabs.iot.helpers.interfaces.V1PolicyHelper;
+import com.awslabs.iot.helpers.interfaces.V2IotHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.services.iot.model.Policy;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 public class ListPoliciesCommandHandler implements IotCommandHandler {
     private static final String LISTPOLICIES = "list-policies";
     private static final Logger log = LoggerFactory.getLogger(ListPoliciesCommandHandler.class);
     @Inject
-    Provider<V1PolicyHelper> policyHelperProvider;
+    V2IotHelper v2IotHelper;
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
@@ -26,8 +26,9 @@ public class ListPoliciesCommandHandler implements IotCommandHandler {
 
     @Override
     public void innerHandle(String input) {
-        policyHelperProvider.get().listPolicyNames()
-                .forEach(policyName -> log.info("  [" + policyName + "]"));
+        v2IotHelper.getPolicies()
+                .map(Policy::policyName)
+                .forEach(policyName -> log.info(String.join("", "  [", policyName, "]")));
     }
 
     @Override

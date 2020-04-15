@@ -1,24 +1,26 @@
 package com.awslabs.iot.client.commands.iot.things;
 
-import com.amazonaws.services.iot.model.UnauthorizedException;
 import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.iot.ThingCommandHandlerWithCompletion;
 import com.awslabs.iot.client.commands.iot.completers.ThingCompleter;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
-import com.awslabs.iot.helpers.interfaces.V1ThingHelper;
+import com.awslabs.iot.data.ImmutableThingName;
+import com.awslabs.iot.data.ThingName;
+import com.awslabs.iot.data.ThingPrincipal;
+import com.awslabs.iot.helpers.interfaces.V2IotHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ListThingPrincipalsCommandHandlerWithCompletion implements ThingCommandHandlerWithCompletion {
     private static final String LISTTHINGPRINCIPALS = "list-thing-principals";
     private static final int THING_NAME_POSITION = 0;
     private static final Logger log = LoggerFactory.getLogger(ListThingPrincipalsCommandHandlerWithCompletion.class);
     @Inject
-    Provider<V1ThingHelper> thingHelperProvider;
+    V2IotHelper v2IotHelper;
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
@@ -34,21 +36,16 @@ public class ListThingPrincipalsCommandHandlerWithCompletion implements ThingCom
     public void innerHandle(String input) {
         List<String> parameters = parameterExtractor.getParameters(input);
 
-        String thingName = parameters.get(THING_NAME_POSITION);
+        ThingName thingName = ImmutableThingName.builder().name(parameters.get(THING_NAME_POSITION)).build();
 
-        try {
-            List<String> principals = thingHelperProvider.get().listPrincipals(thingName);
+        List<ThingPrincipal> principals = v2IotHelper.getThingPrincipals(thingName)
+                .collect(Collectors.toList());
 
-            if (principals.size() != 0) {
-                log.info("Principals attached to thing [" + thingName + "]");
-            }
-
-            for (String principal : principals) {
-                log.info("  " + principal);
-            }
-        } catch (UnauthorizedException e) {
-            log.info("Couldn't list thing principals attached to this thing.  Either it doesn't exist or you do not have permissions to view it.");
+        if (principals.size() != 0) {
+            log.info(String.join("", "Principals attached to thing [", thingName.getName(), "]"));
         }
+
+        principals.forEach(principal -> log.info(String.join("", "  ", principal.getPrincipal())));
     }
 
     @Override

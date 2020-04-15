@@ -1,29 +1,23 @@
 package com.awslabs.iot.client.commands.iot.certificates;
 
-import com.amazonaws.services.iot.model.Certificate;
-import com.amazonaws.services.iot.model.Policy;
 import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
-import com.awslabs.iot.helpers.interfaces.V1CertificateHelper;
-import com.awslabs.iot.helpers.interfaces.V1PolicyHelper;
-import com.awslabs.iot.helpers.interfaces.V1ThingHelper;
+import com.awslabs.iot.data.*;
+import com.awslabs.iot.helpers.interfaces.V2IotHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.services.iot.model.Certificate;
+import software.amazon.awssdk.services.iot.model.Policy;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 import java.util.stream.Stream;
 
 public class CleanUpCertificatesCommandHandler implements IotCommandHandler {
     private static final String CLEANUPCERTIFICATES = "clean-up-certificates";
     private static final Logger log = LoggerFactory.getLogger(CleanUpCertificatesCommandHandler.class);
     @Inject
-    Provider<V1CertificateHelper> certificateHelperProvider;
-    @Inject
-    Provider<V1ThingHelper> thingHelperProvider;
-    @Inject
-    Provider<V1PolicyHelper> policyHelperProvider;
+    V2IotHelper v2IotHelper;
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
@@ -35,31 +29,30 @@ public class CleanUpCertificatesCommandHandler implements IotCommandHandler {
 
     @Override
     public void innerHandle(String input) {
-        certificateHelperProvider.get().listCertificates().forEach(this::deleteEach);
+        v2IotHelper.getCertificates().forEach(this::deleteEach);
     }
 
     private void deleteEach(Certificate certificate) {
-        String certificateArn = certificate.getCertificateArn();
-        String certificateId = certificate.getCertificateId();
+        CertificateArn certificateArn = ImmutableCertificateArn.builder().arn(certificate.certificateArn()).build();
+        CertificateId certificateId = ImmutableCertificateId.builder().id(certificate.certificateId()).build();
 
-        Stream<String> principalThings = thingHelperProvider.get().listPrincipalThings(certificateArn);
+        Stream<ThingName> attachedThings = v2IotHelper.getAttachedThings(certificateArn);
 
-        if (principalThings.findAny().isPresent()) {
-            log.info("Ignoring [" + certificateId + "], it still has things attached to it");
+        if (attachedThings.findAny().isPresent()) {
+            log.info(String.join("", "Ignoring [", certificateId.getId(), "], it still has things attached to it"));
             return;
         }
 
-        Stream<Policy> principalPolicies = policyHelperProvider.get().listPrincipalPolicies(certificateArn);
+        Stream<Policy> attachedPolicies = v2IotHelper.getAttachedPolicies(certificateArn);
 
-        if (principalPolicies.findAny().isPresent()) {
-            log.info("Ignoring [" + certificateId + "], it still has policies attached to it");
+        if (attachedPolicies.findAny().isPresent()) {
+            log.info(String.join("", "Ignoring [", certificateId.getId(), "], it still has policies attached to it"));
             return;
         }
 
-        log.info("Deleting [" + certificateId + "]");
+        log.info(String.join("", "Deleting [", certificateId.getId(), "]"));
 
-        thingHelperProvider.get().deletePrincipal(certificateArn);
-
+        v2IotHelper.delete(certificateArn);
     }
 
     @Override

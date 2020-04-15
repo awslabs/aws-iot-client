@@ -1,22 +1,21 @@
 package com.awslabs.iot.client.commands.iot.things;
 
-import com.amazonaws.services.iot.model.ThingAttribute;
 import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
-import com.awslabs.iot.helpers.interfaces.V1ThingHelper;
+import com.awslabs.iot.helpers.interfaces.V2IotHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.services.iot.model.ThingAttribute;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 import java.util.Optional;
 
 public class ListThingsCommandHandler implements IotCommandHandler {
     private static final String LISTTHINGS = "list-things";
     private static final Logger log = LoggerFactory.getLogger(ListThingsCommandHandler.class);
     @Inject
-    Provider<V1ThingHelper> thingHelperProvider;
+    V2IotHelper v2IotHelper;
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
@@ -28,13 +27,13 @@ public class ListThingsCommandHandler implements IotCommandHandler {
 
     @Override
     public void innerHandle(String input) {
-        thingHelperProvider.get().listThingAttributes()
+        v2IotHelper.getThings()
                 .forEach(this::logThingInfo);
     }
 
     private void logThingInfo(ThingAttribute thingAttribute) {
-        Optional<String> optionalThingTypeName = Optional.ofNullable(thingAttribute.getThingTypeName());
-        log.info("  [" + thingAttribute.getThingName() + "] [" + optionalThingTypeName.orElse("NO THING TYPE") + "]");
+        Optional<String> optionalThingTypeName = Optional.ofNullable(thingAttribute.thingTypeName());
+        log.info(String.join("", "  [", thingAttribute.thingName(), "] [", optionalThingTypeName.orElse("NO THING TYPE"), "]"));
     }
 
     @Override

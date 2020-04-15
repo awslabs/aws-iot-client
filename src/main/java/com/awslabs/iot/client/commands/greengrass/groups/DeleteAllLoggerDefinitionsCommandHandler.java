@@ -1,20 +1,24 @@
 package com.awslabs.iot.client.commands.greengrass.groups;
 
-import com.amazonaws.services.greengrass.model.DefinitionInformation;
 import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.greengrass.GreengrassCommandHandler;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
-import com.awslabs.iot.helpers.interfaces.V1GreengrassHelper;
+import com.awslabs.iot.helpers.interfaces.V2GreengrassHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.services.greengrass.model.DefinitionInformation;
+import software.amazon.awssdk.services.greengrass.model.GetLoggerDefinitionVersionResponse;
 
 import javax.inject.Inject;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class DeleteAllLoggerDefinitionsCommandHandler implements GreengrassCommandHandler {
     private static final String DELETE_LOGGER_DEFINITIONS = "delete-all-logger-definitions";
     private static final Logger log = LoggerFactory.getLogger(DeleteAllLoggerDefinitionsCommandHandler.class);
     @Inject
-    V1GreengrassHelper greengrassHelper;
+    V2GreengrassHelper v2GreengrassHelper;
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
@@ -26,14 +30,21 @@ public class DeleteAllLoggerDefinitionsCommandHandler implements GreengrassComma
 
     @Override
     public void innerHandle(String input) {
-        greengrassHelper.listNonImmutableLoggerDefinitionInformation()
+        List<String> immutableLoggerDefinitionIds = v2GreengrassHelper.getImmutableLoggerDefinitionVersionResponses()
+                .map(GetLoggerDefinitionVersionResponse::id)
+                .collect(Collectors.toList());
+
+        v2GreengrassHelper.getLoggerDefinitions()
+                .filter(definitionInformation -> !immutableLoggerDefinitionIds.contains(definitionInformation.id()))
+                // Sort the definitions by ID so we can get a general sense of how far along we are in the process of deleting them
+                .sorted(Comparator.comparing(DefinitionInformation::id))
                 .forEach(this::deleteAndLog);
     }
 
     private void deleteAndLog(DefinitionInformation definitionInformation) {
-        greengrassHelper.deleteLoggerDefinition(definitionInformation);
+        v2GreengrassHelper.deleteLoggerDefinition(definitionInformation);
 
-        log.info("Deleted logger definition [" + definitionInformation + "]");
+        log.info(String.join("", "Deleted logger definition [", definitionInformation.id(), "]"));
     }
 
     @Override
