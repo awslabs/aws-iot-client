@@ -4,6 +4,7 @@ import com.awslabs.aws.iot.websockets.BasicMqttOverWebsocketsProvider;
 import com.awslabs.aws.iot.websockets.MqttOverWebsocketsProvider;
 import com.awslabs.iot.client.commands.interfaces.CommandHandler;
 import com.awslabs.iot.client.commands.iot.certificates.*;
+import com.awslabs.iot.client.commands.iot.policies.DeleteAllPoliciesCommandHandler;
 import com.awslabs.iot.client.commands.iot.policies.DeletePolicyCommandHandlerWithCompletion;
 import com.awslabs.iot.client.commands.iot.policies.ListPoliciesCommandHandler;
 import com.awslabs.iot.client.commands.iot.publish.MqttPublishCommandHandler;
@@ -64,6 +65,7 @@ public class IotModule {
                                                  DeleteCertificateCommandHandlerWithCompletion deleteCertificateCommandHandlerWithCompletion,
                                                  DeleteUnattachedCertificatesCommandHandlerWithCompletion deleteUnattachedCertificatesCommandHandlerWithCompletion,
                                                  DeleteAllCertificatesCommandHandler deleteAllCertificatesCommandHandler,
+                                                 DeleteAllPoliciesCommandHandler deleteAllPoliciesCommandHandler,
                                                  DeleteAllCaCertificatesCommandHandler deleteAllCaCertificatesCommandHandler,
                                                  ListCertificateArnsCommandHandler listCertificateArnsCommandHandler,
                                                  ListCertificateIdsCommandHandler listCertificateIdsCommandHandler,
@@ -86,6 +88,7 @@ public class IotModule {
                 deleteCertificateCommandHandlerWithCompletion,
                 deleteUnattachedCertificatesCommandHandlerWithCompletion,
                 deleteAllCertificatesCommandHandler,
+                deleteAllPoliciesCommandHandler,
                 deleteAllCaCertificatesCommandHandler,
                 listCertificateArnsCommandHandler,
                 listCertificateIdsCommandHandler,

@@ -4,6 +4,7 @@ import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.greengrass.GreengrassCommandHandler;
 import com.awslabs.iot.client.commands.greengrass.groups.*;
 import com.awslabs.iot.client.commands.iot.certificates.DeleteAllCertificatesCommandHandler;
+import com.awslabs.iot.client.commands.iot.policies.DeleteAllPoliciesCommandHandler;
 import com.awslabs.iot.client.commands.iot.things.DeleteAllThingGroupsCommandHandler;
 import com.awslabs.iot.client.commands.iot.things.DeleteAllThingsCommandHandler;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
@@ -21,6 +22,8 @@ public class CleanupCommandHandler implements GreengrassCommandHandler {
     IoHelper ioHelper;
     @Inject
     DeleteAllCertificatesCommandHandler deleteAllCertificatesCommandHandler;
+    @Inject
+    DeleteAllPoliciesCommandHandler deleteAllPoliciesCommandHandler;
     @Inject
     DeleteAllThingsCommandHandler deleteAllThingsCommandHandler;
     @Inject
@@ -54,6 +57,7 @@ public class CleanupCommandHandler implements GreengrassCommandHandler {
         deleteAllCertificatesCommandHandler.innerHandle("");
         deleteAllThingsCommandHandler.innerHandle("");
         deleteAllThingGroupsCommandHandler.innerHandle("");
+        deleteAllPoliciesCommandHandler.innerHandle("");
 
         // Greengrass
         deleteAllLambdaFunctionsCommandHandler.innerHandle("");
