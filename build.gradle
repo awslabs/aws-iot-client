@@ -28,7 +28,7 @@ def jlineVersion = '3.14.1'
 def commonsLang3Version = '3.10'
 def vavrVersion = '0.10.2'
 def junitVersion = '4.13'
-def resultsIteratorForAwsJavaSdkVersion = '0.10.51'
+def resultsIteratorForAwsJavaSdkVersion = '0.10.54'
 def awsIotCoreWebsocketsVersion = '0.6.3'
 
 distZip.enabled = shadowDistZip.enabled = false
