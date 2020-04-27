@@ -28,8 +28,9 @@ def jlineVersion = '3.14.1'
 def commonsLang3Version = '3.10'
 def vavrVersion = '0.10.2'
 def junitVersion = '4.13'
-def resultsIteratorForAwsJavaSdkVersion = '0.10.54'
+def resultsIteratorForAwsJavaSdkVersion = '0.10.56'
 def awsIotCoreWebsocketsVersion = '0.6.3'
+def jodahFailsafeVersion = '2.3.4'
 
 distZip.enabled = shadowDistZip.enabled = false
 distTar.enabled = shadowDistTar.enabled = false
@@ -86,6 +87,7 @@ dependencies {
     implementation "software.amazon.awssdk:iotsecuretunneling:$awsSdk2Version"
 
     implementation "io.vavr:vavr:$vavrVersion"
+    implementation "net.jodah:failsafe:$jodahFailsafeVersion"
 
     testImplementation "junit:junit:$junitVersion"
 }
