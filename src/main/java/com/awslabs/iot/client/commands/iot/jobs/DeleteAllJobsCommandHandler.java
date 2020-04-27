@@ -42,7 +42,7 @@ public class DeleteAllJobsCommandHandler implements IotCommandHandler {
                 .handle(LimitExceededException.class)
                 .withBackoff(500, 4000, ChronoUnit.MILLIS)
                 .withMaxRetries(20)
-                .onRetry(failure -> log.warn(System.currentTimeMillis() + ": Exceeded rate limit, backing off..."))
+                .onRetry(failure -> log.warn(System.currentTimeMillis() + ": Exceeded rate limit or too many jobs in deletion in progress status, backing off..."))
                 .onRetriesExceeded(failure -> log.error("Exceeded rate limit too many times. Cannot continue."));
 
         log.info("Deleting " + v2IotHelper.getJobs().count() + " job(s)");
