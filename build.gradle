@@ -31,6 +31,7 @@ def junitVersion = '4.13'
 def resultsIteratorForAwsJavaSdkVersion = '0.10.59'
 def awsIotCoreWebsocketsVersion = '0.6.3'
 def jodahFailsafeVersion = '2.3.4'
+def progressBarVersion = '0.8.1'
 
 distZip.enabled = shadowDistZip.enabled = false
 distTar.enabled = shadowDistTar.enabled = false
@@ -88,6 +89,7 @@ dependencies {
 
     implementation "io.vavr:vavr:$vavrVersion"
     implementation "net.jodah:failsafe:$jodahFailsafeVersion"
+    implementation "me.tongfei:progressbar:$progressBarVersion"
 
     testImplementation "junit:junit:$junitVersion"
 }
