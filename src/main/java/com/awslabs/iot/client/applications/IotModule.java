@@ -4,6 +4,7 @@ import com.awslabs.aws.iot.websockets.BasicMqttOverWebsocketsProvider;
 import com.awslabs.aws.iot.websockets.MqttOverWebsocketsProvider;
 import com.awslabs.iot.client.commands.interfaces.CommandHandler;
 import com.awslabs.iot.client.commands.iot.certificates.*;
+import com.awslabs.iot.client.commands.iot.jobs.DeleteAllJobsCommandHandler;
 import com.awslabs.iot.client.commands.iot.policies.DeleteAllPoliciesCommandHandler;
 import com.awslabs.iot.client.commands.iot.policies.DeletePolicyCommandHandlerWithCompletion;
 import com.awslabs.iot.client.commands.iot.policies.ListPoliciesCommandHandler;
@@ -72,7 +73,8 @@ public class IotModule {
                                                  RestPublishCommandHandler restPublishCommandHandler,
                                                  MqttPublishCommandHandler mqttPublishCommandHandler,
                                                  MqttSubscribeCommandHandler mqttSubscribeCommandHandler,
-                                                 DeleteAllThingGroupsCommandHandler deleteAllThingGroupsCommandHandler) {
+                                                 DeleteAllThingGroupsCommandHandler deleteAllThingGroupsCommandHandler,
+                                                 DeleteAllJobsCommandHandler deleteAllJobsCommandHandler) {
         return new HashSet<>(Arrays.asList(
                 testPublishCommandHandler,
                 listTopicRulesCommandHandler,
@@ -95,6 +97,7 @@ public class IotModule {
                 restPublishCommandHandler,
                 mqttPublishCommandHandler,
                 mqttSubscribeCommandHandler,
-                deleteAllThingGroupsCommandHandler));
+                deleteAllThingGroupsCommandHandler,
+                deleteAllJobsCommandHandler));
     }
 }
