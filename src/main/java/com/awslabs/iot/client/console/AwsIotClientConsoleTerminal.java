@@ -44,7 +44,8 @@ public class AwsIotClientConsoleTerminal implements AwsIotClientTerminal {
         return TerminalBuilder.builder()
                 .system(true)
                 .nativeSignals(true)
-                .signalHandler(Terminal.SignalHandler.SIG_IGN)
+                // Block CTRL-C - disabled for now
+                // .signalHandler(Terminal.SignalHandler.SIG_IGN)
                 .build();
     }
 
