@@ -2,27 +2,29 @@ package com.awslabs.iot.client.commands.greengrass.groups;
 
 import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.greengrass.GreengrassCommandHandler;
+import com.awslabs.iot.client.helpers.progressbar.ProgressBarHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
+import com.awslabs.iot.client.streams.interfaces.UsesStream;
 import com.awslabs.iot.helpers.interfaces.V2GreengrassHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.vavr.control.Try;
 import software.amazon.awssdk.services.greengrass.model.DefinitionInformation;
 import software.amazon.awssdk.services.greengrass.model.GetLoggerDefinitionVersionResponse;
 
 import javax.inject.Inject;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class DeleteAllLoggerDefinitionsCommandHandler implements GreengrassCommandHandler {
+public class DeleteAllLoggerDefinitionsCommandHandler implements GreengrassCommandHandler, UsesStream<DefinitionInformation> {
     private static final String DELETE_LOGGER_DEFINITIONS = "delete-all-logger-definitions";
-    private static final Logger log = LoggerFactory.getLogger(DeleteAllLoggerDefinitionsCommandHandler.class);
     @Inject
     V2GreengrassHelper v2GreengrassHelper;
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
     IoHelper ioHelper;
+    @Inject
+    ProgressBarHelper progressBarHelper;
 
     @Inject
     public DeleteAllLoggerDefinitionsCommandHandler() {
@@ -30,21 +32,16 @@ public class DeleteAllLoggerDefinitionsCommandHandler implements GreengrassComma
 
     @Override
     public void innerHandle(String input) {
-        List<String> immutableLoggerDefinitionIds = v2GreengrassHelper.getImmutableLoggerDefinitionVersionResponses()
-                .map(GetLoggerDefinitionVersionResponse::id)
-                .collect(Collectors.toList());
-
-        v2GreengrassHelper.getLoggerDefinitions()
-                .filter(definitionInformation -> !immutableLoggerDefinitionIds.contains(definitionInformation.id()))
-                // Sort the definitions by ID so we can get a general sense of how far along we are in the process of deleting them
-                .sorted(Comparator.comparing(DefinitionInformation::id))
-                .forEach(this::deleteAndLog);
+        Try.withResources(() -> progressBarHelper.start("Delete all Greengrass logger definitions", this))
+                .of(progressBar -> run());
     }
 
-    private void deleteAndLog(DefinitionInformation definitionInformation) {
-        v2GreengrassHelper.deleteLoggerDefinition(definitionInformation);
+    private Void run() {
+        getStream()
+                .peek(definitionInformation -> progressBarHelper.next())
+                .forEach(v2GreengrassHelper::deleteLoggerDefinition);
 
-        log.info(String.join("", "Deleted logger definition [", definitionInformation.id(), "]"));
+        return null;
     }
 
     @Override
@@ -68,5 +65,15 @@ public class DeleteAllLoggerDefinitionsCommandHandler implements GreengrassComma
 
     public IoHelper getIoHelper() {
         return this.ioHelper;
+    }
+
+    @Override
+    public Stream<DefinitionInformation> getStream() {
+        List<String> immutableLoggerDefinitionIds = v2GreengrassHelper.getImmutableLoggerDefinitionVersionResponses()
+                .map(GetLoggerDefinitionVersionResponse::id)
+                .collect(Collectors.toList());
+
+        return v2GreengrassHelper.getLoggerDefinitions()
+                .filter(definitionInformation -> !immutableLoggerDefinitionIds.contains(definitionInformation.id()));
     }
 }

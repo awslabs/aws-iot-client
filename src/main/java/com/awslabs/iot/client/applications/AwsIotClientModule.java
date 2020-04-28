@@ -11,6 +11,8 @@ import com.awslabs.iot.client.helpers.BasicCandidateHelper;
 import com.awslabs.iot.client.helpers.CandidateHelper;
 import com.awslabs.iot.client.helpers.json.BasicObjectPrettyPrinter;
 import com.awslabs.iot.client.helpers.json.interfaces.ObjectPrettyPrinter;
+import com.awslabs.iot.client.helpers.progressbar.BasicProgressBarHelper;
+import com.awslabs.iot.client.helpers.progressbar.ProgressBarHelper;
 import com.awslabs.iot.client.interfaces.AwsIotClientTerminal;
 import com.awslabs.iot.client.parameters.BasicParameterExtractor;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
@@ -112,5 +114,10 @@ public class AwsIotClientModule {
         return new HashSet<>(Arrays.asList(helpCommandHandler,
                 exitCommandHandler,
                 quitCommandHandler));
+    }
+
+    @Provides
+    public ProgressBarHelper progressBarHelper(BasicProgressBarHelper basicProgressBarHelper) {
+        return basicProgressBarHelper;
     }
 }

@@ -2,26 +2,28 @@ package com.awslabs.iot.client.commands.iot.policies;
 
 import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
+import com.awslabs.iot.client.helpers.progressbar.ProgressBarHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
+import com.awslabs.iot.client.streams.interfaces.UsesStream;
 import com.awslabs.iot.helpers.interfaces.V2IotHelper;
 import io.vavr.control.Try;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import software.amazon.awssdk.services.iot.model.DeleteConflictException;
 import software.amazon.awssdk.services.iot.model.Policy;
 
 import javax.inject.Inject;
-import java.util.Comparator;
+import java.util.stream.Stream;
 
-public class DeleteAllPoliciesCommandHandler implements IotCommandHandler {
+public class DeleteAllPoliciesCommandHandler implements IotCommandHandler, UsesStream<Policy> {
     private static final String DELETEALLPOLICIES = "delete-all-policies";
-    private static final Logger log = LoggerFactory.getLogger(DeleteAllPoliciesCommandHandler.class);
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
     IoHelper ioHelper;
     @Inject
     V2IotHelper v2IotHelper;
+    @Inject
+    ProgressBarHelper progressBarHelper;
 
     @Inject
     public DeleteAllPoliciesCommandHandler() {
@@ -29,20 +31,15 @@ public class DeleteAllPoliciesCommandHandler implements IotCommandHandler {
 
     @Override
     public void innerHandle(String input) {
-        v2IotHelper.getPolicies()
-                // Sort the policies by name so we can get a general sense of how far along we are in the process of deleting them
-                .sorted(Comparator.comparing(Policy::policyName))
-                .forEach(this::attemptDeletePolicy);
+        Try.withResources(() -> progressBarHelper.start("Delete all IoT policies", this))
+                .of(progressBar -> run());
     }
 
-    private void attemptDeletePolicy(Policy policy) {
-        Try.run(() -> v2IotHelper.delete(policy))
-                .onSuccess(Void -> log.info(String.join("", "Deleted policy [", policy.policyName(), "]")))
-                .recover(DeleteConflictException.class, exception -> ignoreAndLog(exception, policy));
-    }
-
-    private <T> T ignoreAndLog(DeleteConflictException exception, Policy policy) {
-        log.info(String.join("", "Policy [", policy.policyName(), "] could not be deleted [", exception.getMessage(), "]"));
+    private Void run() {
+        getStream()
+                .peek(policy -> progressBarHelper.next())
+                // Ignore all failures
+                .forEach(policy -> Try.run(() -> v2IotHelper.delete(policy)));
 
         return null;
     }
@@ -68,5 +65,10 @@ public class DeleteAllPoliciesCommandHandler implements IotCommandHandler {
 
     public IoHelper getIoHelper() {
         return this.ioHelper;
+    }
+
+    @Override
+    public Stream<Policy> getStream() {
+        return v2IotHelper.getPolicies();
     }
 }

@@ -9,13 +9,10 @@ import com.awslabs.iot.client.commands.iot.policies.DeleteAllPoliciesCommandHand
 import com.awslabs.iot.client.commands.iot.things.DeleteAllThingGroupsCommandHandler;
 import com.awslabs.iot.client.commands.iot.things.DeleteAllThingsCommandHandler;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
 public class CleanupCommandHandler implements GreengrassCommandHandler {
-    private final Logger log = LoggerFactory.getLogger(CleanupCommandHandler.class);
     private static final String CLEANUP = "cleanup";
     @Inject
     ParameterExtractor parameterExtractor;
@@ -28,7 +25,7 @@ public class CleanupCommandHandler implements GreengrassCommandHandler {
     @Inject
     DeleteAllThingsCommandHandler deleteAllThingsCommandHandler;
     @Inject
-    DeleteAllLambdaFunctionsCommandHandler deleteAllLambdaFunctionsCommandHandler;
+    DeleteAllGreengrassLambdaFunctionsCommandHandler deleteAllGreengrassLambdaFunctionsCommandHandler;
     @Inject
     DeleteAllGroupsCommandHandler deleteAllGroupsCommandHandler;
     @Inject
@@ -63,7 +60,7 @@ public class CleanupCommandHandler implements GreengrassCommandHandler {
         deleteAllPoliciesCommandHandler.innerHandle("");
 
         // Greengrass
-        deleteAllLambdaFunctionsCommandHandler.innerHandle("");
+        deleteAllGreengrassLambdaFunctionsCommandHandler.innerHandle("");
         deleteAllGroupsCommandHandler.innerHandle("");
         deleteAllCoreDefinitionsCommandHandler.innerHandle("");
         deleteAllFunctionDefinitionsCommandHandler.innerHandle("");

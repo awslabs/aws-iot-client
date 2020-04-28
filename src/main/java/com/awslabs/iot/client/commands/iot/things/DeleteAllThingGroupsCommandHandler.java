@@ -2,23 +2,26 @@ package com.awslabs.iot.client.commands.iot.things;
 
 import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
+import com.awslabs.iot.client.helpers.progressbar.ProgressBarHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
+import com.awslabs.iot.client.streams.interfaces.UsesStream;
 import com.awslabs.iot.helpers.interfaces.V2IotHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.vavr.control.Try;
 import software.amazon.awssdk.services.iot.model.GroupNameAndArn;
 
 import javax.inject.Inject;
+import java.util.stream.Stream;
 
-public class DeleteAllThingGroupsCommandHandler implements IotCommandHandler {
+public class DeleteAllThingGroupsCommandHandler implements IotCommandHandler, UsesStream<GroupNameAndArn> {
     private static final String DELETEALLTHINGGROUPS = "delete-all-thing-groups";
-    private static final Logger log = LoggerFactory.getLogger(DeleteAllThingGroupsCommandHandler.class);
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
     IoHelper ioHelper;
     @Inject
     V2IotHelper v2IotHelper;
+    @Inject
+    ProgressBarHelper progressBarHelper;
 
     @Inject
     public DeleteAllThingGroupsCommandHandler() {
@@ -26,14 +29,16 @@ public class DeleteAllThingGroupsCommandHandler implements IotCommandHandler {
 
     @Override
     public void innerHandle(String input) {
-        v2IotHelper.getThingGroups()
-                .forEach(groupNameAndArn -> deleteAndLog(groupNameAndArn));
+        Try.withResources(() -> progressBarHelper.start("Delete all IoT thing groups", this))
+                .of(progressBar -> run());
     }
 
-    private void deleteAndLog(GroupNameAndArn groupNameAndArn) {
-        v2IotHelper.delete(groupNameAndArn);
+    private Void run() {
+        getStream()
+                .peek(definitionInformation -> progressBarHelper.next())
+                .forEach(v2IotHelper::delete);
 
-        log.info("Deleted thing group [{}]", groupNameAndArn.groupName());
+        return null;
     }
 
     @Override
@@ -57,5 +62,10 @@ public class DeleteAllThingGroupsCommandHandler implements IotCommandHandler {
 
     public IoHelper getIoHelper() {
         return this.ioHelper;
+    }
+
+    @Override
+    public Stream<GroupNameAndArn> getStream() {
+        return v2IotHelper.getThingGroups();
     }
 }
