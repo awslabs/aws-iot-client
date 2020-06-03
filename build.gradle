@@ -8,7 +8,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
 
-def gradleDependencyVersion = '6.3'
+def gradleDependencyVersion = '6.4.1'
 
 wrapper {
     gradleVersion = gradleDependencyVersion
