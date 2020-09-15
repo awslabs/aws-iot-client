@@ -31,7 +31,7 @@ def junitVersion = '4.13'
 def resultsIteratorForAwsJavaSdkVersion = '0.10.65'
 def awsIotCoreWebsocketsVersion = '0.6.3'
 def jodahFailsafeVersion = '2.4.0'
-def progressBarVersion = '0.8.1'
+def progressBarVersion = '0.9.0'
 
 distZip.enabled = shadowDistZip.enabled = false
 distTar.enabled = shadowDistTar.enabled = false
