@@ -28,7 +28,7 @@ def jlineVersion = '3.16.0'
 def commonsLang3Version = '3.11'
 def vavrVersion = '0.10.3'
 def junitVersion = '4.13'
-def resultsIteratorForAwsJavaSdkVersion = '0.10.65'
+def resultsIteratorForAwsJavaSdkVersion = '11.0.0'
 def awsIotCoreWebsocketsVersion = '0.6.3'
 def jodahFailsafeVersion = '2.4.0'
 def progressBarVersion = '0.9.0'
@@ -85,7 +85,6 @@ dependencies {
     implementation "org.apache.commons:commons-lang3:$commonsLang3Version"
     implementation "com.github.awslabs:results-iterator-for-aws-java-sdk:$resultsIteratorForAwsJavaSdkVersion"
     implementation "com.github.awslabs:aws-iot-core-websockets:$awsIotCoreWebsocketsVersion"
-    implementation "software.amazon.awssdk:iotsecuretunneling:$awsSdk2Version"
 
     implementation "io.vavr:vavr:$vavrVersion"
     implementation "net.jodah:failsafe:$jodahFailsafeVersion"
@@ -93,3 +92,5 @@ dependencies {
 
     testImplementation "junit:junit:$junitVersion"
 }
+
+
