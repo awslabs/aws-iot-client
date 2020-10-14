@@ -50,7 +50,7 @@ public class MqttSubscribeCommandHandler implements IotCommandHandler {
         MqttClient mqttClient = Try.of(() -> websocketsHelper.connectMqttClientAndSubscribe(topic)).get();
 
         WebsocketsHelper.Function<String, MqttMessage> messageLoggingCallback = (topic1, mqttMessage) -> {
-            log.info("[{}] - {}", topic1, new String(mqttMessage.getPayload()));
+            log.info("[{}] - length: [{}] [{}]", topic1, mqttMessage.getPayload().length, new String(mqttMessage.getPayload()));
             return null;
         };
 
