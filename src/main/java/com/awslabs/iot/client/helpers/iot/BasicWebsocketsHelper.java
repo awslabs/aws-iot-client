@@ -42,7 +42,10 @@ public class BasicWebsocketsHelper implements WebsocketsHelper {
     }
 
     public MqttClient connectMqttClient() throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException, MqttException {
-        MqttClient mqttClient = mqttOverWebsocketsProvider.getMqttClient(UUID.randomUUID().toString());
+        String clientId = UUID.randomUUID().toString();
+        log.info("Client ID: " + clientId);
+
+        MqttClient mqttClient = mqttOverWebsocketsProvider.getMqttClient(clientId);
         mqttClient.connect();
 
         return mqttClient;
