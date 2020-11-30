@@ -3,8 +3,7 @@ package com.awslabs.iot.client.commands.logs;
 import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.helpers.cloudwatch.LogsHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.jcabi.log.Logger;
 import software.amazon.awssdk.services.cloudwatchlogs.model.OutputLogEvent;
 
 import javax.inject.Inject;
@@ -14,7 +13,6 @@ import java.util.Optional;
 
 public class GetLogsCommandHandler implements LogsCommandHandler {
     private static final String GET = "get";
-    private static final Logger log = LoggerFactory.getLogger(GetLogsCommandHandler.class);
     @Inject
     Provider<LogsHelper> logsHelperProvider;
     @Inject
@@ -34,7 +32,7 @@ public class GetLogsCommandHandler implements LogsCommandHandler {
 
         List<OutputLogEvent> logs = logsHelperProvider.get().getLogs(logGroupName, parameters);
 
-        logs.forEach(outputLogEvent -> log.info(outputLogEvent.message()));
+        logs.forEach(outputLogEvent -> Logger.info(this, outputLogEvent.message()));
     }
 
     @Override

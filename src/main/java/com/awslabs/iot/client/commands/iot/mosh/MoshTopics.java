@@ -5,10 +5,10 @@ import javax.inject.Inject;
 public class MoshTopics {
     public static final String CDD = "cdd";
     public static final String MOSH = "mosh";
-    private static final String DELIMITER = "/";
     public static final String DATA = "data";
     public static final String CLIENT = "client";
     public static final String SERVER = "server";
+    private static final String DELIMITER = "/";
     private static final String REQUEST = "request";
     private static final String NEW = "new";
     private static final String RESPONSE = "response";

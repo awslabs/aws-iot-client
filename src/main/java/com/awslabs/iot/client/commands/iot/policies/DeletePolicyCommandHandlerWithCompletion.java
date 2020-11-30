@@ -7,8 +7,6 @@ import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.data.ImmutablePolicyName;
 import com.awslabs.iot.data.PolicyName;
 import com.awslabs.iot.helpers.interfaces.V2IotHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -16,7 +14,6 @@ import java.util.List;
 public class DeletePolicyCommandHandlerWithCompletion implements PolicyCommandHandlerWithCompletion {
     private static final String DELETEPOLICY = "delete-policy";
     private static final int POLICY_NAME_POSITION = 0;
-    private static final Logger log = LoggerFactory.getLogger(DeletePolicyCommandHandlerWithCompletion.class);
     @Inject
     V2IotHelper v2IotHelper;
     @Inject

@@ -7,8 +7,6 @@ import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.data.ImmutableThingName;
 import com.awslabs.iot.data.ThingName;
 import com.awslabs.iot.helpers.interfaces.V2IotHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -16,7 +14,6 @@ import java.util.List;
 public class DeleteThingCommandHandlerWithCompletion implements ThingCommandHandlerWithCompletion {
     private static final String DELETETHING = "delete-thing";
     private static final int THING_NAME_POSITION = 0;
-    private static final Logger log = LoggerFactory.getLogger(DeleteThingCommandHandlerWithCompletion.class);
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject

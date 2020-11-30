@@ -10,11 +10,10 @@ import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.data.ImmutableRuleName;
 import com.awslabs.iot.data.RuleName;
 import com.awslabs.iot.helpers.interfaces.V2IotHelper;
+import com.jcabi.log.Logger;
 import org.jline.reader.Completer;
 import org.jline.reader.impl.completer.ArgumentCompleter;
 import org.jline.reader.impl.completer.NullCompleter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.services.iam.model.Role;
 import software.amazon.awssdk.services.iot.model.Action;
 import software.amazon.awssdk.services.iot.model.RepublishAction;
@@ -29,7 +28,6 @@ public class CreateTopicRuleCommandHandler implements IotCommandHandler {
     private static final int TOPIC_NAME_POSITION = 1;
     private static final int RULE_NAME_POSITION = 2;
     private static final int SQL_POSITION = 3;
-    private static final Logger log = LoggerFactory.getLogger(CreateTopicRuleCommandHandler.class);
     @Inject
     RoleCompleter roleCompleter;
     @Inject
@@ -51,8 +49,8 @@ public class CreateTopicRuleCommandHandler implements IotCommandHandler {
     }
 
     @Override
-    public void showUsage(Logger logger) {
-        log.info("You must specify the name of the role that will be used for republishing, the republish topic, the rule name, and the rule SQL");
+    public void showUsage() {
+        Logger.info(this, "You must specify the name of the role that will be used for republishing, the republish topic, the rule name, and the rule SQL");
     }
 
     @Override

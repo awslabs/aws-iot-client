@@ -6,11 +6,10 @@ import com.awslabs.iot.client.helpers.progressbar.ProgressBarHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.client.streams.interfaces.UsesStream;
 import com.awslabs.iot.helpers.interfaces.V2IotHelper;
+import com.jcabi.log.Logger;
 import io.vavr.control.Try;
 import net.jodah.failsafe.Failsafe;
 import net.jodah.failsafe.RetryPolicy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.services.iot.IotClient;
 import software.amazon.awssdk.services.iot.model.DeleteJobResponse;
 import software.amazon.awssdk.services.iot.model.JobStatus;
@@ -23,7 +22,6 @@ import java.util.stream.Stream;
 
 public class DeleteAllJobsCommandHandler implements IotCommandHandler, UsesStream<JobSummary> {
     private static final String DELETE_ALL_JOBS = "delete-all-jobs";
-    private static final Logger log = LoggerFactory.getLogger(DeleteAllJobsCommandHandler.class);
     @Inject
     V2IotHelper v2IotHelper;
     @Inject
@@ -60,7 +58,7 @@ public class DeleteAllJobsCommandHandler implements IotCommandHandler, UsesStrea
                 .withBackoff(500, 4000, ChronoUnit.MILLIS)
                 .withMaxRetries(20)
                 .onRetry(failure -> progressBarHelper.throttled())
-                .onRetriesExceeded(failure -> log.error("Exceeded rate limit too many times. Cannot continue."));
+                .onRetriesExceeded(failure -> Logger.error(this, "Exceeded rate limit too many times. Cannot continue."));
     }
 
     @Override

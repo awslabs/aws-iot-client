@@ -5,14 +5,11 @@ import com.awslabs.iot.client.commands.iot.IotCommandHandler;
 import com.awslabs.iot.client.commands.iot.completers.CertificateCompleter;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.helpers.interfaces.V2IotHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
 public class DeleteUnattachedCertificatesCommandHandlerWithCompletion implements IotCommandHandler {
     private static final String DELETEUNATTACHEDCERTIFICATES = "delete-unattached-certificates";
-    private static final Logger log = LoggerFactory.getLogger(DeleteUnattachedCertificatesCommandHandlerWithCompletion.class);
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject

@@ -5,7 +5,7 @@ import io.vertx.core.datagram.DatagramSocket;
 import java.util.Optional;
 
 class MoshDatagramSocket {
-    private DatagramSocket datagramSocket;
+    private final DatagramSocket datagramSocket;
 
     private Optional<Integer> sourcePort;
 

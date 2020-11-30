@@ -8,8 +8,7 @@ import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.data.GreengrassGroupId;
 import com.awslabs.iot.data.ImmutableGreengrassGroupId;
 import com.awslabs.iot.helpers.interfaces.V2GreengrassHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.jcabi.log.Logger;
 import software.amazon.awssdk.services.greengrass.model.CoreDefinitionVersion;
 
 import javax.inject.Inject;
@@ -19,7 +18,6 @@ import java.util.Optional;
 public class GetLatestCoreDefinitionVersionCommandHandlerWithGroupIdCompletion implements GreengrassGroupCommandHandlerWithGroupIdCompletion {
     private static final String GET_LATEST_CORE_DEFINITION = "get-latest-core-definition";
     private static final int GROUP_ID_POSITION = 0;
-    private static final Logger log = LoggerFactory.getLogger(GetLatestCoreDefinitionVersionCommandHandlerWithGroupIdCompletion.class);
     @Inject
     V2GreengrassHelper v2GreengrassHelper;
     @Inject
@@ -45,11 +43,11 @@ public class GetLatestCoreDefinitionVersionCommandHandlerWithGroupIdCompletion i
                 .flatMap(v2GreengrassHelper::getCoreDefinitionVersion);
 
         if (!optionalCoreDefinitionVersion.isPresent()) {
-            log.info("No core definition found");
+            Logger.info(this, "No core definition found");
             return;
         }
 
-        log.info(objectPrettyPrinter.prettyPrint(optionalCoreDefinitionVersion.get()));
+        Logger.info(this, objectPrettyPrinter.prettyPrint(optionalCoreDefinitionVersion.get()));
     }
 
     @Override

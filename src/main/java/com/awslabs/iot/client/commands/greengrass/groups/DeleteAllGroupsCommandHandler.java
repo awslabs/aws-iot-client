@@ -8,8 +8,6 @@ import com.awslabs.iot.client.streams.interfaces.UsesStream;
 import com.awslabs.iot.data.ImmutableGreengrassGroupId;
 import com.awslabs.iot.helpers.interfaces.V2GreengrassHelper;
 import io.vavr.control.Try;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.services.greengrass.model.GroupInformation;
 
 import javax.inject.Inject;
@@ -17,7 +15,6 @@ import java.util.stream.Stream;
 
 public class DeleteAllGroupsCommandHandler implements GreengrassCommandHandler, UsesStream<GroupInformation> {
     private static final String DELETE_ALL_GROUPS = "delete-all-groups";
-    private static final Logger log = LoggerFactory.getLogger(DeleteAllGroupsCommandHandler.class);
     @Inject
     V2GreengrassHelper v2GreengrassHelper;
     @Inject

@@ -2,13 +2,12 @@ package com.awslabs.iot.client.commands.interfaces;
 
 import com.awslabs.general.helpers.interfaces.IoHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
+import com.jcabi.log.Logger;
 import io.vavr.control.Try;
 import org.jline.reader.Completer;
 import org.jline.reader.impl.completer.ArgumentCompleter;
 import org.jline.reader.impl.completer.NullCompleter;
 import org.jline.reader.impl.completer.StringsCompleter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +25,7 @@ public interface CommandHandler {
         }
 
         if (!parametersSpecified(input)) {
-            showUsage(null);
+            showUsage();
             return true;
         }
 
@@ -99,12 +98,8 @@ public interface CommandHandler {
 
     ParameterExtractor getParameterExtractor();
 
-    default void showUsage(Logger logger) {
-        if (logger == null) {
-            logger = LoggerFactory.getLogger(CommandHandler.class);
-        }
-
-        logger.info(String.join("", "No usage information has been provided for this command, but the required number of parameters were not specified.  Expected ", String.valueOf(requiredParameters()), " parameter(s)."));
+    default void showUsage() {
+        Logger.info(this, String.join("", "No usage information has been provided for this command, but the required number of parameters were not specified.  Expected ", String.valueOf(requiredParameters()), " parameter(s)."));
     }
 
     IoHelper getIoHelper();

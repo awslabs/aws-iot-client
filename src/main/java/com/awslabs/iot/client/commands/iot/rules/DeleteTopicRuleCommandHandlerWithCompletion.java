@@ -7,8 +7,7 @@ import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.data.ImmutableRuleName;
 import com.awslabs.iot.data.RuleName;
 import com.awslabs.iot.helpers.interfaces.V2IotHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.jcabi.log.Logger;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -16,7 +15,6 @@ import java.util.List;
 public class DeleteTopicRuleCommandHandlerWithCompletion implements RuleCommandHandlerWithCompletion {
     private static final String DELETETOPICRULE = "delete-topic-rule";
     private static final int TOPIC_RULE_NAME_POSITION = 0;
-    private static final Logger log = LoggerFactory.getLogger(DeleteTopicRuleCommandHandlerWithCompletion.class);
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
@@ -40,8 +38,8 @@ public class DeleteTopicRuleCommandHandlerWithCompletion implements RuleCommandH
     }
 
     @Override
-    public void showUsage(Logger logger) {
-        log.info("You must specify the name of the topic rule you want to delete.");
+    public void showUsage() {
+        Logger.info(this, "You must specify the name of the topic rule you want to delete.");
     }
 
     @Override

@@ -81,37 +81,37 @@ public class MoshServerCommandHandler { // implements ThingCommandHandlerWithCom
 
         if (splitTopic.length != 6) {
             // Not the correct number of elements
-            log.info("Unknown topic [" + topic + "]");
+            Logger.info(this, "Unknown topic [" + topic + "]");
             return;
         }
 
         if (!splitTopic[0].equals(serverThingName)) {
             // Not the server name we expected
-            log.info("Unexpected server [" + serverThingName + "]");
+            Logger.info(this, "Unexpected server [" + serverThingName + "]");
             return;
         }
 
         if (!splitTopic[1].equals(MoshTopics.CDD)) {
             // Not the correct application
-            log.info("Unexpected topic #1 [" + topic + "]");
+            Logger.info(this, "Unexpected topic #1 [" + topic + "]");
             return;
         }
 
         if (!splitTopic[2].equals(MoshTopics.MOSH)) {
             // Not the correct application
-            log.info("Unexpected topic #2 [" + topic + "]");
+            Logger.info(this, "Unexpected topic #2 [" + topic + "]");
             return;
         }
 
         if (!splitTopic[3].equals(MoshTopics.DATA)) {
             // Not the correct traffic direction
-            log.info("Unexpected topic #3 [" + topic + "]");
+            Logger.info(this, "Unexpected topic #3 [" + topic + "]");
             return;
         }
 
         if (!splitTopic[4].equals(MoshTopics.CLIENT)) {
             // Not from the client, ignore
-            log.info("Data not from the client");
+            Logger.info(this, "Data not from the client");
             return;
         }
 
@@ -121,13 +121,13 @@ public class MoshServerCommandHandler { // implements ThingCommandHandlerWithCom
 
         if (!topic.equals(dataFromClientTopic)) {
             // Sanity check: Can be removed
-            log.info("This should never happen [" + dataFromClientTopic + ", " + topic + "]");
+            Logger.info(this, "This should never happen [" + dataFromClientTopic + ", " + topic + "]");
             return;
         }
 
         if (!datagramServerPorts.containsKey(serverPort)) {
             // No datagram server associated with this port
-            log.info("Unexpected server port [" + serverPort + "]");
+            Logger.info(this, "Unexpected server port [" + serverPort + "]");
             return;
         }
 
@@ -241,7 +241,7 @@ public class MoshServerCommandHandler { // implements ThingCommandHandlerWithCom
                 int listenPort = port + LISTEN_PORT_OFFSET;
                 String dataClientTopic = moshTopics.getDataClientTopic(serverThingName, port);
                 String dataServerTopic = moshTopics.getDataServerTopic(serverThingName, port);
-                log.info("Starting server on [" + listenPort + "]");
+                Logger.info(this, "Starting server on [" + listenPort + "]");
 
                 // Start a server on another local port that doesn't conflict with mosh-server so we can masquerade as a client
                 DatagramSocket datagramSocket = vertx.createDatagramSocket();
@@ -265,7 +265,7 @@ public class MoshServerCommandHandler { // implements ThingCommandHandlerWithCom
                 // Subscribe to the topic that the client uses to send data to the server
                 client.subscribe(dataClientTopic, 0);
 
-                log.info("Server started on [" + listenPort + "]");
+                Logger.info(this, "Server started on [" + listenPort + "]");
             } else {
                 log.error("START mosh failed to start");
                 log.error("stdout:");
@@ -275,7 +275,7 @@ public class MoshServerCommandHandler { // implements ThingCommandHandlerWithCom
                 log.error("END   mosh failed to start");
             }
         } catch (Exception e) {
-            log.info("Exception [" + e.getMessage() + "]");
+            Logger.info(this, "Exception [" + e.getMessage() + "]");
         }
     }
 

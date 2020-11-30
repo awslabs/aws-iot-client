@@ -8,8 +8,7 @@ import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.data.GreengrassGroupId;
 import com.awslabs.iot.data.ImmutableGreengrassGroupId;
 import com.awslabs.iot.helpers.interfaces.V2GreengrassHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.jcabi.log.Logger;
 import software.amazon.awssdk.services.greengrass.model.GroupVersion;
 import software.amazon.awssdk.services.greengrass.model.ResourceDefinitionVersion;
 
@@ -20,7 +19,6 @@ import java.util.Optional;
 public class GetLatestResourceDefinitionVersionCommandHandlerWithGroupIdCompletion implements GreengrassGroupCommandHandlerWithGroupIdCompletion {
     private static final String GET_LATEST_RESOURCE_DEFINITION = "get-latest-resource-definition";
     private static final int GROUP_ID_POSITION = 0;
-    private static final Logger log = LoggerFactory.getLogger(GetLatestResourceDefinitionVersionCommandHandlerWithGroupIdCompletion.class);
     @Inject
     V2GreengrassHelper v2GreengrassHelper;
     @Inject
@@ -52,7 +50,7 @@ public class GetLatestResourceDefinitionVersionCommandHandlerWithGroupIdCompleti
 
         Optional<ResourceDefinitionVersion> resourceDefinitionVersion = v2GreengrassHelper.getResourceDefinitionVersion(groupVersion);
 
-        log.info(objectPrettyPrinter.prettyPrint(resourceDefinitionVersion));
+        Logger.info(this, objectPrettyPrinter.prettyPrint(resourceDefinitionVersion));
     }
 
     @Override

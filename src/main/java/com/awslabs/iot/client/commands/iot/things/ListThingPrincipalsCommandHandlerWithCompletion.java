@@ -8,8 +8,7 @@ import com.awslabs.iot.data.ImmutableThingName;
 import com.awslabs.iot.data.ThingName;
 import com.awslabs.iot.data.ThingPrincipal;
 import com.awslabs.iot.helpers.interfaces.V2IotHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.jcabi.log.Logger;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -18,7 +17,6 @@ import java.util.stream.Collectors;
 public class ListThingPrincipalsCommandHandlerWithCompletion implements ThingCommandHandlerWithCompletion {
     private static final String LISTTHINGPRINCIPALS = "list-thing-principals";
     private static final int THING_NAME_POSITION = 0;
-    private static final Logger log = LoggerFactory.getLogger(ListThingPrincipalsCommandHandlerWithCompletion.class);
     @Inject
     V2IotHelper v2IotHelper;
     @Inject
@@ -42,10 +40,10 @@ public class ListThingPrincipalsCommandHandlerWithCompletion implements ThingCom
                 .collect(Collectors.toList());
 
         if (principals.size() != 0) {
-            log.info(String.join("", "Principals attached to thing [", thingName.getName(), "]"));
+            Logger.info(this, String.join("", "Principals attached to thing [", thingName.getName(), "]"));
         }
 
-        principals.forEach(principal -> log.info(String.join("", "  ", principal.getPrincipal())));
+        principals.forEach(principal -> Logger.info(this, String.join("", "  ", principal.getPrincipal())));
     }
 
     @Override

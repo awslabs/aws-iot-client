@@ -7,8 +7,7 @@ import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.data.GreengrassGroupId;
 import com.awslabs.iot.data.ImmutableGreengrassGroupId;
 import com.awslabs.iot.helpers.interfaces.V2GreengrassHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.jcabi.log.Logger;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -16,7 +15,6 @@ import java.util.List;
 public class GetLatestDeploymentCommandHandlerWithGroupIdCompletion implements GreengrassGroupCommandHandlerWithGroupIdCompletion {
     private static final String GET_LATEST_DEPLOYMENT = "get-latest-deployment";
     private static final int GROUP_ID_POSITION = 0;
-    private static final Logger log = LoggerFactory.getLogger(GetLatestDeploymentCommandHandlerWithGroupIdCompletion.class);
     @Inject
     V2GreengrassHelper v2GreengrassHelper;
     @Inject
@@ -37,7 +35,7 @@ public class GetLatestDeploymentCommandHandlerWithGroupIdCompletion implements G
         GreengrassGroupId groupId = ImmutableGreengrassGroupId.builder().groupId(parameters.get(GROUP_ID_POSITION)).build();
 
         v2GreengrassHelper.getDeployments(groupId)
-                .forEach(deployment -> log.info(String.join("", "  [", deployment.deploymentId(), " - ", deployment.createdAt(), "]")));
+                .forEach(deployment -> Logger.info(this, String.join("", "  [", deployment.deploymentId(), " - ", deployment.createdAt(), "]")));
     }
 
     @Override

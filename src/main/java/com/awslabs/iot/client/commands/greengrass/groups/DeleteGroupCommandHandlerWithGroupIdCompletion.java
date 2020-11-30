@@ -7,8 +7,6 @@ import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.data.GreengrassGroupId;
 import com.awslabs.iot.data.ImmutableGreengrassGroupId;
 import com.awslabs.iot.helpers.interfaces.V2GreengrassHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -16,7 +14,6 @@ import java.util.List;
 public class DeleteGroupCommandHandlerWithGroupIdCompletion implements GreengrassGroupCommandHandlerWithGroupIdCompletion {
     private static final String DELETE_GROUP = "delete-group";
     private static final int GROUP_ID_POSITION = 0;
-    private static final Logger log = LoggerFactory.getLogger(DeleteGroupCommandHandlerWithGroupIdCompletion.class);
     @Inject
     V2GreengrassHelper v2GreengrassHelper;
     @Inject

@@ -7,8 +7,6 @@ import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.client.streams.interfaces.UsesStream;
 import com.awslabs.iot.helpers.interfaces.V2IotHelper;
 import io.vavr.control.Try;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.services.iot.model.Policy;
 
 import javax.inject.Inject;

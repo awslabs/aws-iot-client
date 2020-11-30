@@ -6,11 +6,8 @@ import com.awslabs.iot.client.helpers.progressbar.ProgressBarHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.client.streams.interfaces.UsesStream;
 import com.awslabs.iot.data.ImmutableThingName;
-import com.awslabs.iot.data.ThingName;
 import com.awslabs.iot.helpers.interfaces.V2IotHelper;
 import io.vavr.control.Try;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.services.iot.model.ThingAttribute;
 
 import javax.inject.Inject;
@@ -18,7 +15,6 @@ import java.util.stream.Stream;
 
 public class DeleteAllThingsCommandHandler implements IotCommandHandler, UsesStream<ThingAttribute> {
     private static final String DELETEALLTHINGS = "delete-all-things";
-    private static final Logger log = LoggerFactory.getLogger(DeleteAllThingsCommandHandler.class);
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject

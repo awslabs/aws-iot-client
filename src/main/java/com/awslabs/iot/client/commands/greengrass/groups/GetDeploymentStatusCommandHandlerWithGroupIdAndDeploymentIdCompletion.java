@@ -7,8 +7,7 @@ import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.data.GreengrassGroupId;
 import com.awslabs.iot.data.ImmutableGreengrassGroupId;
 import com.awslabs.iot.helpers.interfaces.V2GreengrassHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.jcabi.log.Logger;
 import software.amazon.awssdk.services.greengrass.model.GetDeploymentStatusResponse;
 
 import javax.inject.Inject;
@@ -19,7 +18,6 @@ public class GetDeploymentStatusCommandHandlerWithGroupIdAndDeploymentIdCompleti
     private static final String GET_DEPLOYMENT_STATUS = "get-deployment-status";
     private static final int GROUP_ID_POSITION = 0;
     private static final int DEPLOYMENT_ID_POSITION = 1;
-    private static final Logger log = LoggerFactory.getLogger(GetDeploymentStatusCommandHandlerWithGroupIdAndDeploymentIdCompletion.class);
     @Inject
     V2GreengrassHelper v2GreengrassHelper;
     @Inject
@@ -46,11 +44,11 @@ public class GetDeploymentStatusCommandHandlerWithGroupIdAndDeploymentIdCompleti
                 .flatMap(deployment -> v2GreengrassHelper.getDeploymentStatusResponse(groupId, deployment));
 
         if (!optionalGetDeploymentStatusResponse.isPresent()) {
-            log.info(String.join("", "No status available for group [", groupId.getGroupId(), "] and deployment [", deploymentId, "]"));
+            Logger.info(this, String.join("", "No status available for group [", groupId.getGroupId(), "] and deployment [", deploymentId, "]"));
             return;
         }
 
-        log.info(String.join("", "Status of deployment [", deploymentId, "] is [", optionalGetDeploymentStatusResponse.get().deploymentStatus(), "]"));
+        Logger.info(this, String.join("", "Status of deployment [", deploymentId, "] is [", optionalGetDeploymentStatusResponse.get().deploymentStatus(), "]"));
     }
 
     @Override

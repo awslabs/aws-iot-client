@@ -7,8 +7,7 @@ import com.awslabs.iot.client.helpers.json.interfaces.ObjectPrettyPrinter;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.data.ImmutableGreengrassGroupId;
 import com.awslabs.iot.helpers.interfaces.V2GreengrassHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.jcabi.log.Logger;
 import software.amazon.awssdk.services.greengrass.model.ConnectorDefinitionVersion;
 import software.amazon.awssdk.services.greengrass.model.GroupInformation;
 
@@ -19,7 +18,6 @@ import java.util.Optional;
 public class GetLatestConnectorDefinitionVersionCommandHandlerWithGroupIdCompletion implements GreengrassGroupCommandHandlerWithGroupIdCompletion {
     private static final String GET_LATEST_CONNECTOR_DEFINITION = "get-latest-connector-definition";
     private static final int GROUP_ID_POSITION = 0;
-    private static final Logger log = LoggerFactory.getLogger(GetLatestConnectorDefinitionVersionCommandHandlerWithGroupIdCompletion.class);
     @Inject
     V2GreengrassHelper v2GreengrassHelper;
     @Inject
@@ -52,11 +50,11 @@ public class GetLatestConnectorDefinitionVersionCommandHandlerWithGroupIdComplet
         Optional<ConnectorDefinitionVersion> optionalConnectorDefinitionVersion = v2GreengrassHelper.getConnectorDefinitionVersion(groupInformation);
 
         if (!optionalConnectorDefinitionVersion.isPresent()) {
-            log.info("No connectors found");
+            Logger.info(this, "No connectors found");
             return;
         }
 
-        log.info(objectPrettyPrinter.prettyPrint(optionalConnectorDefinitionVersion.get()));
+        Logger.info(this, objectPrettyPrinter.prettyPrint(optionalConnectorDefinitionVersion.get()));
     }
 
     @Override

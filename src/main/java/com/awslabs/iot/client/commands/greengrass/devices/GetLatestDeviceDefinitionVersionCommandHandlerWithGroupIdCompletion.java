@@ -8,8 +8,7 @@ import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.data.GreengrassGroupId;
 import com.awslabs.iot.data.ImmutableGreengrassGroupId;
 import com.awslabs.iot.helpers.interfaces.V2GreengrassHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.jcabi.log.Logger;
 import software.amazon.awssdk.services.greengrass.model.Device;
 
 import javax.inject.Inject;
@@ -19,7 +18,6 @@ import java.util.Optional;
 public class GetLatestDeviceDefinitionVersionCommandHandlerWithGroupIdCompletion implements GreengrassGroupCommandHandlerWithGroupIdCompletion {
     private static final String GET_LATEST_DEVICE_DEFINITION = "get-latest-device-definition";
     private static final int GROUP_ID_POSITION = 0;
-    private static final Logger log = LoggerFactory.getLogger(GetLatestDeviceDefinitionVersionCommandHandlerWithGroupIdCompletion.class);
     @Inject
     V2GreengrassHelper v2GreengrassHelper;
     @Inject
@@ -45,11 +43,11 @@ public class GetLatestDeviceDefinitionVersionCommandHandlerWithGroupIdCompletion
                 .flatMap(v2GreengrassHelper::getDevices);
 
         if (!optionalDeviceList.isPresent()) {
-            log.info("No devices found");
+            Logger.info(this, "No devices found");
             return;
         }
 
-        log.info(objectPrettyPrinter.prettyPrint(optionalDeviceList.get()));
+        Logger.info(this, objectPrettyPrinter.prettyPrint(optionalDeviceList.get()));
     }
 
     @Override

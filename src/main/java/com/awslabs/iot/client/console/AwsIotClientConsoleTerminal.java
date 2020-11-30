@@ -6,18 +6,16 @@ import com.awslabs.iot.client.commands.CommandHandlerProvider;
 import com.awslabs.iot.client.commands.interfaces.CommandHandler;
 import com.awslabs.iot.client.helpers.ANSIHelper;
 import com.awslabs.iot.client.interfaces.AwsIotClientTerminal;
+import com.jcabi.log.Logger;
 import org.jline.reader.Completer;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Set;
 
 public class AwsIotClientConsoleTerminal implements AwsIotClientTerminal {
-    private static final Logger log = LoggerFactory.getLogger(AwsIotClientConsoleTerminal.class);
     @Inject
     CommandHandlerProvider commandHandlerProvider;
     @Inject
@@ -61,7 +59,7 @@ public class AwsIotClientConsoleTerminal implements AwsIotClientTerminal {
 
     @Override
     public void write(String s) {
-        log.info(s);
+        Logger.info(this, s);
     }
 
     @Override
@@ -77,10 +75,10 @@ public class AwsIotClientConsoleTerminal implements AwsIotClientTerminal {
             return;
         }
 
-        log.warn("------------------------------------ DANGER!");
-        log.warn("| You have enabled dangerous mode! |");
-        log.warn("------------------------------------ DANGER!");
+        Logger.warn(this, "------------------------------------ DANGER!");
+        Logger.warn(this, "| You have enabled dangerous mode! |");
+        Logger.warn(this, "------------------------------------ DANGER!");
 
-        log.warn("Some commands can and will remove resources in your AWS account without confirmation.  You have been warned!");
+        Logger.warn(this, "Some commands can and will remove resources in your AWS account without confirmation.  You have been warned!");
     }
 }

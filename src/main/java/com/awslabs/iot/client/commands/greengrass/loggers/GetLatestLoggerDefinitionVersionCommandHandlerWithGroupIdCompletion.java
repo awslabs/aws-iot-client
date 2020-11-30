@@ -7,8 +7,7 @@ import com.awslabs.iot.client.helpers.json.interfaces.ObjectPrettyPrinter;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.data.ImmutableGreengrassGroupId;
 import com.awslabs.iot.helpers.interfaces.V2GreengrassHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.jcabi.log.Logger;
 import software.amazon.awssdk.services.greengrass.model.GroupInformation;
 import software.amazon.awssdk.services.greengrass.model.LoggerDefinitionVersion;
 
@@ -19,7 +18,6 @@ import java.util.Optional;
 public class GetLatestLoggerDefinitionVersionCommandHandlerWithGroupIdCompletion implements GreengrassGroupCommandHandlerWithGroupIdCompletion {
     private static final String GET_LATEST_LOGGER_DEFINITION = "get-latest-logger-definition";
     private static final int GROUP_ID_POSITION = 0;
-    private static final Logger log = LoggerFactory.getLogger(GetLatestLoggerDefinitionVersionCommandHandlerWithGroupIdCompletion.class);
     @Inject
     V2GreengrassHelper v2GreengrassHelper;
     @Inject
@@ -52,11 +50,11 @@ public class GetLatestLoggerDefinitionVersionCommandHandlerWithGroupIdCompletion
         Optional<LoggerDefinitionVersion> optionalLoggerDefinitionVersion = v2GreengrassHelper.getLoggerDefinitionVersion(groupInformation);
 
         if (!optionalLoggerDefinitionVersion.isPresent()) {
-            log.info("No loggers found");
+            Logger.info(this, "No loggers found");
             return;
         }
 
-        log.info(objectPrettyPrinter.prettyPrint(optionalLoggerDefinitionVersion.get()));
+        Logger.info(this, objectPrettyPrinter.prettyPrint(optionalLoggerDefinitionVersion.get()));
     }
 
     @Override

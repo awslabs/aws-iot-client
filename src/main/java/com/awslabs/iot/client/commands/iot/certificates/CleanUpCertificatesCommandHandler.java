@@ -5,8 +5,7 @@ import com.awslabs.iot.client.commands.iot.IotCommandHandler;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.data.*;
 import com.awslabs.iot.helpers.interfaces.V2IotHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.jcabi.log.Logger;
 import software.amazon.awssdk.services.iot.model.Certificate;
 import software.amazon.awssdk.services.iot.model.Policy;
 
@@ -15,7 +14,6 @@ import java.util.stream.Stream;
 
 public class CleanUpCertificatesCommandHandler implements IotCommandHandler {
     private static final String CLEANUPCERTIFICATES = "clean-up-certificates";
-    private static final Logger log = LoggerFactory.getLogger(CleanUpCertificatesCommandHandler.class);
     @Inject
     V2IotHelper v2IotHelper;
     @Inject
@@ -39,18 +37,18 @@ public class CleanUpCertificatesCommandHandler implements IotCommandHandler {
         Stream<ThingName> attachedThings = v2IotHelper.getAttachedThings(certificateArn);
 
         if (attachedThings.findAny().isPresent()) {
-            log.info(String.join("", "Ignoring [", certificateId.getId(), "], it still has things attached to it"));
+            Logger.info(this, String.join("", "Ignoring [", certificateId.getId(), "], it still has things attached to it"));
             return;
         }
 
         Stream<Policy> attachedPolicies = v2IotHelper.getAttachedPolicies(certificateArn);
 
         if (attachedPolicies.findAny().isPresent()) {
-            log.info(String.join("", "Ignoring [", certificateId.getId(), "], it still has policies attached to it"));
+            Logger.info(this, String.join("", "Ignoring [", certificateId.getId(), "], it still has policies attached to it"));
             return;
         }
 
-        log.info(String.join("", "Deleting [", certificateId.getId(), "]"));
+        Logger.info(this, String.join("", "Deleting [", certificateId.getId(), "]"));
 
         v2IotHelper.delete(certificateArn);
     }

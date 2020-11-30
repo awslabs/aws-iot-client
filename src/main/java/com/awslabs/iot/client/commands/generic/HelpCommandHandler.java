@@ -5,8 +5,7 @@ import com.awslabs.iot.client.commands.CommandHandlerProvider;
 import com.awslabs.iot.client.commands.interfaces.CommandHandler;
 import com.awslabs.iot.client.helpers.ANSIHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.jcabi.log.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -16,7 +15,6 @@ import java.util.stream.Collectors;
 
 public class HelpCommandHandler implements CommandHandler {
     private static final String HELP = "help";
-    private static final Logger log = LoggerFactory.getLogger(HelpCommandHandler.class);
     @Inject
     Provider<CommandHandlerProvider> commandHandlerProviderProvider;
     @Inject
@@ -48,7 +46,7 @@ public class HelpCommandHandler implements CommandHandler {
             stringBuilder.append(ANSIHelper.CRLF);
         }
 
-        log.info(stringBuilder.toString());
+        Logger.info(this, stringBuilder.toString());
     }
 
     @Override

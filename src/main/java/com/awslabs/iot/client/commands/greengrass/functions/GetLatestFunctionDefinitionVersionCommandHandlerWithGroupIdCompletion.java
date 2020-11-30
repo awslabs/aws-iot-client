@@ -8,8 +8,7 @@ import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.data.GreengrassGroupId;
 import com.awslabs.iot.data.ImmutableGreengrassGroupId;
 import com.awslabs.iot.helpers.interfaces.V2GreengrassHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.jcabi.log.Logger;
 import software.amazon.awssdk.services.greengrass.model.FunctionDefinitionVersion;
 
 import javax.inject.Inject;
@@ -19,7 +18,6 @@ import java.util.Optional;
 public class GetLatestFunctionDefinitionVersionCommandHandlerWithGroupIdCompletion implements GreengrassGroupCommandHandlerWithGroupIdCompletion {
     private static final String GET_LATEST_FUNCTION_DEFINITION = "get-latest-function-definition";
     private static final int GROUP_ID_POSITION = 0;
-    private static final Logger log = LoggerFactory.getLogger(GetLatestFunctionDefinitionVersionCommandHandlerWithGroupIdCompletion.class);
     @Inject
     V2GreengrassHelper v2GreengrassHelper;
     @Inject
@@ -45,11 +43,11 @@ public class GetLatestFunctionDefinitionVersionCommandHandlerWithGroupIdCompleti
                 .flatMap(v2GreengrassHelper::getFunctionDefinitionVersion);
 
         if (!optionalFunctionDefinitionVersion.isPresent()) {
-            log.info("No function definition found");
+            Logger.info(this, "No function definition found");
             return;
         }
 
-        log.info(objectPrettyPrinter.prettyPrint(optionalFunctionDefinitionVersion.get()));
+        Logger.info(this, objectPrettyPrinter.prettyPrint(optionalFunctionDefinitionVersion.get()));
     }
 
     @Override

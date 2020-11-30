@@ -9,8 +9,6 @@ import com.awslabs.iot.helpers.interfaces.V2GreengrassHelper;
 import com.awslabs.iot.helpers.interfaces.V2IotHelper;
 import com.awslabs.lambda.helpers.interfaces.V2LambdaHelper;
 import io.vavr.control.Try;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.services.greengrass.model.GroupInformation;
 import software.amazon.awssdk.services.lambda.LambdaClient;
 import software.amazon.awssdk.services.lambda.model.DeleteFunctionRequest;
@@ -23,7 +21,6 @@ import java.util.stream.Stream;
 
 public class DeleteAllGreengrassLambdaFunctionsCommandHandler implements GreengrassCommandHandler, UsesStream<FunctionConfiguration> {
     private static final String DELETE_ALL_LAMBDA_FUNCTIONS = "delete-all-lambda-functions";
-    private static final Logger log = LoggerFactory.getLogger(DeleteAllGreengrassLambdaFunctionsCommandHandler.class);
     @Inject
     V2GreengrassHelper v2GreengrassHelper;
     @Inject
