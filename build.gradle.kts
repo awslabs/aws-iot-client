@@ -56,7 +56,7 @@ tasks.shadowJar {
 }
 
 val daggerVersion = "2.33"
-val jcommanderVersion = "1.80"
+val jcommanderVersion = "1.81"
 val awsSdk2Version = "2.16.10"
 val gsonVersion = "2.8.6"
 val slf4jVersion = "2.0.0-alpha1"
