@@ -69,7 +69,7 @@ val junitVersion = "4.13.2"
 val resultsIteratorForAwsJavaSdkVersion = "11.0.7"
 val awsIotCoreWebsocketsVersion = "0.6.3"
 val jodahFailsafeVersion = "2.4.0"
-val progressBarVersion = "0.9.0"
+val progressBarVersion = "0.9.1"
 
 dependencies {
     // Dagger code generation
