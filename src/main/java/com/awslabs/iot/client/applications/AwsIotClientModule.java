@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-@Module(includes = {GreengrassModule.class, IotModule.class, LogsModule.class, LambdaModule.class, ResultsIteratorModule.class})
+@Module(includes = {GreengrassModule.class, GreengrassV2Module.class, IotModule.class, LogsModule.class, LambdaModule.class, ResultsIteratorModule.class})
 public class AwsIotClientModule {
     private static final String CA_CERT_FILENAME = "ca.crt";
     private static final String CLIENT_CERT_FILENAME = "client.crt";
