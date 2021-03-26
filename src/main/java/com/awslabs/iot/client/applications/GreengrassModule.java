@@ -13,9 +13,8 @@ import com.awslabs.iot.client.commands.interfaces.CommandHandler;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.ElementsIntoSet;
+import io.vavr.collection.HashSet;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
 @Module
@@ -45,7 +44,7 @@ public class GreengrassModule {
                                                  DeleteAllDeviceDefinitionsCommandHandler deleteAllDeviceDefinitionsCommandHandler,
                                                  DeleteAllLoggerDefinitionsCommandHandler deleteAllLoggerDefinitionsCommandHandler,
                                                  DeleteAllConnectorDefinitionsCommandHandler deleteAllConnectorDefinitionsCommandHandler) {
-        return new HashSet<>(Arrays.asList(
+        return HashSet.<CommandHandler>of(
                 listGroupsCommandHandler,
                 listGroupVersionsCommandHandlerWithGroupIdCompletion,
                 getLatestGroupVersionCommandHandlerWithGroupIdCompletion,
@@ -68,6 +67,7 @@ public class GreengrassModule {
                 deleteAllSubscriptionDefinitionsCommandHandler,
                 deleteAllDeviceDefinitionsCommandHandler,
                 deleteAllLoggerDefinitionsCommandHandler,
-                deleteAllConnectorDefinitionsCommandHandler));
+                deleteAllConnectorDefinitionsCommandHandler)
+                .toJavaSet();
     }
 }

@@ -5,9 +5,8 @@ import com.awslabs.iot.client.commands.lambda.DeleteLambdaFunctionsCommandHandle
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.ElementsIntoSet;
+import io.vavr.collection.HashSet;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
 @Module
@@ -15,6 +14,8 @@ public class LambdaModule {
     @Provides
     @ElementsIntoSet
     public Set<CommandHandler> commandHandlerSet(DeleteLambdaFunctionsCommandHandler deleteLambdaFunctionsCommandHandler) {
-        return new HashSet<>(Arrays.asList(deleteLambdaFunctionsCommandHandler));
+        return HashSet.<CommandHandler>of(
+                deleteLambdaFunctionsCommandHandler)
+                .toJavaSet();
     }
 }

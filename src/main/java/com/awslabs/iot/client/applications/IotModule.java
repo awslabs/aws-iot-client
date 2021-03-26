@@ -21,12 +21,11 @@ import com.awslabs.iot.client.helpers.iot.interfaces.WebsocketsHelper;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.ElementsIntoSet;
+import io.vavr.collection.HashSet;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 
 import javax.inject.Singleton;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
 @Module
@@ -75,7 +74,7 @@ public class IotModule {
                                                  MqttSubscribeCommandHandler mqttSubscribeCommandHandler,
                                                  DeleteAllThingGroupsCommandHandler deleteAllThingGroupsCommandHandler,
                                                  DeleteAllJobsCommandHandler deleteAllJobsCommandHandler) {
-        return new HashSet<>(Arrays.asList(
+        return HashSet.<CommandHandler>of(
                 testPublishCommandHandler,
                 listTopicRulesCommandHandler,
                 createTopicRuleCommandHandler,
@@ -98,6 +97,7 @@ public class IotModule {
                 mqttPublishCommandHandler,
                 mqttSubscribeCommandHandler,
                 deleteAllThingGroupsCommandHandler,
-                deleteAllJobsCommandHandler));
+                deleteAllJobsCommandHandler)
+                .toJavaSet();
     }
 }

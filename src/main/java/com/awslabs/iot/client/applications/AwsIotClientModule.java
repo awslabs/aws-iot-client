@@ -21,13 +21,12 @@ import com.awslabs.resultsiterator.ResultsIteratorModule;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.ElementsIntoSet;
+import io.vavr.collection.HashSet;
 
 import javax.inject.Singleton;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
-@Module(includes = {GreengrassModule.class, GreengrassV2Module.class, IotModule.class, LogsModule.class, LambdaModule.class, ResultsIteratorModule.class})
+@Module(includes = {GreengrassV2Module.class, IotModule.class, LogsModule.class, LambdaModule.class, ResultsIteratorModule.class})
 public class AwsIotClientModule {
     private static final String CA_CERT_FILENAME = "ca.crt";
     private static final String CLIENT_CERT_FILENAME = "client.crt";
@@ -111,9 +110,11 @@ public class AwsIotClientModule {
     public Set<CommandHandler> commandHandlerSet(HelpCommandHandler helpCommandHandler,
                                                  ExitCommandHandler exitCommandHandler,
                                                  QuitCommandHandler quitCommandHandler) {
-        return new HashSet<>(Arrays.asList(helpCommandHandler,
+        return HashSet.of(
+                helpCommandHandler,
                 exitCommandHandler,
-                quitCommandHandler));
+                quitCommandHandler)
+                .toJavaSet();
     }
 
     @Provides

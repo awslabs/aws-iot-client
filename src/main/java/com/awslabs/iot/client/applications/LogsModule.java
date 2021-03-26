@@ -8,10 +8,9 @@ import com.awslabs.iot.client.helpers.cloudwatch.LogsHelper;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.ElementsIntoSet;
+import io.vavr.collection.HashSet;
 import software.amazon.awssdk.services.cloudwatchlogs.CloudWatchLogsClient;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
 @Module
@@ -30,7 +29,9 @@ public class LogsModule {
     @ElementsIntoSet
     public Set<CommandHandler> commandHandlerSet(GetLogsCommandHandler getLogsCommandHandler,
                                                  IotGetLogsCommandHandler iotGetLogsCommandHandler) {
-        return new HashSet<>(Arrays.asList(getLogsCommandHandler,
-                iotGetLogsCommandHandler));
+        return HashSet.<CommandHandler>of(
+                getLogsCommandHandler,
+                iotGetLogsCommandHandler)
+                .toJavaSet();
     }
 }
