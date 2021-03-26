@@ -17,8 +17,8 @@ extensions.findByName("buildScan")?.withGroovyBuilder {
     setProperty("termsOfServiceAgree", "yes")
 }
 
-idea.module.setDownloadSources(true)
-idea.module.setDownloadJavadoc(true)
+idea.module.isDownloadSources = true
+idea.module.isDownloadJavadoc = true
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(8))
 
