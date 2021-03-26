@@ -1,11 +1,10 @@
 package com.awslabs.iot.client.helpers;
 
+import io.vavr.collection.List;
+import io.vavr.collection.Stream;
 import org.jline.reader.Candidate;
 
 import javax.inject.Inject;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class BasicCandidateHelper implements CandidateHelper {
     @Inject
@@ -16,6 +15,6 @@ public class BasicCandidateHelper implements CandidateHelper {
     public List<Candidate> getCandidates(Stream<String> strings) {
         return strings
                 .map(Candidate::new)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

@@ -1,24 +1,22 @@
 package com.awslabs.iot.client.commands.lambda;
 
-import com.awslabs.general.helpers.interfaces.IoHelper;
+
 import com.awslabs.iot.client.commands.interfaces.CommandHandler;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
-import com.awslabs.resultsiterator.v2.implementations.V2ResultsIterator;
+import com.awslabs.resultsiterator.implementations.ResultsIterator;
 import com.jcabi.log.Logger;
+import io.vavr.collection.Stream;
 import software.amazon.awssdk.services.lambda.LambdaClient;
 import software.amazon.awssdk.services.lambda.model.DeleteFunctionRequest;
 import software.amazon.awssdk.services.lambda.model.FunctionConfiguration;
 import software.amazon.awssdk.services.lambda.model.ListFunctionsRequest;
 
 import javax.inject.Inject;
-import java.util.stream.Stream;
 
 public class DeleteLambdaFunctionsCommandHandler implements CommandHandler {
     private static final String LAMBDADELETE = "lambda-delete";
     @Inject
     ParameterExtractor parameterExtractor;
-    @Inject
-    IoHelper ioHelper;
     @Inject
     LambdaClient lambdaClient;
 
@@ -47,7 +45,7 @@ public class DeleteLambdaFunctionsCommandHandler implements CommandHandler {
 
         ListFunctionsRequest listFunctionsRequest = ListFunctionsRequest.builder().build();
 
-        Stream<FunctionConfiguration> functionConfigurations = new V2ResultsIterator<FunctionConfiguration>(lambdaClient, listFunctionsRequest).stream();
+        Stream<FunctionConfiguration> functionConfigurations = new ResultsIterator<FunctionConfiguration>(lambdaClient, listFunctionsRequest).stream();
 
         functionConfigurations
                 .filter(functionConfiguration -> functionConfiguration.functionName().matches(name))
@@ -67,9 +65,5 @@ public class DeleteLambdaFunctionsCommandHandler implements CommandHandler {
 
     public ParameterExtractor getParameterExtractor() {
         return this.parameterExtractor;
-    }
-
-    public IoHelper getIoHelper() {
-        return this.ioHelper;
     }
 }

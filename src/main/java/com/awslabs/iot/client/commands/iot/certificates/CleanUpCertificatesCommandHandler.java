@@ -1,25 +1,23 @@
 package com.awslabs.iot.client.commands.iot.certificates;
 
-import com.awslabs.general.helpers.interfaces.IoHelper;
+
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.data.*;
-import com.awslabs.iot.helpers.interfaces.V2IotHelper;
+import com.awslabs.iot.helpers.interfaces.IotHelper;
 import com.jcabi.log.Logger;
+import io.vavr.collection.Stream;
 import software.amazon.awssdk.services.iot.model.Certificate;
 import software.amazon.awssdk.services.iot.model.Policy;
 
 import javax.inject.Inject;
-import java.util.stream.Stream;
 
 public class CleanUpCertificatesCommandHandler implements IotCommandHandler {
     private static final String CLEANUPCERTIFICATES = "clean-up-certificates";
     @Inject
-    V2IotHelper v2IotHelper;
+    IotHelper iotHelper;
     @Inject
     ParameterExtractor parameterExtractor;
-    @Inject
-    IoHelper ioHelper;
 
     @Inject
     public CleanUpCertificatesCommandHandler() {
@@ -27,30 +25,30 @@ public class CleanUpCertificatesCommandHandler implements IotCommandHandler {
 
     @Override
     public void innerHandle(String input) {
-        v2IotHelper.getCertificates().forEach(this::deleteEach);
+        iotHelper.getCertificates().forEach(this::deleteEach);
     }
 
     private void deleteEach(Certificate certificate) {
         CertificateArn certificateArn = ImmutableCertificateArn.builder().arn(certificate.certificateArn()).build();
         CertificateId certificateId = ImmutableCertificateId.builder().id(certificate.certificateId()).build();
 
-        Stream<ThingName> attachedThings = v2IotHelper.getAttachedThings(certificateArn);
+        Stream<ThingName> attachedThings = iotHelper.getAttachedThings(certificateArn);
 
-        if (attachedThings.findAny().isPresent()) {
+        if (attachedThings.nonEmpty()) {
             Logger.info(this, String.join("", "Ignoring [", certificateId.getId(), "], it still has things attached to it"));
             return;
         }
 
-        Stream<Policy> attachedPolicies = v2IotHelper.getAttachedPolicies(certificateArn);
+        Stream<Policy> attachedPolicies = iotHelper.getAttachedPolicies(certificateArn);
 
-        if (attachedPolicies.findAny().isPresent()) {
+        if (attachedPolicies.nonEmpty()) {
             Logger.info(this, String.join("", "Ignoring [", certificateId.getId(), "], it still has policies attached to it"));
             return;
         }
 
         Logger.info(this, String.join("", "Deleting [", certificateId.getId(), "]"));
 
-        v2IotHelper.delete(certificateArn);
+        iotHelper.delete(certificateArn);
     }
 
     @Override
@@ -70,9 +68,5 @@ public class CleanUpCertificatesCommandHandler implements IotCommandHandler {
 
     public ParameterExtractor getParameterExtractor() {
         return this.parameterExtractor;
-    }
-
-    public IoHelper getIoHelper() {
-        return this.ioHelper;
     }
 }

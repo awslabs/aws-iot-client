@@ -66,7 +66,7 @@ val jlineVersion = "3.19.0"
 val commonsLang3Version = "3.12.0"
 val vavrVersion = "0.10.3"
 val junitVersion = "4.13.2"
-val resultsIteratorForAwsJavaSdkVersion = "11.0.7"
+val resultsIteratorForAwsJavaSdkVersion = "18.0.1"
 val awsIotCoreWebsocketsVersion = "0.6.3"
 val jodahFailsafeVersion = "2.4.0"
 val progressBarVersion = "0.9.1"
@@ -83,11 +83,13 @@ dependencies {
     implementation("com.beust:jcommander:$jcommanderVersion")
 
     implementation("software.amazon.awssdk:greengrass:$awsSdk2Version")
+    implementation("software.amazon.awssdk:greengrassv2:$awsSdk2Version")
     implementation("software.amazon.awssdk:iam:$awsSdk2Version")
     implementation("software.amazon.awssdk:iot:$awsSdk2Version")
     implementation("software.amazon.awssdk:iotdataplane:$awsSdk2Version")
     implementation("software.amazon.awssdk:cloudwatchlogs:$awsSdk2Version")
     implementation("software.amazon.awssdk:lambda:$awsSdk2Version")
+    implementation("software.amazon.awssdk:apache-client:$awsSdk2Version")
 
     implementation("io.vertx:vertx-core:$vertxVersion")
     implementation("org.jline:jline:$jlineVersion")

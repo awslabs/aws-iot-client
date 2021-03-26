@@ -1,10 +1,10 @@
 package com.awslabs.iot.client.commands.iot.certificates;
 
-import com.awslabs.general.helpers.interfaces.IoHelper;
+
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
 import com.awslabs.iot.client.commands.iot.completers.CertificateCompleter;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
-import com.awslabs.iot.helpers.interfaces.V2IotHelper;
+import com.awslabs.iot.helpers.interfaces.IotHelper;
 
 import javax.inject.Inject;
 
@@ -13,11 +13,9 @@ public class DeleteUnattachedCertificatesCommandHandlerWithCompletion implements
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
-    IoHelper ioHelper;
-    @Inject
     CertificateCompleter certificateCompleter;
     @Inject
-    V2IotHelper v2IotHelper;
+    IotHelper iotHelper;
 
     @Inject
     public DeleteUnattachedCertificatesCommandHandlerWithCompletion() {
@@ -25,8 +23,8 @@ public class DeleteUnattachedCertificatesCommandHandlerWithCompletion implements
 
     @Override
     public void innerHandle(String input) {
-        v2IotHelper.getUnattachedCertificates()
-                .forEach(certificate -> v2IotHelper.delete(certificate));
+        iotHelper.getUnattachedCertificates()
+                .forEach(certificate -> iotHelper.delete(certificate));
     }
 
     @Override
@@ -46,10 +44,6 @@ public class DeleteUnattachedCertificatesCommandHandlerWithCompletion implements
 
     public ParameterExtractor getParameterExtractor() {
         return this.parameterExtractor;
-    }
-
-    public IoHelper getIoHelper() {
-        return this.ioHelper;
     }
 
     public CertificateCompleter getCertificateCompleter() {

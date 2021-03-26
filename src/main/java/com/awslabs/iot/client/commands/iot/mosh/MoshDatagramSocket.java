@@ -1,13 +1,12 @@
 package com.awslabs.iot.client.commands.iot.mosh;
 
+import io.vavr.control.Option;
 import io.vertx.core.datagram.DatagramSocket;
-
-import java.util.Optional;
 
 class MoshDatagramSocket {
     private final DatagramSocket datagramSocket;
 
-    private Optional<Integer> sourcePort;
+    private Option<Integer> sourcePort;
 
     public MoshDatagramSocket(DatagramSocket datagramSocket) {
         this.datagramSocket = datagramSocket;
@@ -17,11 +16,11 @@ class MoshDatagramSocket {
         return this.datagramSocket;
     }
 
-    public Optional<Integer> getSourcePort() {
+    public Option<Integer> getSourcePort() {
         return this.sourcePort;
     }
 
-    public void setSourcePort(Optional<Integer> sourcePort) {
+    public void setSourcePort(Option<Integer> sourcePort) {
         this.sourcePort = sourcePort;
     }
 }

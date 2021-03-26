@@ -1,15 +1,15 @@
 package com.awslabs.iot.client.commands.logs;
 
-import com.awslabs.general.helpers.interfaces.IoHelper;
+
 import com.awslabs.iot.client.helpers.cloudwatch.LogsHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.jcabi.log.Logger;
+import io.vavr.collection.List;
+import io.vavr.control.Option;
 import software.amazon.awssdk.services.cloudwatchlogs.model.OutputLogEvent;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
-import java.util.List;
-import java.util.Optional;
 
 public class IotGetLogsCommandHandler implements LogsCommandHandler {
     private static final String GET = "iot-get";
@@ -18,8 +18,6 @@ public class IotGetLogsCommandHandler implements LogsCommandHandler {
     Provider<LogsHelper> logsHelperProvider;
     @Inject
     ParameterExtractor parameterExtractor;
-    @Inject
-    IoHelper ioHelper;
 
     @Inject
     public IotGetLogsCommandHandler() {
@@ -50,15 +48,11 @@ public class IotGetLogsCommandHandler implements LogsCommandHandler {
     }
 
     @Override
-    public Optional<Integer> maximumParameters() {
-        return Optional.of(Integer.MAX_VALUE);
+    public Option<Integer> maximumParameters() {
+        return Option.of(Integer.MAX_VALUE);
     }
 
     public ParameterExtractor getParameterExtractor() {
         return this.parameterExtractor;
-    }
-
-    public IoHelper getIoHelper() {
-        return this.ioHelper;
     }
 }

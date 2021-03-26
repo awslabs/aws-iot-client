@@ -1,22 +1,20 @@
 package com.awslabs.iot.client.commands.iot.publish;
 
-import com.awslabs.general.helpers.interfaces.IoHelper;
+
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.data.ImmutableTopicName;
 import com.awslabs.iot.data.Qos;
 import com.awslabs.iot.data.TopicName;
-import com.awslabs.iot.helpers.interfaces.V2IotHelper;
+import com.awslabs.iot.helpers.interfaces.IotHelper;
 
 import javax.inject.Inject;
 
 public class RestPublishCommandHandler implements PublishCommandHandler {
     private static final String RESTPUBLISH = "rest-publish";
     @Inject
-    V2IotHelper v2IotHelper;
+    IotHelper iotHelper;
     @Inject
     ParameterExtractor parameterExtractor;
-    @Inject
-    IoHelper ioHelper;
 
     @Inject
     public RestPublishCommandHandler() {
@@ -31,7 +29,7 @@ public class RestPublishCommandHandler implements PublishCommandHandler {
     public void publish(String topic, String message) {
         TopicName topicName = ImmutableTopicName.builder().name(topic).build();
 
-        v2IotHelper.publish(topicName, Qos.ZERO, message);
+        iotHelper.publish(topicName, Qos.ZERO, message);
     }
 
     @Override
@@ -46,9 +44,5 @@ public class RestPublishCommandHandler implements PublishCommandHandler {
 
     public ParameterExtractor getParameterExtractor() {
         return this.parameterExtractor;
-    }
-
-    public IoHelper getIoHelper() {
-        return this.ioHelper;
     }
 }

@@ -2,8 +2,8 @@ package com.awslabs.iot.client.commands.iot.publish;
 
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
 import com.google.gson.Gson;
+import io.vavr.collection.List;
 
-import java.util.List;
 import java.util.Map;
 
 public interface PublishCommandHandler extends IotCommandHandler {

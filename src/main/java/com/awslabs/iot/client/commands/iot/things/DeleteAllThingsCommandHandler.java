@@ -1,26 +1,24 @@
 package com.awslabs.iot.client.commands.iot.things;
 
-import com.awslabs.general.helpers.interfaces.IoHelper;
+
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
 import com.awslabs.iot.client.helpers.progressbar.ProgressBarHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.client.streams.interfaces.UsesStream;
 import com.awslabs.iot.data.ImmutableThingName;
-import com.awslabs.iot.helpers.interfaces.V2IotHelper;
+import com.awslabs.iot.helpers.interfaces.IotHelper;
+import io.vavr.collection.Stream;
 import io.vavr.control.Try;
 import software.amazon.awssdk.services.iot.model.ThingAttribute;
 
 import javax.inject.Inject;
-import java.util.stream.Stream;
 
 public class DeleteAllThingsCommandHandler implements IotCommandHandler, UsesStream<ThingAttribute> {
     private static final String DELETEALLTHINGS = "delete-all-things";
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
-    IoHelper ioHelper;
-    @Inject
-    V2IotHelper v2IotHelper;
+    IotHelper iotHelper;
     @Inject
     ProgressBarHelper progressBarHelper;
 
@@ -38,10 +36,10 @@ public class DeleteAllThingsCommandHandler implements IotCommandHandler, UsesStr
         getStream()
                 .map(thingAttribute -> ImmutableThingName.builder().name(thingAttribute.thingName()).build())
                 // Filter out non-immutable things
-                .filter(thingName -> !v2IotHelper.isThingImmutable(thingName))
+                .filter(thingName -> !iotHelper.isThingImmutable(thingName))
                 .peek(thingName -> progressBarHelper.next())
                 // Rethrow all exceptions
-                .forEach(v2IotHelper::delete);
+                .forEach(iotHelper::delete);
 
         return null;
     }
@@ -65,12 +63,8 @@ public class DeleteAllThingsCommandHandler implements IotCommandHandler, UsesStr
         return this.parameterExtractor;
     }
 
-    public IoHelper getIoHelper() {
-        return this.ioHelper;
-    }
-
     @Override
     public Stream<ThingAttribute> getStream() {
-        return v2IotHelper.getThings();
+        return iotHelper.getThings();
     }
 }

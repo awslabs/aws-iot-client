@@ -1,28 +1,25 @@
 package com.awslabs.iot.client.commands.greengrass.groups;
 
-import com.awslabs.general.helpers.interfaces.IoHelper;
+
 import com.awslabs.iot.client.commands.greengrass.GreengrassCommandHandler;
 import com.awslabs.iot.client.helpers.progressbar.ProgressBarHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.client.streams.interfaces.UsesStream;
-import com.awslabs.iot.helpers.interfaces.V2GreengrassHelper;
+import com.awslabs.iot.helpers.interfaces.GreengrassV1Helper;
+import io.vavr.collection.List;
+import io.vavr.collection.Stream;
 import io.vavr.control.Try;
 import software.amazon.awssdk.services.greengrass.model.DefinitionInformation;
 import software.amazon.awssdk.services.greengrass.model.GetSubscriptionDefinitionVersionResponse;
 
 import javax.inject.Inject;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class DeleteAllSubscriptionDefinitionsCommandHandler implements GreengrassCommandHandler, UsesStream<DefinitionInformation> {
     private static final String DELETE_SUBSCRIPTION_DEFINITIONS = "delete-all-subscription-definitions";
     @Inject
-    V2GreengrassHelper v2GreengrassHelper;
+    GreengrassV1Helper greengrassV1Helper;
     @Inject
     ParameterExtractor parameterExtractor;
-    @Inject
-    IoHelper ioHelper;
     @Inject
     ProgressBarHelper progressBarHelper;
 
@@ -39,7 +36,7 @@ public class DeleteAllSubscriptionDefinitionsCommandHandler implements Greengras
     private Void run() {
         getStream()
                 .peek(definitionInformation -> progressBarHelper.next())
-                .forEach(v2GreengrassHelper::deleteSubscriptionDefinition);
+                .forEach(greengrassV1Helper::deleteSubscriptionDefinition);
 
         return null;
     }
@@ -63,17 +60,13 @@ public class DeleteAllSubscriptionDefinitionsCommandHandler implements Greengras
         return this.parameterExtractor;
     }
 
-    public IoHelper getIoHelper() {
-        return this.ioHelper;
-    }
-
     @Override
     public Stream<DefinitionInformation> getStream() {
-        List<String> immutableSubscriptionDefinitionIds = v2GreengrassHelper.getImmutableSubscriptionDefinitionVersionResponses()
+        List<String> immutableSubscriptionDefinitionIds = greengrassV1Helper.getImmutableSubscriptionDefinitionVersionResponses()
                 .map(GetSubscriptionDefinitionVersionResponse::id)
-                .collect(Collectors.toList());
+                .toList();
 
-        return v2GreengrassHelper.getSubscriptionDefinitions()
+        return greengrassV1Helper.getSubscriptionDefinitions()
                 .filter(definitionInformation -> !immutableSubscriptionDefinitionIds.contains(definitionInformation.id()));
     }
 }

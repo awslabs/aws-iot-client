@@ -1,12 +1,13 @@
 package com.awslabs.iot.client.commands.iot.jobs;
 
-import com.awslabs.general.helpers.interfaces.IoHelper;
+
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
 import com.awslabs.iot.client.helpers.progressbar.ProgressBarHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.client.streams.interfaces.UsesStream;
-import com.awslabs.iot.helpers.interfaces.V2IotHelper;
+import com.awslabs.iot.helpers.interfaces.IotHelper;
 import com.jcabi.log.Logger;
+import io.vavr.collection.Stream;
 import io.vavr.control.Try;
 import net.jodah.failsafe.Failsafe;
 import net.jodah.failsafe.RetryPolicy;
@@ -18,18 +19,15 @@ import software.amazon.awssdk.services.iot.model.LimitExceededException;
 
 import javax.inject.Inject;
 import java.time.temporal.ChronoUnit;
-import java.util.stream.Stream;
 
 public class DeleteAllJobsCommandHandler implements IotCommandHandler, UsesStream<JobSummary> {
     private static final String DELETE_ALL_JOBS = "delete-all-jobs";
     @Inject
-    V2IotHelper v2IotHelper;
+    IotHelper iotHelper;
     @Inject
     IotClient iotClient;
     @Inject
     ParameterExtractor parameterExtractor;
-    @Inject
-    IoHelper ioHelper;
     @Inject
     ProgressBarHelper progressBarHelper;
 
@@ -47,7 +45,7 @@ public class DeleteAllJobsCommandHandler implements IotCommandHandler, UsesStrea
         getStream()
                 .peek(jobSummary -> progressBarHelper.next())
                 // Delete the job with the retry policy
-                .forEach(jobSummary -> Failsafe.with(getRetryPolicy()).run(() -> v2IotHelper.forceDelete(jobSummary)));
+                .forEach(jobSummary -> Failsafe.with(getRetryPolicy()).run(() -> iotHelper.forceDelete(jobSummary)));
 
         return null;
     }
@@ -80,13 +78,9 @@ public class DeleteAllJobsCommandHandler implements IotCommandHandler, UsesStrea
         return this.parameterExtractor;
     }
 
-    public IoHelper getIoHelper() {
-        return this.ioHelper;
-    }
-
     @Override
     public Stream<JobSummary> getStream() {
-        return v2IotHelper.getJobs()
+        return iotHelper.getJobs()
                 // Do not try to delete jobs that are already in being deleted
                 .filter(jobSummary -> !jobSummary.status().equals(JobStatus.DELETION_IN_PROGRESS));
     }

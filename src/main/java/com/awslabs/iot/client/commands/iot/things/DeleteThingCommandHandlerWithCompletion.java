@@ -1,15 +1,15 @@
 package com.awslabs.iot.client.commands.iot.things;
 
-import com.awslabs.general.helpers.interfaces.IoHelper;
+
 import com.awslabs.iot.client.commands.iot.ThingCommandHandlerWithCompletion;
 import com.awslabs.iot.client.commands.iot.completers.ThingCompleter;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.data.ImmutableThingName;
 import com.awslabs.iot.data.ThingName;
-import com.awslabs.iot.helpers.interfaces.V2IotHelper;
+import com.awslabs.iot.helpers.interfaces.IotHelper;
+import io.vavr.collection.List;
 
 import javax.inject.Inject;
-import java.util.List;
 
 public class DeleteThingCommandHandlerWithCompletion implements ThingCommandHandlerWithCompletion {
     private static final String DELETETHING = "delete-thing";
@@ -17,9 +17,7 @@ public class DeleteThingCommandHandlerWithCompletion implements ThingCommandHand
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
-    V2IotHelper v2IotHelper;
-    @Inject
-    IoHelper ioHelper;
+    IotHelper iotHelper;
     @Inject
     ThingCompleter thingCompleter;
 
@@ -33,7 +31,7 @@ public class DeleteThingCommandHandlerWithCompletion implements ThingCommandHand
 
         ThingName thingName = ImmutableThingName.builder().name(parameters.get(THING_NAME_POSITION)).build();
 
-        v2IotHelper.delete(thingName);
+        iotHelper.delete(thingName);
     }
 
     @Override
@@ -53,10 +51,6 @@ public class DeleteThingCommandHandlerWithCompletion implements ThingCommandHand
 
     public ParameterExtractor getParameterExtractor() {
         return this.parameterExtractor;
-    }
-
-    public IoHelper getIoHelper() {
-        return this.ioHelper;
     }
 
     public ThingCompleter getThingCompleter() {

@@ -217,13 +217,13 @@ public interface MoshClientCommandHandler extends ThingCommandHandlerWithComplet
     }
 
     default Handler<AsyncResult<DatagramSocket>> getDatagramSocketServerListeningHandler(String key, int port) {
-        Optional<Path> optionalPath = Stream.of(System.getenv("PATH").split(Pattern.quote(File.pathSeparator)))
+        Option<Path> optionalPath = Stream.of(System.getenv("PATH").split(Pattern.quote(File.pathSeparator)))
                 .map(Paths::get)
                 .map(path -> path.resolve("mosh-client"))
                 .filter(path -> Files.exists(path))
-                .findFirst();
+                .get();
 
-        if (optionalPath.isPresent() && SystemUtils.IS_OS_MAC) {
+        if (optionalPath.isDefined() && SystemUtils.IS_OS_MAC) {
             getLogger().info("Running Mac OS and mosh-client exists in path, launching in a separate window");
 
             Path path = optionalPath.get();

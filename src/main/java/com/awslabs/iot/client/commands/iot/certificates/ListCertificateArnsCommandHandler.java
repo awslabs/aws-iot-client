@@ -1,9 +1,9 @@
 package com.awslabs.iot.client.commands.iot.certificates;
 
-import com.awslabs.general.helpers.interfaces.IoHelper;
+
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
-import com.awslabs.iot.helpers.interfaces.V2IotHelper;
+import com.awslabs.iot.helpers.interfaces.IotHelper;
 import com.jcabi.log.Logger;
 import software.amazon.awssdk.services.iot.model.Certificate;
 
@@ -14,9 +14,7 @@ public class ListCertificateArnsCommandHandler implements IotCommandHandler {
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
-    IoHelper ioHelper;
-    @Inject
-    V2IotHelper v2IotHelper;
+    IotHelper iotHelper;
 
     @Inject
     public ListCertificateArnsCommandHandler() {
@@ -24,7 +22,7 @@ public class ListCertificateArnsCommandHandler implements IotCommandHandler {
 
     @Override
     public void innerHandle(String input) {
-        v2IotHelper.getCertificates().map(Certificate::certificateArn)
+        iotHelper.getCertificates().map(Certificate::certificateArn)
                 .forEach(certificateArn -> Logger.info(this, String.join("", "  [", certificateArn, "]")));
     }
 
@@ -45,9 +43,5 @@ public class ListCertificateArnsCommandHandler implements IotCommandHandler {
 
     public ParameterExtractor getParameterExtractor() {
         return this.parameterExtractor;
-    }
-
-    public IoHelper getIoHelper() {
-        return this.ioHelper;
     }
 }

@@ -1,17 +1,17 @@
 package com.awslabs.iot.client.commands.iam.completers;
 
 import com.awslabs.iam.data.RoleName;
-import com.awslabs.iam.helpers.interfaces.V2IamHelper;
+import com.awslabs.iam.helpers.interfaces.IamHelper;
 import com.awslabs.iot.client.completers.DynamicStringsCompleter;
 import com.awslabs.iot.client.helpers.CandidateHelper;
+import io.vavr.collection.List;
 import org.jline.reader.Candidate;
 
 import javax.inject.Inject;
-import java.util.List;
 
 public class RoleCompleter extends DynamicStringsCompleter {
     @Inject
-    V2IamHelper v2IamHelper;
+    IamHelper iamHelper;
     @Inject
     CandidateHelper candidateHelper;
 
@@ -21,7 +21,7 @@ public class RoleCompleter extends DynamicStringsCompleter {
 
     @Override
     public List<Candidate> getStrings() {
-        return candidateHelper.getCandidates(v2IamHelper.getRoleNames()
+        return candidateHelper.getCandidates(iamHelper.getRoleNames()
                 .map(RoleName::getName));
     }
 }

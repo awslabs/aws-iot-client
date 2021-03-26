@@ -1,13 +1,14 @@
 package com.awslabs.iot.client.helpers.cloudwatch;
 
+import io.vavr.collection.List;
+import io.vavr.collection.Stream;
 import software.amazon.awssdk.services.cloudwatchlogs.CloudWatchLogsClient;
 import software.amazon.awssdk.services.cloudwatchlogs.model.*;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 public class BasicLogsHelper implements LogsHelper {
     @Inject
@@ -25,13 +26,13 @@ public class BasicLogsHelper implements LogsHelper {
 
         DescribeLogStreamsResponse describeLogStreamsResult = cloudWatchLogsClient.describeLogStreams(describeLogStreamsRequest);
 
-        List<String> logStreamNames = describeLogStreamsResult.logStreams().stream()
+        List<String> logStreamNames = Stream.ofAll(describeLogStreamsResult.logStreams())
                 .map(LogStream::logStreamName)
-                .collect(Collectors.toList());
+                .toList();
 
-        final List<OutputLogEvent> tempOutputLogEventList = new ArrayList<>();
+        final ArrayList<OutputLogEvent> tempOutputLogEventList = new ArrayList<>();
 
-        logStreamNames.stream()
+        logStreamNames.toStream()
                 .forEach(logStreamName -> {
 
                     GetLogEventsRequest getLogEventsRequest = GetLogEventsRequest.builder()
@@ -48,14 +49,12 @@ public class BasicLogsHelper implements LogsHelper {
                         currentToken = nextToken;
                         tempOutputLogEventList.addAll(getLogEventsResult.events());
                         nextToken = getLogEventsResult.nextForwardToken();
-                    } while (currentToken != nextToken);
+                    } while (!Objects.equals(currentToken, nextToken));
                 });
 
-        List<OutputLogEvent> outputLogEventList = tempOutputLogEventList.stream()
-                .filter(outputLogEvent -> searchStrings.parallelStream().allMatch(outputLogEvent.message()::contains))
+        return Stream.ofAll(tempOutputLogEventList)
+                .filter(outputLogEvent -> searchStrings.toJavaParallelStream().allMatch(outputLogEvent.message()::contains))
                 .sorted(Comparator.comparing(OutputLogEvent::ingestionTime))
-                .collect(Collectors.toList());
-
-        return outputLogEventList;
+                .toList();
     }
 }
