@@ -26,7 +26,7 @@ import io.vavr.collection.HashSet;
 import javax.inject.Singleton;
 import java.util.Set;
 
-@Module(includes = {GreengrassV2Module.class, IotModule.class, LogsModule.class, LambdaModule.class, ResultsIteratorModule.class})
+@Module(includes = {GreengrassModule.class, GreengrassV2Module.class, IotModule.class, LogsModule.class, LambdaModule.class, ResultsIteratorModule.class})
 public class AwsIotClientModule {
     private static final String CA_CERT_FILENAME = "ca.crt";
     private static final String CLIENT_CERT_FILENAME = "client.crt";
