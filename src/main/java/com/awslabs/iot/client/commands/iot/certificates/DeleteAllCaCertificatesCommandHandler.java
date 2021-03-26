@@ -1,20 +1,18 @@
 package com.awslabs.iot.client.commands.iot.certificates;
 
-import com.awslabs.general.helpers.interfaces.IoHelper;
+
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
-import com.awslabs.iot.helpers.interfaces.V2IotHelper;
+import com.awslabs.iot.helpers.interfaces.IotHelper;
 
 import javax.inject.Inject;
 
 public class DeleteAllCaCertificatesCommandHandler implements IotCommandHandler {
     private static final String DELETEALLCACERTIFICATES = "delete-all-ca-certificates";
     @Inject
-    V2IotHelper v2IotHelper;
+    IotHelper iotHelper;
     @Inject
     ParameterExtractor parameterExtractor;
-    @Inject
-    IoHelper ioHelper;
 
     @Inject
     public DeleteAllCaCertificatesCommandHandler() {
@@ -22,8 +20,8 @@ public class DeleteAllCaCertificatesCommandHandler implements IotCommandHandler 
 
     @Override
     public void innerHandle(String input) {
-        v2IotHelper.getCaCertificates()
-                .forEach(certificate -> v2IotHelper.deleteCaCertificate(certificate));
+        iotHelper.getCaCertificates()
+                .forEach(certificate -> iotHelper.deleteCaCertificate(certificate));
     }
 
     @Override
@@ -43,9 +41,5 @@ public class DeleteAllCaCertificatesCommandHandler implements IotCommandHandler 
 
     public ParameterExtractor getParameterExtractor() {
         return this.parameterExtractor;
-    }
-
-    public IoHelper getIoHelper() {
-        return this.ioHelper;
     }
 }

@@ -1,25 +1,23 @@
 package com.awslabs.iot.client.commands.greengrass.groups;
 
-import com.awslabs.general.helpers.interfaces.IoHelper;
+
 import com.awslabs.iot.client.commands.greengrass.GreengrassGroupCommandHandlerWithGroupIdCompletion;
 import com.awslabs.iot.client.commands.greengrass.completers.GreengrassGroupIdCompleter;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.data.GreengrassGroupId;
 import com.awslabs.iot.data.ImmutableGreengrassGroupId;
-import com.awslabs.iot.helpers.interfaces.V2GreengrassHelper;
+import com.awslabs.iot.helpers.interfaces.GreengrassV1Helper;
+import io.vavr.collection.List;
 
 import javax.inject.Inject;
-import java.util.List;
 
 public class DeleteGroupCommandHandlerWithGroupIdCompletion implements GreengrassGroupCommandHandlerWithGroupIdCompletion {
     private static final String DELETE_GROUP = "delete-group";
     private static final int GROUP_ID_POSITION = 0;
     @Inject
-    V2GreengrassHelper v2GreengrassHelper;
+    GreengrassV1Helper greengrassV1Helper;
     @Inject
     ParameterExtractor parameterExtractor;
-    @Inject
-    IoHelper ioHelper;
     @Inject
     GreengrassGroupIdCompleter greengrassGroupIdCompleter;
 
@@ -33,7 +31,7 @@ public class DeleteGroupCommandHandlerWithGroupIdCompletion implements Greengras
 
         GreengrassGroupId groupId = ImmutableGreengrassGroupId.builder().groupId(parameters.get(GROUP_ID_POSITION)).build();
 
-        v2GreengrassHelper.deleteGroup(groupId);
+        greengrassV1Helper.deleteGroup(groupId);
     }
 
     @Override
@@ -53,10 +51,6 @@ public class DeleteGroupCommandHandlerWithGroupIdCompletion implements Greengras
 
     public ParameterExtractor getParameterExtractor() {
         return this.parameterExtractor;
-    }
-
-    public IoHelper getIoHelper() {
-        return this.ioHelper;
     }
 
     public GreengrassGroupIdCompleter getGreengrassGroupIdCompleter() {

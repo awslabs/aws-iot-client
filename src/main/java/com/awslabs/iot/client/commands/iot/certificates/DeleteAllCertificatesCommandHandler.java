@@ -1,25 +1,23 @@
 package com.awslabs.iot.client.commands.iot.certificates;
 
-import com.awslabs.general.helpers.interfaces.IoHelper;
+
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
 import com.awslabs.iot.client.helpers.progressbar.ProgressBarHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.client.streams.interfaces.UsesStream;
-import com.awslabs.iot.helpers.interfaces.V2IotHelper;
+import com.awslabs.iot.helpers.interfaces.IotHelper;
+import io.vavr.collection.Stream;
 import io.vavr.control.Try;
 import software.amazon.awssdk.services.iot.model.Certificate;
 
 import javax.inject.Inject;
-import java.util.stream.Stream;
 
 public class DeleteAllCertificatesCommandHandler implements IotCommandHandler, UsesStream<Certificate> {
     private static final String DELETEALLCERTIFICATES = "delete-all-certificates";
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
-    IoHelper ioHelper;
-    @Inject
-    V2IotHelper v2IotHelper;
+    IotHelper iotHelper;
     @Inject
     ProgressBarHelper progressBarHelper;
 
@@ -36,7 +34,7 @@ public class DeleteAllCertificatesCommandHandler implements IotCommandHandler, U
     private Void run() {
         getStream()
                 .peek(certificate -> progressBarHelper.next())
-                .forEach(v2IotHelper::recursiveDelete);
+                .forEach(iotHelper::recursiveDelete);
 
         return null;
     }
@@ -60,12 +58,8 @@ public class DeleteAllCertificatesCommandHandler implements IotCommandHandler, U
         return this.parameterExtractor;
     }
 
-    public IoHelper getIoHelper() {
-        return this.ioHelper;
-    }
-
     @Override
     public Stream<Certificate> getStream() {
-        return v2IotHelper.getCertificates();
+        return iotHelper.getCertificates();
     }
 }

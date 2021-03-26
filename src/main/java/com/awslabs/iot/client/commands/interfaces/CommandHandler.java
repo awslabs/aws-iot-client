@@ -1,16 +1,15 @@
 package com.awslabs.iot.client.commands.interfaces;
 
-import com.awslabs.general.helpers.interfaces.IoHelper;
+
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.jcabi.log.Logger;
+import io.vavr.collection.List;
+import io.vavr.control.Option;
 import io.vavr.control.Try;
 import org.jline.reader.Completer;
 import org.jline.reader.impl.completer.ArgumentCompleter;
 import org.jline.reader.impl.completer.NullCompleter;
 import org.jline.reader.impl.completer.StringsCompleter;
-
-import java.util.List;
-import java.util.Optional;
 
 public interface CommandHandler {
     /**
@@ -85,15 +84,15 @@ public interface CommandHandler {
 
     int requiredParameters();
 
-    default Optional<Integer> maximumParameters() {
-        return Optional.empty();
+    default Option<Integer> maximumParameters() {
+        return Option.none();
     }
 
     default boolean parametersSpecified(String input) {
         List<String> parameters = getParameterExtractor().getParameters(input);
         int parameterCount = parameters.size();
         return (requiredParameters() == parameterCount) ||
-                ((maximumParameters().isPresent()) && (parameterCount >= requiredParameters()));
+                ((maximumParameters().isDefined()) && (parameterCount >= requiredParameters()));
     }
 
     ParameterExtractor getParameterExtractor();
@@ -101,8 +100,6 @@ public interface CommandHandler {
     default void showUsage() {
         Logger.info(this, String.join("", "No usage information has been provided for this command, but the required number of parameters were not specified.  Expected ", String.valueOf(requiredParameters()), " parameter(s)."));
     }
-
-    IoHelper getIoHelper();
 
     /**
      * Override this to return true for functions that are too dangerous to let the user use unless they specify a special option

@@ -2,7 +2,8 @@ package com.awslabs.iot.client.commands.greengrass.completers;
 
 import com.awslabs.iot.client.helpers.CandidateHelper;
 import com.awslabs.iot.data.ImmutableGreengrassGroupId;
-import com.awslabs.iot.helpers.interfaces.V2GreengrassHelper;
+import com.awslabs.iot.helpers.interfaces.GreengrassV1Helper;
+import io.vavr.collection.List;
 import org.jline.reader.Candidate;
 import org.jline.reader.Completer;
 import org.jline.reader.LineReader;
@@ -11,13 +12,10 @@ import software.amazon.awssdk.services.greengrass.model.Deployment;
 import software.amazon.awssdk.services.greengrass.model.GroupInformation;
 
 import javax.inject.Inject;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class GreengrassGroupIdAndDeploymentIdCompleter implements Completer {
     @Inject
-    V2GreengrassHelper v2GreengrassHelper;
+    GreengrassV1Helper greengrassV1Helper;
     @Inject
     CandidateHelper candidateHelper;
 
@@ -26,8 +24,8 @@ public class GreengrassGroupIdAndDeploymentIdCompleter implements Completer {
     }
 
     @Override
-    public void complete(LineReader reader, ParsedLine line, List<Candidate> candidates) {
-        List<String> groupIds = v2GreengrassHelper.getGroups().map(GroupInformation::id).collect(Collectors.toList());
+    public void complete(LineReader reader, ParsedLine line, java.util.List<Candidate> candidates) {
+        List<String> groupIds = greengrassV1Helper.getGroups().map(GroupInformation::id).toList();
 
         // Flow:
         //   If there is only one argument we want the list of group IDs.  This is the argument completer validating that the group ID exists.
@@ -35,7 +33,7 @@ public class GreengrassGroupIdAndDeploymentIdCompleter implements Completer {
         //   If there are three arguments we want the list of deployment IDs for the given group ID.  This is the argument completer asking for the deployment ID list.
 
         if ((line.wordIndex() == 0) || (line.wordIndex() == 1)) {
-            addValuesAsCandidates(candidates, groupIds.stream());
+            candidates.addAll(candidateHelper.getCandidates(groupIds.toStream()).asJava());
             return;
         }
 
@@ -44,12 +42,7 @@ public class GreengrassGroupIdAndDeploymentIdCompleter implements Completer {
         // This happens when we are entering the deployment ID
         if (groupIds.contains(previousWord)) {
             ImmutableGreengrassGroupId greengrassGroupId = ImmutableGreengrassGroupId.builder().groupId(previousWord).build();
-            addValuesAsCandidates(candidates, v2GreengrassHelper.getDeployments(greengrassGroupId).map(Deployment::deploymentId));
-            return;
+            candidates.addAll(candidateHelper.getCandidates(greengrassV1Helper.getDeployments(greengrassGroupId).map(Deployment::deploymentId)).asJava());
         }
-    }
-
-    private void addValuesAsCandidates(List<Candidate> candidates, Stream<String> valueList) {
-        candidates.addAll(candidateHelper.getCandidates(valueList));
     }
 }

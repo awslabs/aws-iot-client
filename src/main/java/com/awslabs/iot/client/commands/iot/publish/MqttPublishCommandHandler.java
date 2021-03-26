@@ -1,6 +1,6 @@
 package com.awslabs.iot.client.commands.iot.publish;
 
-import com.awslabs.general.helpers.interfaces.IoHelper;
+
 import com.awslabs.iot.client.helpers.iot.interfaces.WebsocketsHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.jcabi.log.Logger;
@@ -13,8 +13,6 @@ public class MqttPublishCommandHandler implements PublishCommandHandler {
     private static final String MQTTPUBLISH = "mqtt-publish";
     @Inject
     ParameterExtractor parameterExtractor;
-    @Inject
-    IoHelper ioHelper;
     @Inject
     WebsocketsHelper websocketsHelper;
 
@@ -48,9 +46,5 @@ public class MqttPublishCommandHandler implements PublishCommandHandler {
 
     public ParameterExtractor getParameterExtractor() {
         return this.parameterExtractor;
-    }
-
-    public IoHelper getIoHelper() {
-        return this.ioHelper;
     }
 }

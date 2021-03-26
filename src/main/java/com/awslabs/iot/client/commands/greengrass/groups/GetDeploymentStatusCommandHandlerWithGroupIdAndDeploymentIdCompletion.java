@@ -1,29 +1,27 @@
 package com.awslabs.iot.client.commands.greengrass.groups;
 
-import com.awslabs.general.helpers.interfaces.IoHelper;
+
 import com.awslabs.iot.client.commands.greengrass.GreengrassGroupCommandHandlerWithGroupIdAndDeploymentIdCompletion;
 import com.awslabs.iot.client.commands.greengrass.completers.GreengrassGroupIdAndDeploymentIdCompleter;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.data.GreengrassGroupId;
 import com.awslabs.iot.data.ImmutableGreengrassGroupId;
-import com.awslabs.iot.helpers.interfaces.V2GreengrassHelper;
+import com.awslabs.iot.helpers.interfaces.GreengrassV1Helper;
 import com.jcabi.log.Logger;
+import io.vavr.collection.List;
+import io.vavr.control.Option;
 import software.amazon.awssdk.services.greengrass.model.GetDeploymentStatusResponse;
 
 import javax.inject.Inject;
-import java.util.List;
-import java.util.Optional;
 
 public class GetDeploymentStatusCommandHandlerWithGroupIdAndDeploymentIdCompletion implements GreengrassGroupCommandHandlerWithGroupIdAndDeploymentIdCompletion {
     private static final String GET_DEPLOYMENT_STATUS = "get-deployment-status";
     private static final int GROUP_ID_POSITION = 0;
     private static final int DEPLOYMENT_ID_POSITION = 1;
     @Inject
-    V2GreengrassHelper v2GreengrassHelper;
+    GreengrassV1Helper greengrassV1Helper;
     @Inject
     ParameterExtractor parameterExtractor;
-    @Inject
-    IoHelper ioHelper;
     @Inject
     GreengrassGroupIdAndDeploymentIdCompleter greengrassGroupIdAndDeploymentIdCompleter;
 
@@ -38,12 +36,12 @@ public class GetDeploymentStatusCommandHandlerWithGroupIdAndDeploymentIdCompleti
         GreengrassGroupId groupId = ImmutableGreengrassGroupId.builder().groupId(parameters.get(GROUP_ID_POSITION)).build();
         String deploymentId = parameters.get(DEPLOYMENT_ID_POSITION);
 
-        Optional<GetDeploymentStatusResponse> optionalGetDeploymentStatusResponse = v2GreengrassHelper.getDeployments(groupId)
+        Option<GetDeploymentStatusResponse> optionalGetDeploymentStatusResponse = greengrassV1Helper.getDeployments(groupId)
                 .filter(deployment -> deployment.deploymentId().equals(deploymentId))
-                .findFirst()
-                .flatMap(deployment -> v2GreengrassHelper.getDeploymentStatusResponse(groupId, deployment));
+                .headOption()
+                .flatMap(deployment -> greengrassV1Helper.getDeploymentStatusResponse(groupId, deployment));
 
-        if (!optionalGetDeploymentStatusResponse.isPresent()) {
+        if (optionalGetDeploymentStatusResponse.isEmpty()) {
             Logger.info(this, String.join("", "No status available for group [", groupId.getGroupId(), "] and deployment [", deploymentId, "]"));
             return;
         }
@@ -68,10 +66,6 @@ public class GetDeploymentStatusCommandHandlerWithGroupIdAndDeploymentIdCompleti
 
     public ParameterExtractor getParameterExtractor() {
         return this.parameterExtractor;
-    }
-
-    public IoHelper getIoHelper() {
-        return this.ioHelper;
     }
 
     public GreengrassGroupIdAndDeploymentIdCompleter getGreengrassGroupIdAndDeploymentIdCompleter() {

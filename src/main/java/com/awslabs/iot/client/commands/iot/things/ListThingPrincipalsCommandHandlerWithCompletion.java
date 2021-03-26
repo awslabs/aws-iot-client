@@ -1,28 +1,25 @@
 package com.awslabs.iot.client.commands.iot.things;
 
-import com.awslabs.general.helpers.interfaces.IoHelper;
+
 import com.awslabs.iot.client.commands.iot.ThingCommandHandlerWithCompletion;
 import com.awslabs.iot.client.commands.iot.completers.ThingCompleter;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.data.ImmutableThingName;
 import com.awslabs.iot.data.ThingName;
 import com.awslabs.iot.data.ThingPrincipal;
-import com.awslabs.iot.helpers.interfaces.V2IotHelper;
+import com.awslabs.iot.helpers.interfaces.IotHelper;
 import com.jcabi.log.Logger;
+import io.vavr.collection.List;
 
 import javax.inject.Inject;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class ListThingPrincipalsCommandHandlerWithCompletion implements ThingCommandHandlerWithCompletion {
     private static final String LISTTHINGPRINCIPALS = "list-thing-principals";
     private static final int THING_NAME_POSITION = 0;
     @Inject
-    V2IotHelper v2IotHelper;
+    IotHelper iotHelper;
     @Inject
     ParameterExtractor parameterExtractor;
-    @Inject
-    IoHelper ioHelper;
     @Inject
     ThingCompleter thingCompleter;
 
@@ -36,8 +33,8 @@ public class ListThingPrincipalsCommandHandlerWithCompletion implements ThingCom
 
         ThingName thingName = ImmutableThingName.builder().name(parameters.get(THING_NAME_POSITION)).build();
 
-        List<ThingPrincipal> principals = v2IotHelper.getThingPrincipals(thingName)
-                .collect(Collectors.toList());
+        List<ThingPrincipal> principals = iotHelper.getThingPrincipals(thingName)
+                .toList();
 
         if (principals.size() != 0) {
             Logger.info(this, String.join("", "Principals attached to thing [", thingName.getName(), "]"));
@@ -63,10 +60,6 @@ public class ListThingPrincipalsCommandHandlerWithCompletion implements ThingCom
 
     public ParameterExtractor getParameterExtractor() {
         return this.parameterExtractor;
-    }
-
-    public IoHelper getIoHelper() {
-        return this.ioHelper;
     }
 
     public ThingCompleter getThingCompleter() {

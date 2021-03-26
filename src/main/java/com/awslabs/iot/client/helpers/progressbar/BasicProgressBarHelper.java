@@ -15,8 +15,8 @@ public class BasicProgressBarHelper implements ProgressBarHelper {
 
     @Override
     public <T> ProgressBar start(String name, UsesStream<T> usesStream) {
-        // If there's no stream use an empty stream, get the stream, get the count, and rethrow all exceptions
-        long count = Try.of(() -> usesStream.getStream().count()).get();
+        // If there's no stream use an empty stream, get the stream, get the size, and rethrow all exceptions
+        long count = Try.of(() -> usesStream.getStream().size()).get();
 
         if (progressBar != null) {
             progressBar.close();

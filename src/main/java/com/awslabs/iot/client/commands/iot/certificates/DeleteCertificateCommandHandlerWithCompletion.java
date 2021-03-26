@@ -1,15 +1,15 @@
 package com.awslabs.iot.client.commands.iot.certificates;
 
-import com.awslabs.general.helpers.interfaces.IoHelper;
+
 import com.awslabs.iot.client.commands.iot.CertificateCommandHandlerWithCompletion;
 import com.awslabs.iot.client.commands.iot.completers.CertificateCompleter;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.data.CertificateArn;
 import com.awslabs.iot.data.ImmutableCertificateArn;
-import com.awslabs.iot.helpers.interfaces.V2IotHelper;
+import com.awslabs.iot.helpers.interfaces.IotHelper;
+import io.vavr.collection.List;
 
 import javax.inject.Inject;
-import java.util.List;
 
 public class DeleteCertificateCommandHandlerWithCompletion implements CertificateCommandHandlerWithCompletion {
     private static final String DELETECERTIFICATE = "delete-certificate";
@@ -17,11 +17,9 @@ public class DeleteCertificateCommandHandlerWithCompletion implements Certificat
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
-    IoHelper ioHelper;
-    @Inject
     CertificateCompleter certificateCompleter;
     @Inject
-    V2IotHelper v2IotHelper;
+    IotHelper iotHelper;
 
     @Inject
     public DeleteCertificateCommandHandlerWithCompletion() {
@@ -33,7 +31,7 @@ public class DeleteCertificateCommandHandlerWithCompletion implements Certificat
 
         CertificateArn certificateArn = ImmutableCertificateArn.builder().arn(parameters.get(CERTIFICATE_ARN_POSITION)).build();
 
-        v2IotHelper.delete(certificateArn);
+        iotHelper.delete(certificateArn);
     }
 
     @Override
@@ -53,10 +51,6 @@ public class DeleteCertificateCommandHandlerWithCompletion implements Certificat
 
     public ParameterExtractor getParameterExtractor() {
         return this.parameterExtractor;
-    }
-
-    public IoHelper getIoHelper() {
-        return this.ioHelper;
     }
 
     public CertificateCompleter getCertificateCompleter() {

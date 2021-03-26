@@ -1,6 +1,6 @@
 package com.awslabs.iot.client.commands.greengrass.generic;
 
-import com.awslabs.general.helpers.interfaces.IoHelper;
+
 import com.awslabs.iot.client.commands.greengrass.GreengrassCommandHandler;
 import com.awslabs.iot.client.commands.greengrass.groups.*;
 import com.awslabs.iot.client.commands.iot.certificates.DeleteAllCertificatesCommandHandler;
@@ -16,8 +16,6 @@ public class CleanupCommandHandler implements GreengrassCommandHandler {
     private static final String CLEANUP = "cleanup";
     @Inject
     ParameterExtractor parameterExtractor;
-    @Inject
-    IoHelper ioHelper;
     @Inject
     DeleteAllCertificatesCommandHandler deleteAllCertificatesCommandHandler;
     @Inject
@@ -96,9 +94,5 @@ public class CleanupCommandHandler implements GreengrassCommandHandler {
 
     public ParameterExtractor getParameterExtractor() {
         return this.parameterExtractor;
-    }
-
-    public IoHelper getIoHelper() {
-        return this.ioHelper;
     }
 }

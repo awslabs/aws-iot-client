@@ -1,16 +1,16 @@
 package com.awslabs.iot.client.commands.iot.rules;
 
-import com.awslabs.general.helpers.interfaces.IoHelper;
+
 import com.awslabs.iot.client.commands.iot.RuleCommandHandlerWithCompletion;
 import com.awslabs.iot.client.commands.iot.completers.RuleCompleter;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.data.ImmutableRuleName;
 import com.awslabs.iot.data.RuleName;
-import com.awslabs.iot.helpers.interfaces.V2IotHelper;
+import com.awslabs.iot.helpers.interfaces.IotHelper;
 import com.jcabi.log.Logger;
+import io.vavr.collection.List;
 
 import javax.inject.Inject;
-import java.util.List;
 
 public class DeleteTopicRuleCommandHandlerWithCompletion implements RuleCommandHandlerWithCompletion {
     private static final String DELETETOPICRULE = "delete-topic-rule";
@@ -18,11 +18,9 @@ public class DeleteTopicRuleCommandHandlerWithCompletion implements RuleCommandH
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
-    IoHelper ioHelper;
-    @Inject
     RuleCompleter ruleCompleter;
     @Inject
-    V2IotHelper v2IotHelper;
+    IotHelper iotHelper;
 
     @Inject
     public DeleteTopicRuleCommandHandlerWithCompletion() {
@@ -34,7 +32,7 @@ public class DeleteTopicRuleCommandHandlerWithCompletion implements RuleCommandH
 
         RuleName topicRuleName = ImmutableRuleName.builder().name(parameters.get(TOPIC_RULE_NAME_POSITION)).build();
 
-        v2IotHelper.deleteTopicRule(topicRuleName);
+        iotHelper.deleteTopicRule(topicRuleName);
     }
 
     @Override
@@ -59,10 +57,6 @@ public class DeleteTopicRuleCommandHandlerWithCompletion implements RuleCommandH
 
     public ParameterExtractor getParameterExtractor() {
         return this.parameterExtractor;
-    }
-
-    public IoHelper getIoHelper() {
-        return this.ioHelper;
     }
 
     public RuleCompleter getRuleCompleter() {

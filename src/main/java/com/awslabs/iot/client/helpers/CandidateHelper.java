@@ -1,9 +1,8 @@
 package com.awslabs.iot.client.helpers;
 
+import io.vavr.collection.List;
+import io.vavr.collection.Stream;
 import org.jline.reader.Candidate;
-
-import java.util.List;
-import java.util.stream.Stream;
 
 public interface CandidateHelper {
     List<Candidate> getCandidates(Stream<String> strings);

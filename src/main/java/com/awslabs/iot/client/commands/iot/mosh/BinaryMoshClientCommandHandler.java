@@ -6,7 +6,7 @@ public class BinaryMoshClientCommandHandler {// implements MoshClientCommandHand
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
-    IoHelper ioHelper;
+    
     @Inject
     ThingCompleter thingCompleter;
     @Inject

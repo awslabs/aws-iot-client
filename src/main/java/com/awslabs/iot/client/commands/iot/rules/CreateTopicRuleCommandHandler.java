@@ -1,16 +1,17 @@
 package com.awslabs.iot.client.commands.iot.rules;
 
-import com.awslabs.general.helpers.interfaces.IoHelper;
+
 import com.awslabs.iam.data.ImmutableRoleName;
 import com.awslabs.iam.data.RoleName;
-import com.awslabs.iam.helpers.interfaces.V2IamHelper;
+import com.awslabs.iam.helpers.interfaces.IamHelper;
 import com.awslabs.iot.client.commands.iam.completers.RoleCompleter;
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.data.ImmutableRuleName;
 import com.awslabs.iot.data.RuleName;
-import com.awslabs.iot.helpers.interfaces.V2IotHelper;
+import com.awslabs.iot.helpers.interfaces.IotHelper;
 import com.jcabi.log.Logger;
+import io.vavr.collection.List;
 import org.jline.reader.Completer;
 import org.jline.reader.impl.completer.ArgumentCompleter;
 import org.jline.reader.impl.completer.NullCompleter;
@@ -20,7 +21,6 @@ import software.amazon.awssdk.services.iot.model.RepublishAction;
 import software.amazon.awssdk.services.iot.model.TopicRulePayload;
 
 import javax.inject.Inject;
-import java.util.List;
 
 public class CreateTopicRuleCommandHandler implements IotCommandHandler {
     private static final String CREATETOPICRULE = "create-topic-rule";
@@ -31,13 +31,11 @@ public class CreateTopicRuleCommandHandler implements IotCommandHandler {
     @Inject
     RoleCompleter roleCompleter;
     @Inject
-    V2IamHelper v2IamHelper;
+    IamHelper iamHelper;
     @Inject
-    V2IotHelper v2IotHelper;
+    IotHelper iotHelper;
     @Inject
     ParameterExtractor parameterExtractor;
-    @Inject
-    IoHelper ioHelper;
 
     @Inject
     public CreateTopicRuleCommandHandler() {
@@ -63,7 +61,7 @@ public class CreateTopicRuleCommandHandler implements IotCommandHandler {
         String sql = parameters.get(SQL_POSITION);
 
         // Throw an exception if the role isn't present
-        Role role = v2IamHelper.getRole(roleName).get();
+        Role role = iamHelper.getRole(roleName).get();
 
         RepublishAction republishAction = RepublishAction.builder()
                 .roleArn(role.arn())
@@ -80,7 +78,7 @@ public class CreateTopicRuleCommandHandler implements IotCommandHandler {
                 .sql(sql)
                 .build();
 
-        v2IotHelper.createTopicRule(ruleName, topicRulePayload);
+        iotHelper.createTopicRule(ruleName, topicRulePayload);
     }
 
     @Override
@@ -100,9 +98,5 @@ public class CreateTopicRuleCommandHandler implements IotCommandHandler {
 
     public ParameterExtractor getParameterExtractor() {
         return this.parameterExtractor;
-    }
-
-    public IoHelper getIoHelper() {
-        return this.ioHelper;
     }
 }

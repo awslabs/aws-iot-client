@@ -1,25 +1,23 @@
 package com.awslabs.iot.client.commands.iot.policies;
 
-import com.awslabs.general.helpers.interfaces.IoHelper;
+
 import com.awslabs.iot.client.commands.iot.IotCommandHandler;
 import com.awslabs.iot.client.helpers.progressbar.ProgressBarHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.client.streams.interfaces.UsesStream;
-import com.awslabs.iot.helpers.interfaces.V2IotHelper;
+import com.awslabs.iot.helpers.interfaces.IotHelper;
+import io.vavr.collection.Stream;
 import io.vavr.control.Try;
 import software.amazon.awssdk.services.iot.model.Policy;
 
 import javax.inject.Inject;
-import java.util.stream.Stream;
 
 public class DeleteAllPoliciesCommandHandler implements IotCommandHandler, UsesStream<Policy> {
     private static final String DELETEALLPOLICIES = "delete-all-policies";
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
-    IoHelper ioHelper;
-    @Inject
-    V2IotHelper v2IotHelper;
+    IotHelper iotHelper;
     @Inject
     ProgressBarHelper progressBarHelper;
 
@@ -37,7 +35,7 @@ public class DeleteAllPoliciesCommandHandler implements IotCommandHandler, UsesS
         getStream()
                 .peek(policy -> progressBarHelper.next())
                 // Ignore all failures
-                .forEach(policy -> Try.run(() -> v2IotHelper.delete(policy)));
+                .forEach(policy -> Try.run(() -> iotHelper.delete(policy)));
 
         return null;
     }
@@ -61,12 +59,8 @@ public class DeleteAllPoliciesCommandHandler implements IotCommandHandler, UsesS
         return this.parameterExtractor;
     }
 
-    public IoHelper getIoHelper() {
-        return this.ioHelper;
-    }
-
     @Override
     public Stream<Policy> getStream() {
-        return v2IotHelper.getPolicies();
+        return iotHelper.getPolicies();
     }
 }

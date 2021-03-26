@@ -1,13 +1,15 @@
 package com.awslabs.iot.client.commands.greengrass.groups;
 
-import com.awslabs.general.helpers.interfaces.IoHelper;
+
 import com.awslabs.iot.client.commands.greengrass.GreengrassCommandHandler;
 import com.awslabs.iot.client.helpers.progressbar.ProgressBarHelper;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.client.streams.interfaces.UsesStream;
-import com.awslabs.iot.helpers.interfaces.V2GreengrassHelper;
-import com.awslabs.iot.helpers.interfaces.V2IotHelper;
-import com.awslabs.lambda.helpers.interfaces.V2LambdaHelper;
+import com.awslabs.iot.helpers.interfaces.GreengrassV1Helper;
+import com.awslabs.iot.helpers.interfaces.IotHelper;
+import com.awslabs.lambda.helpers.interfaces.LambdaHelper;
+import io.vavr.collection.List;
+import io.vavr.collection.Stream;
 import io.vavr.control.Try;
 import software.amazon.awssdk.services.greengrass.model.GroupInformation;
 import software.amazon.awssdk.services.lambda.LambdaClient;
@@ -15,24 +17,19 @@ import software.amazon.awssdk.services.lambda.model.DeleteFunctionRequest;
 import software.amazon.awssdk.services.lambda.model.FunctionConfiguration;
 
 import javax.inject.Inject;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class DeleteAllGreengrassLambdaFunctionsCommandHandler implements GreengrassCommandHandler, UsesStream<FunctionConfiguration> {
     private static final String DELETE_ALL_LAMBDA_FUNCTIONS = "delete-all-lambda-functions";
     @Inject
-    V2GreengrassHelper v2GreengrassHelper;
+    GreengrassV1Helper greengrassV1Helper;
     @Inject
-    V2IotHelper v2IotHelper;
+    IotHelper iotHelper;
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
-    IoHelper ioHelper;
-    @Inject
     LambdaClient lambdaClient;
     @Inject
-    V2LambdaHelper v2LambdaHelper;
+    LambdaHelper lambdaHelper;
     @Inject
     ProgressBarHelper progressBarHelper;
 
@@ -84,18 +81,14 @@ public class DeleteAllGreengrassLambdaFunctionsCommandHandler implements Greengr
         return this.parameterExtractor;
     }
 
-    public IoHelper getIoHelper() {
-        return this.ioHelper;
-    }
-
     @Override
     public Stream<FunctionConfiguration> getStream() {
-        List<String> nonImmutableGroupNameList = v2GreengrassHelper.getNonImmutableGroups()
+        List<String> nonImmutableGroupNameList = greengrassV1Helper.getNonImmutableGroups()
                 .map(GroupInformation::name)
-                .collect(Collectors.toList());
+                .toList();
 
-        return v2LambdaHelper.getAllFunctionConfigurations()
+        return lambdaHelper.getAllFunctionConfigurations()
                 // Only get functions that start with the group name
-                .filter(functionConfiguration -> nonImmutableGroupNameList.stream().anyMatch(functionConfiguration.functionName()::startsWith));
+                .filter(functionConfiguration -> nonImmutableGroupNameList.filter(functionConfiguration.functionName()::startsWith).nonEmpty());
     }
 }

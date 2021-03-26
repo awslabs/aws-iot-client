@@ -1,26 +1,24 @@
 package com.awslabs.iot.client.commands.greengrass.groups;
 
-import com.awslabs.general.helpers.interfaces.IoHelper;
+
 import com.awslabs.iot.client.commands.greengrass.GreengrassGroupCommandHandlerWithGroupIdCompletion;
 import com.awslabs.iot.client.commands.greengrass.completers.GreengrassGroupIdCompleter;
 import com.awslabs.iot.client.parameters.interfaces.ParameterExtractor;
 import com.awslabs.iot.data.GreengrassGroupId;
 import com.awslabs.iot.data.ImmutableGreengrassGroupId;
-import com.awslabs.iot.helpers.interfaces.V2GreengrassHelper;
+import com.awslabs.iot.helpers.interfaces.GreengrassV1Helper;
 import com.jcabi.log.Logger;
+import io.vavr.collection.List;
 
 import javax.inject.Inject;
-import java.util.List;
 
 public class ListGroupVersionsCommandHandlerWithGroupIdCompletion implements GreengrassGroupCommandHandlerWithGroupIdCompletion {
     private static final String LIST_GROUP_VERSIONS = "list-group-versions";
     private static final int GROUP_ID_POSITION = 0;
     @Inject
-    V2GreengrassHelper v2GreengrassHelper;
+    GreengrassV1Helper greengrassV1Helper;
     @Inject
     ParameterExtractor parameterExtractor;
-    @Inject
-    IoHelper ioHelper;
     @Inject
     GreengrassGroupIdCompleter greengrassGroupIdCompleter;
 
@@ -34,7 +32,7 @@ public class ListGroupVersionsCommandHandlerWithGroupIdCompletion implements Gre
 
         GreengrassGroupId groupId = ImmutableGreengrassGroupId.builder().groupId(parameters.get(GROUP_ID_POSITION)).build();
 
-        v2GreengrassHelper.getVersionInformation(groupId)
+        greengrassV1Helper.getVersionInformation(groupId)
                 .forEach(versionInformation -> Logger.info(this, String.join("", "  [", versionInformation.version(), " - ", versionInformation.creationTimestamp(), "]")));
     }
 
@@ -55,10 +53,6 @@ public class ListGroupVersionsCommandHandlerWithGroupIdCompletion implements Gre
 
     public ParameterExtractor getParameterExtractor() {
         return this.parameterExtractor;
-    }
-
-    public IoHelper getIoHelper() {
-        return this.ioHelper;
     }
 
     public GreengrassGroupIdCompleter getGreengrassGroupIdCompleter() {

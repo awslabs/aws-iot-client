@@ -20,7 +20,7 @@ public class MoshServerCommandHandler { // implements ThingCommandHandlerWithCom
     @Inject
     ParameterExtractor parameterExtractor;
     @Inject
-    IoHelper ioHelper;
+    
     @Inject
     ThingCompleter thingCompleter;
     @Inject
@@ -156,7 +156,7 @@ public class MoshServerCommandHandler { // implements ThingCommandHandlerWithCom
  * @param stderrConsumer
  */
     /*
-    private void runProgramAndBlock(String program, Optional<List<String>> arguments, Optional<Map<String, String>> environmentVariables, Optional<Consumer<String>> stdoutConsumer, Optional<Consumer<String>> stderrConsumer) {
+    private void runProgramAndBlock(String program, Option<List<String>> arguments, Option<Map<String, String>> environmentVariables, Option<Consumer<String>> stdoutConsumer, Option<Consumer<String>> stderrConsumer) {
         List<String> programAndArguments = new ArrayList();
         programAndArguments.add(program);
         arguments.ifPresent((args) -> {
@@ -179,7 +179,7 @@ public class MoshServerCommandHandler { // implements ThingCommandHandlerWithCom
  * @param stderrConsumer
  */
     /*
-    private void getOutputFromProcess(ProcessBuilder pb, boolean waitForExit, Optional<Consumer<String>> stdoutConsumer, Optional<Consumer<String>> stderrConsumer) {
+    private void getOutputFromProcess(ProcessBuilder pb, boolean waitForExit, Option<Consumer<String>> stdoutConsumer, Option<Consumer<String>> stderrConsumer) {
         try {
             Process p = pb.start();
             BufferedReader stdout = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -216,16 +216,16 @@ public class MoshServerCommandHandler { // implements ThingCommandHandlerWithCom
 
             Map<String, String> environment = new HashMap<>();
             environment.put("LC_CTYPE", "en_US.UTF-8");
-            runProgramAndBlock("mosh-server", Optional.empty(), Optional.ofNullable(environment), Optional.ofNullable(stdoutConsumer), Optional.ofNullable(stderrConsumer));
+            runProgramAndBlock("mosh-server", Option.none();, Optional.ofNullable(environment), Optional.ofNullable(stdoutConsumer), Optional.ofNullable(stderrConsumer));
 
-            Optional<String> result = stdoutLines.stream()
+            Option<String> result = stdoutLines.stream()
                     .filter(line -> line.matches(MOSH_CONNECT_REGEX))
-                    .findFirst();
+                    .get();
 
             int port;
             String key;
 
-            if (result.isPresent()) {
+            if (result.isDefined()) {
                 // Found some output, we assume it matches
                 Matcher matcher = MOSH_CONNECT_REGEX_PATTERN.matcher(result.get());
                 matcher.find();
