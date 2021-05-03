@@ -67,7 +67,7 @@ val commonsLang3Version = "3.12.0"
 val vavrVersion = "0.10.3"
 val junitVersion = "4.13.2"
 val resultsIteratorForAwsJavaSdkVersion = "18.0.3"
-val awsIotCoreWebsocketsVersion = "0.6.3"
+val awsIotCoreWebsocketsVersion = "1.0.1"
 val jodahFailsafeVersion = "2.4.0"
 val progressBarVersion = "0.9.1"
 
