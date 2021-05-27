@@ -70,6 +70,7 @@ val resultsIteratorForAwsJavaSdkVersion = "28.0.4"
 val awsIotCoreWebsocketsVersion = "1.0.4"
 val jodahFailsafeVersion = "2.4.0"
 val progressBarVersion = "0.9.1"
+val pahoVersion = "1.2.5"
 
 dependencies {
     // Dagger code generation
@@ -98,6 +99,9 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:$commonsLang3Version")
     implementation("com.github.awslabs:results-iterator-for-aws-java-sdk:$resultsIteratorForAwsJavaSdkVersion")
     implementation("com.github.awslabs:aws-iot-core-websockets:$awsIotCoreWebsocketsVersion")
+
+    // Need to explicitly include Paho now
+    implementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:$pahoVersion")
 
     implementation("io.vavr:vavr:$vavrVersion")
     implementation("net.jodah:failsafe:$jodahFailsafeVersion")
