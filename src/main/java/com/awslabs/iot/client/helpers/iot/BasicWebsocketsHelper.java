@@ -1,6 +1,7 @@
 package com.awslabs.iot.client.helpers.iot;
 
 import com.awslabs.aws.iot.websockets.MqttOverWebsocketsProvider;
+import com.awslabs.aws.iot.websockets.data.ImmutableClientId;
 import com.awslabs.iot.client.helpers.iot.interfaces.WebsocketsHelper;
 import com.jcabi.log.Logger;
 import org.eclipse.paho.client.mqttv3.*;
@@ -42,7 +43,7 @@ public class BasicWebsocketsHelper implements WebsocketsHelper {
         String clientId = UUID.randomUUID().toString();
         Logger.info(this, "Client ID: " + clientId);
 
-        MqttClient mqttClient = mqttOverWebsocketsProvider.getMqttClient(clientId);
+        MqttClient mqttClient = mqttOverWebsocketsProvider.getMqttClient(ImmutableClientId.builder().clientId(clientId).build());
         mqttClient.connect();
 
         return mqttClient;
