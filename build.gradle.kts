@@ -22,7 +22,7 @@ idea.module.isDownloadJavadoc = true
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(8))
 
-val gradleDependencyVersion = "7.0.2"
+val gradleDependencyVersion = "7.1"
 
 application.mainClassName = "com.awslabs.iot.client.applications.AwsIotClientConsole"
 
