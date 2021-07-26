@@ -35,6 +35,7 @@ repositories {
     mavenCentral()
     mavenLocal()
     jcenter()
+    google()
     maven(url = "https://jitpack.io")
     // Required for Gradle Tooling API
     maven(url = "https://repo.gradle.org/gradle/libs-releases-local/")
