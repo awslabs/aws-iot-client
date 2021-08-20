@@ -69,7 +69,7 @@ val vavrVersion = "0.10.4"
 val junitVersion = "4.13.2"
 val resultsIteratorForAwsJavaSdkVersion = "29.0.13"
 val awsIotCoreWebsocketsVersion = "1.0.4"
-val jodahFailsafeVersion = "2.4.2"
+val jodahFailsafeVersion = "2.4.3"
 val progressBarVersion = "0.9.2"
 val pahoVersion = "1.2.5"
 
