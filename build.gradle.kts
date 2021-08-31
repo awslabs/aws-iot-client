@@ -22,7 +22,7 @@ idea.module.isDownloadJavadoc = true
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(8))
 
-val gradleDependencyVersion = "7.1.1"
+val gradleDependencyVersion = "7.2"
 
 application.mainClassName = "com.awslabs.iot.client.applications.AwsIotClientConsole"
 
@@ -109,7 +109,4 @@ dependencies {
     implementation("me.tongfei:progressbar:$progressBarVersion")
 
     testImplementation("junit:junit:$junitVersion")
-
-    // To force dependabot to update the Gradle wrapper dependency)
-    testImplementation("org.gradle:gradle-tooling-api:$gradleDependencyVersion")
 }
