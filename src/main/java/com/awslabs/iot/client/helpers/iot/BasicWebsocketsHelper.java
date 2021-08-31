@@ -2,6 +2,7 @@ package com.awslabs.iot.client.helpers.iot;
 
 import com.awslabs.aws.iot.websockets.MqttOverWebsocketsProvider;
 import com.awslabs.aws.iot.websockets.data.ImmutableClientId;
+import com.awslabs.aws.iot.websockets.data.ImmutableMqttClientConfig;
 import com.awslabs.iot.client.helpers.iot.interfaces.WebsocketsHelper;
 import com.jcabi.log.Logger;
 import org.eclipse.paho.client.mqttv3.*;
@@ -41,9 +42,12 @@ public class BasicWebsocketsHelper implements WebsocketsHelper {
 
     public MqttClient connectMqttClient() throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException, MqttException {
         String clientId = UUID.randomUUID().toString();
-        Logger.info(this, "Client ID: " + clientId);
 
-        MqttClient mqttClient = mqttOverWebsocketsProvider.getMqttClient(ImmutableClientId.builder().clientId(clientId).build());
+        ImmutableMqttClientConfig mqttClientConfig = ImmutableMqttClientConfig.builder()
+                .clientId(ImmutableClientId.builder().clientId(clientId).build())
+                .build();
+
+        MqttClient mqttClient = mqttOverWebsocketsProvider.getMqttClient(mqttClientConfig);
         mqttClient.connect();
 
         return mqttClient;
