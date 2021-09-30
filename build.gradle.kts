@@ -56,7 +56,7 @@ tasks.shadowJar {
     archiveName = "aws-iot-client.jar"
 }
 
-val daggerVersion = "2.38.1"
+val daggerVersion = "2.39"
 val jcommanderVersion = "1.81"
 val awsSdk2Version = "2.17.42"
 val gsonVersion = "2.8.8"
