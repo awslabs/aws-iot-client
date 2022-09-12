@@ -70,7 +70,7 @@ val junitVersion = "4.13.2"
 val resultsIteratorForAwsJavaSdkVersion = "29.0.23"
 val awsIotCoreWebsocketsVersion = "4.0.1"
 val jodahFailsafeVersion = "2.4.4"
-val progressBarVersion = "0.9.2"
+val progressBarVersion = "0.9.4"
 val pahoVersion = "1.2.5"
 
 dependencies {
